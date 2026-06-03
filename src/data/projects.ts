@@ -1,11 +1,4 @@
-export interface WebProject {
-  id: string
-  title: string
-  description: string
-  features: string[]
-  tech: string[]
-  gradient: string
-}
+export type AiProductStatus = 'beta' | 'mvp' | 'planned'
 
 export interface AiProject {
   id: string
@@ -17,34 +10,10 @@ export interface AiProject {
   gradient: string
   accent: string
   featured?: boolean
+  status: AiProductStatus
+  statusLabel: string
+  progress: number
 }
-
-export const webProjects: WebProject[] = [
-  {
-    id: 'erp',
-    title: 'ERP 管理系統',
-    description: '企業內部管理平台，整合會員、權限與報表分析。',
-    features: ['會員管理', '權限管理', '報表分析', '資料匯出'],
-    tech: ['Vue3', 'TypeScript', 'Node.js', 'MySQL'],
-    gradient: 'from-blue-600/20 to-cyan-500/10',
-  },
-  {
-    id: 'ecommerce',
-    title: '電商平台',
-    description: '完整電商網站系統，涵蓋商品到金流全流程。',
-    features: ['商品管理', '購物車', '訂單管理', '金流串接'],
-    tech: ['Vue3', 'Express', 'REST API'],
-    gradient: 'from-violet-600/20 to-purple-500/10',
-  },
-  {
-    id: 'calendar',
-    title: '行事曆管理系統',
-    description: '個人生活管理與排程平台，支援拖曳與 Dashboard。',
-    features: ['FullCalendar', '任務管理', '拖曳排程', 'Dashboard 分析'],
-    tech: ['Vue3', 'Pinia', 'Express', 'Prisma', 'SQLite'],
-    gradient: 'from-emerald-600/20 to-teal-500/10',
-  },
-]
 
 export const aiProjects: AiProject[] = [
   {
@@ -68,6 +37,9 @@ export const aiProjects: AiProject[] = [
     gradient: 'from-amber-500/25 via-orange-500/15 to-rose-500/10',
     accent: 'amber',
     featured: true,
+    status: 'beta',
+    statusLabel: 'Beta 開發中',
+    progress: 68,
   },
   {
     id: 'parenting',
@@ -79,6 +51,9 @@ export const aiProjects: AiProject[] = [
     gradient: 'from-pink-500/25 via-rose-500/15 to-fuchsia-500/10',
     accent: 'pink',
     featured: true,
+    status: 'beta',
+    statusLabel: 'Beta 開發中',
+    progress: 55,
   },
   {
     id: 'cs',
@@ -96,7 +71,15 @@ export const aiProjects: AiProject[] = [
     gradient: 'from-indigo-500/25 via-blue-500/15 to-cyan-500/10',
     accent: 'indigo',
     featured: true,
+    status: 'mvp',
+    statusLabel: 'MVP 開發中',
+    progress: 42,
   },
 ]
 
 export const featuredAiIds = ['stock', 'parenting', 'cs']
+
+export const waitlistProductOptions = [
+  ...aiProjects.map((p) => ({ id: p.id, label: p.title })),
+  { id: 'video', label: 'AI 影片生成平台' },
+]

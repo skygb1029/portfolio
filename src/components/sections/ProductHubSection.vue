@@ -11,15 +11,15 @@ const statusLabel = {
 
 <template>
   <section
-    id="roadmap"
+    id="product-hub"
     class="section-padding bg-zinc-100/50 dark:bg-zinc-900/30"
   >
     <div class="mx-auto max-w-6xl">
       <ScrollReveal>
         <SectionTitle
-          label="Roadmap"
+          label="Product Hub"
           title="正在打造的 AI SaaS 生態系"
-          subtitle="從已上線的 LINE 產品到未來的影片生成平台，持續擴展 AI 產品矩陣。"
+          subtitle="從金融、育兒、客服到影片生成 — 產品矩陣與上線 Roadmap。"
           align="center"
         />
       </ScrollReveal>
@@ -62,13 +62,11 @@ const statusLabel = {
 
               <div
                 class="glow-border ml-10 flex-1 rounded-2xl p-6 sm:ml-0"
-                :class="i % 2 === 0 ? 'sm:ml-0 sm:pl-12' : 'sm:pr-12'"
+                :class="i % 2 === 0 ? 'sm:pl-12' : 'sm:pr-12'"
               >
-                <div class="flex flex-wrap items-center gap-2 sm:hidden">
-                  <span class="text-sm text-zinc-500">{{ item.quarter }}</span>
-                </div>
+                <span class="text-sm text-zinc-500 sm:hidden">{{ item.quarter }}</span>
                 <span
-                  class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
+                  class="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium sm:mt-0"
                   :class="
                     item.status === 'building'
                       ? 'bg-indigo-500/15 text-indigo-600 dark:text-indigo-400'

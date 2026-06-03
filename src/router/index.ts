@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import { siteConfig } from '@/config/site'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +9,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { title: 'Jr-Jim | Frontend Developer × AI Builder' },
+      meta: { title: `${siteConfig.brand}` },
     },
   ],
   scrollBehavior(to) {
@@ -20,7 +21,7 @@ const router = createRouter({
 })
 
 router.afterEach((to) => {
-  const title = (to.meta.title as string) ?? 'Jr-Jim\'s Portfolio'
+  const title = (to.meta.title as string) ?? siteConfig.brand
   document.title = title
 })
 

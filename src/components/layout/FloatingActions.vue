@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useThemeStore } from '@/stores/theme'
+import { useWaitlistModalStore } from '@/stores/waitlistModal'
+import { trackEvent } from '@/composables/useAnalytics'
 
 const theme = useThemeStore()
+const waitlist = useWaitlistModalStore()
 const showTop = ref(false)
 
 function onScroll() {
@@ -11,6 +14,11 @@ function onScroll() {
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function openWaitlist() {
+  trackEvent('cta_fab_waitlist')
+  waitlist.open()
 }
 
 onMounted(() => window.addEventListener('scroll', onScroll, { passive: true }))
@@ -34,7 +42,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       <button
         v-if="showTop"
         type="button"
-        class="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-700 shadow-lg backdrop-blur transition-all hover:border-indigo-400 hover:text-indigo-600 dark:border-zinc-700 dark:bg-zinc-900/90 dark:text-zinc-300"
+        class="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-700 shadow-lg backdrop-blur transition-all hover:border-indigo-400 dark:border-zinc-700 dark:bg-zinc-900/90"
         aria-label="返回頂部"
         @click="scrollToTop"
       >
@@ -44,10 +52,22 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
       </button>
     </Transition>
 
+    <button
+      type="button"
+      class="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 hover:bg-indigo-500"
+      aria-label="加入等待名單"
+      @click="openWaitlist"
+    >
+      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+    </button>
+
     <a
       href="#contact"
-      class="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 transition-all hover:bg-indigo-500"
+      class="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-700 shadow-lg backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/90"
       aria-label="聯絡我"
+      @click="trackEvent('cta_fab_contact')"
     >
       <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
@@ -61,7 +81,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
     <button
       type="button"
-      class="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white/90 text-zinc-700 shadow-lg backdrop-blur transition-all hover:border-indigo-400 dark:border-zinc-700 dark:bg-zinc-900/90 dark:text-zinc-300"
+      class="flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white/90 shadow-lg backdrop-blur dark:border-zinc-700 dark:bg-zinc-900/90"
       :aria-label="theme.mode === 'dark' ? '切換淺色模式' : '切換深色模式'"
       @click="theme.toggle()"
     >

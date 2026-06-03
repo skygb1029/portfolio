@@ -74,6 +74,17 @@ git push
 
 ---
 
+## V3 環境變數
+
+複製 `.env.example` 為 `.env`（本機）或在 Vercel 設定：
+
+- `VITE_GA_MEASUREMENT_ID` — Google Analytics 4
+- `VITE_CLARITY_PROJECT_ID` — Microsoft Clarity
+- `VITE_WAITLIST_FORM_ACTION` — Google Form `formResponse` URL
+- `VITE_WAITLIST_ENTRY_NAME` / `EMAIL` / `PRODUCT` — 表單 entry ID
+
+---
+
 ## 驗證清單
 
 - [ ] GitHub Actions `Portfolio CI` 顯示綠色

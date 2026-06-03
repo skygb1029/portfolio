@@ -69,7 +69,7 @@ const stackLabels: Record<string, string> = {
               <div class="flex items-start justify-between gap-4">
                 <div>
                   <p class="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    {{ modal.detail.type === 'ai' ? 'AI 專案' : '網站專案' }}
+                    {{ modal.detail.type === 'ai' ? 'AI 產品' : '企業專案' }}
                   </p>
                   <h2
                     id="modal-title"

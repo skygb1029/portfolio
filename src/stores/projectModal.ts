@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { getProjectDetail, type ProjectDetail } from '@/data/projectDetails'
-import { webProjects, aiProjects } from '@/data/projects'
+import { enterpriseProjects } from '@/data/enterprise'
+import { aiProjects } from '@/data/projects'
 
 export const useProjectModalStore = defineStore('projectModal', () => {
   const isOpen = ref(false)
@@ -13,15 +14,15 @@ export const useProjectModalStore = defineStore('projectModal', () => {
 
   const title = computed(() => {
     if (!projectId.value) return ''
-    const web = webProjects.find((p) => p.id === projectId.value)
-    if (web) return web.title
+    const ent = enterpriseProjects.find((p) => p.id === projectId.value)
+    if (ent) return ent.title
     return aiProjects.find((p) => p.id === projectId.value)?.title ?? ''
   })
 
   const gradient = computed(() => {
     if (!projectId.value) return ''
-    const web = webProjects.find((p) => p.id === projectId.value)
-    if (web) return web.gradient
+    const ent = enterpriseProjects.find((p) => p.id === projectId.value)
+    if (ent) return ent.gradient
     return aiProjects.find((p) => p.id === projectId.value)?.gradient ?? ''
   })
 

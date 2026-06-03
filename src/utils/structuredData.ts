@@ -22,10 +22,10 @@ export function getStructuredDataJson(): string {
     {
       '@type': 'Organization',
       '@id': `${siteConfig.siteUrl}/#organization`,
-      name: `${siteConfig.name} Studio`,
+      name: `${siteConfig.name} AI Product Hub`,
       url: siteConfig.siteUrl,
       founder: { '@id': `${siteConfig.siteUrl}/#person` },
-      description: 'AI SaaS 產品開發與前端工程服務',
+      description: 'AI SaaS 產品開發與企業級前端工程',
     },
     ...aiProjects.map((p) => ({
       '@type': 'SoftwareApplication',

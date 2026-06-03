@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import ThemeToggle from '@/components/layout/ThemeToggle.vue'
+import { siteConfig } from '@/config/site'
+import { useWaitlistModalStore } from '@/stores/waitlistModal'
+import { trackEvent } from '@/composables/useAnalytics'
 
 const navItems = [
   { label: '首頁', href: '#home' },
+  { label: 'AI 產品', href: '#ai-products' },
   { label: '關於', href: '#about' },
-  { label: '作品', href: '#portfolio' },
-  { label: 'GitHub', href: '#github' },
+  { label: '企業專案', href: '#enterprise' },
+  { label: 'Product Hub', href: '#product-hub' },
   { label: '聯絡', href: '#contact' },
 ]
 
 const scrolled = ref(false)
 const menuOpen = ref(false)
+const waitlist = useWaitlistModalStore()
 
 function onScroll() {
   scrolled.value = window.scrollY > 20
@@ -27,6 +32,12 @@ onUnmounted(() => {
 
 function closeMenu() {
   menuOpen.value = false
+}
+
+function openWaitlist() {
+  trackEvent('cta_nav_waitlist')
+  waitlist.open()
+  closeMenu()
 }
 </script>
 
@@ -44,25 +55,32 @@ function closeMenu() {
         href="#home"
         class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100"
       >
-        Jr-Jim
+        {{ siteConfig.name }}
       </a>
 
-      <nav class="hidden items-center gap-1 md:flex">
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="主要導覽">
         <a
           v-for="item in navItems"
           :key="item.href"
           :href="item.href"
-          class="rounded-full px-3.5 py-1.5 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+          class="rounded-full px-3 py-1.5 text-sm text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
         >
           {{ item.label }}
         </a>
       </nav>
 
       <div class="flex items-center gap-2">
+        <button
+          type="button"
+          class="hidden rounded-full bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-indigo-500 sm:inline-flex"
+          @click="openWaitlist"
+        >
+          等待名單
+        </button>
         <ThemeToggle />
         <button
           type="button"
-          class="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 md:hidden dark:border-zinc-700"
+          class="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 lg:hidden dark:border-zinc-700"
           aria-label="開啟選單"
           @click="menuOpen = !menuOpen"
         >
@@ -88,7 +106,7 @@ function closeMenu() {
 
     <div
       v-if="menuOpen"
-      class="border-t border-zinc-200 bg-white/95 px-4 py-4 backdrop-blur-xl md:hidden dark:border-zinc-800 dark:bg-zinc-950/95"
+      class="border-t border-zinc-200 bg-white/95 px-4 py-4 backdrop-blur-xl lg:hidden dark:border-zinc-800 dark:bg-zinc-950/95"
     >
       <a
         v-for="item in navItems"
@@ -99,6 +117,13 @@ function closeMenu() {
       >
         {{ item.label }}
       </a>
+      <button
+        type="button"
+        class="mt-2 w-full rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white"
+        @click="openWaitlist"
+      >
+        加入等待名單
+      </button>
     </div>
   </header>
 </template>

@@ -3,6 +3,10 @@ import { ref } from 'vue'
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 import SectionTitle from '@/components/ui/SectionTitle.vue'
 import { siteConfig } from '@/config/site'
+import { useWaitlistModalStore } from '@/stores/waitlistModal'
+import { trackEvent } from '@/composables/useAnalytics'
+
+const waitlist = useWaitlistModalStore()
 
 const form = ref({
   name: '',
@@ -13,12 +17,23 @@ const form = ref({
 const submitted = ref(false)
 const error = ref('')
 
+function openWaitlist() {
+  trackEvent('cta_contact_waitlist')
+  waitlist.open()
+}
+
 const ctaButtons = [
+  {
+    label: '加入等待名單',
+    sub: '搶先體驗 AI 產品',
+    action: 'waitlist' as const,
+    variant: 'primary' as const,
+  },
   {
     label: '立即合作',
     sub: '討論專案與技術合作',
     href: `mailto:${siteConfig.email}?subject=合作洽詢`,
-    variant: 'primary' as const,
+    variant: 'secondary' as const,
   },
   {
     label: '預約討論',
@@ -70,18 +85,21 @@ function handleSubmit() {
 
       <ScrollReveal :delay="80">
         <div class="mt-12 grid gap-4 sm:grid-cols-2">
-          <a
+          <component
+            :is="'action' in btn && btn.action === 'waitlist' ? 'button' : 'a'"
             v-for="btn in ctaButtons"
             :key="btn.label"
-            :href="btn.href"
-            :target="btn.external ? '_blank' : undefined"
-            :rel="btn.external ? 'noopener noreferrer' : undefined"
-            class="group flex flex-col rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover-glow"
+            :href="'href' in btn ? btn.href : undefined"
+            :target="'external' in btn && btn.external ? '_blank' : undefined"
+            :rel="'external' in btn && btn.external ? 'noopener noreferrer' : undefined"
+            type="'action' in btn && btn.action === 'waitlist' ? 'button' : undefined"
+            class="group flex flex-col rounded-2xl p-6 text-left transition-all duration-300 hover:-translate-y-1 hover-glow"
             :class="
               btn.variant === 'primary'
-                ? 'bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200'
+                ? 'bg-indigo-600 text-white hover:bg-indigo-500'
                 : 'glow-border bg-white/60 dark:bg-zinc-900/40'
             "
+            @click="'action' in btn && btn.action === 'waitlist' ? openWaitlist() : undefined"
           >
             <span
               class="text-lg font-semibold"
@@ -91,11 +109,11 @@ function handleSubmit() {
             </span>
             <span
               class="mt-1 text-sm"
-              :class="btn.variant === 'primary' ? 'text-zinc-300 dark:text-zinc-600' : 'text-zinc-500'"
+              :class="btn.variant === 'primary' ? 'text-indigo-100' : 'text-zinc-500'"
             >
               {{ btn.sub }}
             </span>
-          </a>
+          </component>
         </div>
       </ScrollReveal>
 

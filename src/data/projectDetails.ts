@@ -7,7 +7,7 @@ export interface TechStack {
 
 export interface ProjectDetail {
   id: string
-  type: 'web' | 'ai'
+  type: 'enterprise' | 'ai'
   background: string
   problem: string
   features: string[]
@@ -16,61 +16,70 @@ export interface ProjectDetail {
 }
 
 export const projectDetails: Record<string, ProjectDetail> = {
-  erp: {
-    id: 'erp',
-    type: 'web',
-    background:
-      '企業內部營運需要統一管理平台，取代分散的 Excel 與人工流程，讓管理層能即時掌握營運數據。',
-    problem:
-      '解決會員資料分散、權限難以控管、報表產出耗時等問題，提升內部協作效率與決策速度。',
-    features: ['會員管理', '權限管理', '報表分析', '資料匯出'],
+  ipost: {
+    id: 'ipost',
+    type: 'enterprise',
+    background: '郵局 i郵箱業務需要與 GS1 標準整合，提供企業與民眾可靠的寄件與追蹤體驗。',
+    problem: '簡化 OAuth 登入與寄件流程，讓使用者能一站式完成寄件、追蹤與狀態查詢。',
+    features: ['OAuth 登入', '郵件寄送', '包裹追蹤', '狀態查詢'],
     techStack: {
-      frontend: ['Vue3', 'TypeScript', 'Pinia', 'TailwindCSS'],
-      backend: ['Node.js', 'Express', 'REST API'],
-      database: ['MySQL'],
+      frontend: ['Vue3', 'TypeScript', 'Pinia'],
+      backend: ['REST API', 'GS1 OAuth'],
+      database: ['企業後端 DB'],
       aiService: [],
     },
     devInsights: [
-      'RBAC 權限設計需與前端路由守衛同步，避免僅靠 UI 隱藏造成安全漏洞。',
-      '大量報表查詢採用分頁與索引優化，將匯出任務改為非同步處理避免阻塞 API。',
+      'OAuth token 刷新與過期處理需與寄件流程解耦，避免中途登出造成資料遺失。',
+      '物流狀態 API 採輪詢與快取策略，降低高峰時段請求壓力。',
     ],
   },
-  ecommerce: {
-    id: 'ecommerce',
-    type: 'web',
-    background:
-      '為品牌打造可擴展的電商前台與後台，支援商品上架、訂單追蹤與金流整合的完整商業閉環。',
-    problem:
-      '讓商家能在單一系統管理商品、訂單與付款狀態，降低跨平台營運成本並提升轉換率。',
-    features: ['商品管理', '購物車', '訂單管理', '金流串接'],
+  'ai-medical': {
+    id: 'ai-medical',
+    type: 'enterprise',
+    background: '醫療場域需整合病患資料與 AI 推論結果，協助醫護快速掌握決策依據。',
+    problem: '將分散的病患資訊與 AI 分析統一呈現，縮短臨床判讀時間。',
+    features: ['病患資料整合', 'AI 分析結果呈現', '醫療決策輔助'],
     techStack: {
-      frontend: ['Vue3', 'Vue Router', 'Pinia'],
-      backend: ['Express', 'REST API'],
-      database: ['MySQL'],
-      aiService: [],
+      frontend: ['Vue3', 'TypeScript'],
+      backend: ['REST API', 'WebSocket'],
+      database: ['醫療資料庫'],
+      aiService: ['AI 分析引擎'],
     },
     devInsights: [
-      '購物車與庫存需處理併發，採用樂觀鎖避免超賣。',
-      '金流 webhook 需冪等設計，防止重複通知造成訂單狀態錯誤。',
+      'WebSocket 推送需處理斷線重連與分析任務狀態同步。',
+      '敏感資料顯示需配合權限與遮罩規則。',
     ],
   },
-  calendar: {
-    id: 'calendar',
-    type: 'web',
-    background:
-      '個人與小型團隊需要視覺化排程工具，整合任務、行事曆與數據分析於同一 Dashboard。',
-    problem:
-      '幫助使用者掌握時間分配、任務進度，透過拖曳排程降低排程摩擦。',
-    features: ['FullCalendar', '任務管理', '拖曳排程', 'Dashboard 分析'],
+  maya: {
+    id: 'maya',
+    type: 'enterprise',
+    background: '檢驗數據需轉化為可視化風險報告，輔助醫師評估潛在疾病。',
+    problem: '透過 AI 推測與圖表呈現，讓複雜檢驗結果一目了然。',
+    features: ['病歷分析', 'AI 推測', '視覺化報表'],
     techStack: {
-      frontend: ['Vue3', 'Pinia', 'FullCalendar'],
-      backend: ['Express', 'Prisma'],
-      database: ['SQLite'],
+      frontend: ['Vue3', 'TypeScript', 'Chart.js'],
+      backend: ['REST API'],
+      database: ['檢驗資料'],
+      aiService: ['AI 推測模型'],
+    },
+    devInsights: [
+      'Chart.js 大量數據時需抽樣與懶加載，維持 Dashboard 流暢度。',
+    ],
+  },
+  geneluo: {
+    id: 'geneluo',
+    type: 'enterprise',
+    background: '基因檢測結果需透過規則引擎對應疾病風險，支援醫療團隊解讀。',
+    problem: '管理基因規則並輸出視覺化風險分析，提升解讀效率。',
+    features: ['基因規則管理', '疾病風險分析', '視覺化結果'],
+    techStack: {
+      frontend: ['Vue3', 'TypeScript'],
+      backend: ['REST API', '規則引擎'],
+      database: ['基因資料'],
       aiService: [],
     },
     devInsights: [
-      '拖曳事件與時區處理是主要痛點，統一以 UTC 儲存、本地顯示轉換。',
-      'Prisma schema 預留 recurring 欄位，方便後續擴充週期任務。',
+      '規則版本控管與回溯是核心，避免規則更新影響歷史報告一致性。',
     ],
   },
   stock: {
