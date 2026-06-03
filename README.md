@@ -1,6 +1,6 @@
-# Jr-Jim — 個人品牌網站
+# Jr Jim AI Product Hub
 
-Frontend Developer × AI Builder 個人作品集網站。
+Frontend Engineer × AI Product Builder — 產品入口網站。
 
 ## 技術棧
 

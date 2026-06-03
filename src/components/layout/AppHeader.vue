@@ -55,7 +55,7 @@ function openWaitlist() {
         href="#home"
         class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100"
       >
-        {{ siteConfig.name }}
+        {{ siteConfig.logo }}
       </a>
 
       <nav class="hidden items-center gap-1 lg:flex" aria-label="主要導覽">

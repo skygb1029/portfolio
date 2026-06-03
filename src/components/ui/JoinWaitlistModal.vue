@@ -4,6 +4,7 @@ import { useWaitlistModalStore } from '@/stores/waitlistModal'
 import { waitlistProductOptions } from '@/data/projects'
 import { submitWaitlist } from '@/utils/waitlistSubmit'
 import { trackEvent } from '@/composables/useAnalytics'
+import { siteConfig } from '@/config/site'
 
 const modal = useWaitlistModalStore()
 
@@ -99,11 +100,14 @@ function handleSubmit() {
             ✕
           </button>
 
-          <h2 id="waitlist-title" class="text-xl font-bold text-zinc-900 dark:text-zinc-50">
+          <p class="text-xs font-medium text-indigo-600 dark:text-indigo-400">
+            {{ siteConfig.productHub }}
+          </p>
+          <h2 id="waitlist-title" class="mt-1 text-xl font-bold text-zinc-900 dark:text-zinc-50">
             加入等待名單
           </h2>
           <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            產品上線時將優先通知您。資料透過 Google 表單安全儲存。
+            產品上線時將由 {{ siteConfig.productHub }} 優先通知您。資料透過 Google 表單安全儲存。
           </p>
 
           <form v-if="!success" class="mt-6 space-y-4" @submit.prevent="handleSubmit">
@@ -155,7 +159,7 @@ function handleSubmit() {
           </form>
 
           <p v-else class="mt-6 text-center text-sm text-emerald-600 dark:text-emerald-400">
-            感謝您！已開啟確認頁面，我們將盡快與您聯繫。
+            感謝您加入 {{ siteConfig.productHub }}！已開啟確認頁面，我們將盡快與您聯繫。
           </p>
         </div>
       </div>

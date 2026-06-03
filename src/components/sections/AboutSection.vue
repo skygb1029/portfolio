@@ -2,11 +2,12 @@
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 import { siteConfig, personalTraits } from '@/config/site'
 
+const experienceAreas = ['電商系統', '郵政系統', '醫療系統', 'AI 平台']
+
 const buildingProducts = [
   'AI 股票秘書',
   'AI 育兒助手',
   'AI 客服業務小能手',
-  'AI 影片生成平台',
 ]
 </script>
 
@@ -17,27 +18,37 @@ const buildingProducts = [
         <ScrollReveal variant="slide-left">
           <p class="text-sm font-medium tracking-widest text-indigo-500 uppercase">About</p>
           <h2 class="mt-3 text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-            {{ siteConfig.name }}
+            About {{ siteConfig.name }}
           </h2>
           <p class="mt-3 text-lg font-medium text-gradient">
             {{ siteConfig.title }}
           </p>
-          <blockquote
-            class="mt-6 border-l-2 border-indigo-500 pl-4 text-lg italic text-zinc-700 dark:text-zinc-300"
-          >
-            {{ siteConfig.tagline }}
-          </blockquote>
         </ScrollReveal>
 
         <ScrollReveal :delay="120">
           <div class="space-y-5 text-base leading-relaxed text-zinc-600 dark:text-zinc-400">
             <p>
-              從全端與專案管理背景出發，累積超過十年軟體開發與跨部門協作經驗。
-              現專注於企業級前端架構與 AI 產品化，將技術轉化為可持續經營的 SaaS。
+              {{ siteConfig.name }} 是一位擁有多年企業系統開發經驗的前端工程師。
+            </p>
+            <div>
+              <p class="font-medium text-zinc-800 dark:text-zinc-200">曾參與：</p>
+              <ul class="mt-2 space-y-1">
+                <li
+                  v-for="area in experienceAreas"
+                  :key="area"
+                  class="flex items-center gap-2"
+                >
+                  <span class="h-1 w-1 rounded-full bg-indigo-500" />
+                  {{ area }}
+                </li>
+              </ul>
+              <p class="mt-1">開發。</p>
+            </div>
+            <p>
+              近年專注於 AI Product、Automation、Agent Workflow 與 SaaS 產品開發。
             </p>
             <p>
-              曾參與郵局 i郵箱、醫療 AI 平台等企業專案，並獨立打造 LINE Bot 驅動的 AI 產品線。
-              目標是建立完整的 AI SaaS 生態系，讓產品能真正解決生活與商業問題。
+              希望透過 AI 技術與軟體產品能力，建立可持續發展的 SaaS 生態系。
             </p>
           </div>
           <ul class="mt-6 flex flex-wrap gap-2">
@@ -54,7 +65,7 @@ const buildingProducts = [
 
       <ScrollReveal :delay="200">
         <div class="mt-12 glow-border rounded-2xl p-6 sm:p-8">
-          <p class="text-sm font-medium text-zinc-500">正在打造的產品</p>
+          <p class="text-sm font-medium text-zinc-500">目前正打造</p>
           <ul class="mt-4 flex flex-wrap gap-3">
             <li
               v-for="name in buildingProducts"

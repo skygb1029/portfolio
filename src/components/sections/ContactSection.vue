@@ -44,12 +44,12 @@ const ctaButtons = [
   {
     label: 'Email 我',
     sub: siteConfig.email,
-    href: `mailto:${siteConfig.email}`,
+    href: `mailto:${siteConfig.email}?subject=${encodeURIComponent('Jr Jim Product Hub - 聯絡')}`,
     variant: 'secondary' as const,
   },
   {
-    label: '查看 GitHub',
-    sub: `github.com/${siteConfig.github}`,
+    label: 'GitHub',
+    sub: '開源專案與程式碼',
     href: siteConfig.githubUrl,
     variant: 'secondary' as const,
     external: true,
@@ -62,7 +62,7 @@ function handleSubmit() {
     error.value = '請填寫所有欄位'
     return
   }
-  const subject = encodeURIComponent(`Portfolio 聯絡 - ${form.value.name}`)
+  const subject = encodeURIComponent(`Jr Jim Product Hub - ${form.value.name}`)
   const body = encodeURIComponent(
     `姓名：${form.value.name}\nEmail：${form.value.email}\n\n${form.value.message}`,
   )
@@ -120,6 +120,21 @@ function handleSubmit() {
       <div class="mt-16 grid gap-10 lg:grid-cols-2 lg:gap-16">
         <ScrollReveal>
           <div class="space-y-6">
+            <a
+              :href="`mailto:${siteConfig.email}`"
+              class="glow-border flex items-center gap-4 rounded-2xl p-5 transition-transform hover:-translate-y-0.5"
+            >
+              <span
+                class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+              >
+                ✉
+              </span>
+              <div>
+                <p class="text-sm text-zinc-500">聯絡</p>
+                <p class="font-medium text-zinc-900 dark:text-zinc-100">{{ siteConfig.name }}</p>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400">{{ siteConfig.email }}</p>
+              </div>
+            </a>
             <div class="glow-border rounded-2xl p-6 text-center">
               <p class="text-sm font-medium text-zinc-900 dark:text-zinc-100">LINE 聯絡</p>
               <p class="mt-1 text-xs text-zinc-500">掃描 QR Code 加入好友</p>

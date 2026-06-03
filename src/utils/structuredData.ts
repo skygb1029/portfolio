@@ -7,7 +7,8 @@ export function getStructuredDataJson(): string {
       '@type': 'Person',
       '@id': `${siteConfig.siteUrl}/#person`,
       name: siteConfig.name,
-      jobTitle: siteConfig.title,
+      alternateName: siteConfig.alternateName,
+      jobTitle: siteConfig.jobTitle,
       email: siteConfig.email,
       url: siteConfig.siteUrl,
       sameAs: [siteConfig.githubUrl],
@@ -22,7 +23,7 @@ export function getStructuredDataJson(): string {
     {
       '@type': 'Organization',
       '@id': `${siteConfig.siteUrl}/#organization`,
-      name: `${siteConfig.name} AI Product Hub`,
+      name: siteConfig.brand,
       url: siteConfig.siteUrl,
       founder: { '@id': `${siteConfig.siteUrl}/#person` },
       description: 'AI SaaS 產品開發與企業級前端工程',

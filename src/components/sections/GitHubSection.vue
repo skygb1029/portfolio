@@ -14,7 +14,7 @@ const { loading, error, repoCount, totalStars, recentRepos } = useGitHub()
         <SectionTitle
           label="Open Source"
           title="GitHub 活動"
-          :subtitle="`@${siteConfig.github} 的開源與專案動態，以真實數據展現持續開發。`"
+          subtitle="開源專案與程式碼動態，以真實數據展現持續開發。"
           align="center"
         />
       </ScrollReveal>
@@ -52,8 +52,8 @@ const { loading, error, repoCount, totalStars, recentRepos } = useGitHub()
               rel="noopener noreferrer"
               class="glow-border flex flex-col items-center justify-center rounded-2xl p-6 transition-transform hover:-translate-y-0.5"
             >
-              <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400">查看 Profile</p>
-              <p class="mt-1 text-xs text-zinc-500">github.com/{{ siteConfig.github }}</p>
+              <p class="text-sm font-medium text-indigo-600 dark:text-indigo-400">前往 GitHub</p>
+              <p class="mt-1 text-xs text-zinc-500">開源專案</p>
             </a>
           </div>
         </ScrollReveal>
