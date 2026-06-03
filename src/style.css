@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: 'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    .reveal-visible,
+    .reveal-hidden,
+    .animate-float,
+    .animate-float-delayed,
+    .animate-pulse-glow {
+      animation: none !important;
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  body {
+    @apply bg-zinc-50 text-zinc-900 antialiased transition-colors duration-300;
+  }
+
+  .dark body,
+  body:has(.dark) {
+    @apply bg-zinc-950 text-zinc-100;
+  }
+
+  html.dark body {
+    @apply bg-zinc-950 text-zinc-100;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-500 bg-clip-text text-transparent;
+  }
+
+  .glow-border {
+    @apply relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white/60 backdrop-blur-xl transition-all duration-300;
+  }
+
+  .dark .glow-border {
+    @apply border-zinc-800/80 bg-zinc-900/40;
+  }
+
+  .glow-border:hover {
+    @apply border-indigo-500/40 shadow-[0_0_40px_-12px_rgba(99,102,241,0.45)];
+  }
+
+  .hover-glow {
+    @apply transition-shadow duration-300 hover:shadow-[0_0_32px_-8px_rgba(99,102,241,0.5)];
+  }
+
+  .section-padding {
+    @apply px-4 py-20 sm:px-6 lg:px-8 lg:py-28;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  66% {
+    transform: translate(-20px, 15px) scale(0.95);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-float {
+  animation: float 12s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 14s ease-in-out infinite reverse;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 6s ease-in-out infinite;
+}
+
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal-slide-left.reveal-hidden {
+  transform: translateX(-24px);
+}
+
+.reveal-slide-left.reveal-visible {
+  transform: translateX(0);
+}
