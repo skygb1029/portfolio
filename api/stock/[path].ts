@@ -21,9 +21,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const raw = req.query.path
-  const segments = Array.isArray(raw) ? raw : raw ? [raw] : []
-  const subPath = `/${segments.join('/')}`
-  const upstream = buildUpstreamUrl(subPath)
+  const segment = Array.isArray(raw) ? raw.join('/') : String(raw ?? 'version')
+  const upstream = buildUpstreamUrl(`/${segment}`)
 
   try {
     const headers: Record<string, string> = {
