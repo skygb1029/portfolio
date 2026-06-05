@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import { siteConfig } from '@/config/site'
 </script>
 
@@ -15,7 +16,8 @@ import { siteConfig } from '@/config/site'
           {{ siteConfig.footerTagline }}
         </p>
       </div>
-      <div class="flex gap-6 text-sm text-zinc-500">
+      <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-500 sm:justify-end">
+        <RouterLink to="/demo" class="hover:text-indigo-600 dark:hover:text-indigo-400">Demo</RouterLink>
         <a
           :href="`mailto:${siteConfig.email}`"
           class="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"

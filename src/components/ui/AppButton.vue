@@ -1,9 +1,14 @@
 <script setup lang="ts">
-defineProps<{
+import { RouterLink } from 'vue-router'
+import { computed } from 'vue'
+
+const props = defineProps<{
   href?: string
   variant?: 'primary' | 'secondary' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
 }>()
+
+const isInternal = computed(() => props.href?.startsWith('/') ?? false)
 
 const variantClasses = {
   primary:
@@ -18,23 +23,22 @@ const sizeClasses = {
   md: 'px-6 py-2.5 text-sm',
   lg: 'px-8 py-3 text-base',
 }
+
+const btnClass = computed(() => [
+  'inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 hover-glow',
+  variantClasses[props.variant ?? 'primary'],
+  sizeClasses[props.size ?? 'md'],
+])
 </script>
 
 <template>
-  <a
-    v-if="href"
-    :href="href"
-    class="inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 hover-glow"
-    :class="[variantClasses[variant ?? 'primary'], sizeClasses[size ?? 'md']]"
-  >
+  <RouterLink v-if="href && isInternal" :to="href" :class="btnClass">
+    <slot />
+  </RouterLink>
+  <a v-else-if="href" :href="href" :class="btnClass">
     <slot />
   </a>
-  <button
-    v-else
-    type="button"
-    class="inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 hover-glow"
-    :class="[variantClasses[variant ?? 'primary'], sizeClasses[size ?? 'md']]"
-  >
+  <button v-else type="button" :class="btnClass">
     <slot />
   </button>
 </template>

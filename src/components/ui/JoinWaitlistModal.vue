@@ -47,21 +47,26 @@ watch(
   },
 )
 
-function handleSubmit() {
+const submitting = ref(false)
+
+async function handleSubmit() {
   error.value = ''
   if (!name.value.trim() || !email.value.trim() || !productId.value) {
     error.value = '請填寫所有欄位'
     return
   }
-  const ok = submitWaitlist({
+  submitting.value = true
+  const ok = await submitWaitlist({
     name: name.value.trim(),
     email: email.value.trim(),
     productId: productId.value,
     productLabel: productLabel.value,
+    sourcePage: modal.sourceHint || window.location.pathname,
   })
+  submitting.value = false
   if (!ok) {
     needsConfig.value = true
-    error.value = '表單尚未設定，請聯絡站長或稍後再試'
+    error.value = '後端尚未設定，請聯絡站長或稍後再試'
     return
   }
   success.value = true
@@ -107,7 +112,7 @@ function handleSubmit() {
             加入等待名單
           </h2>
           <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            產品上線時將由 {{ siteConfig.productHub }} 優先通知您。資料透過 Google 表單安全儲存。
+            產品上線時將由 {{ siteConfig.productHub }} 優先通知您。資料儲存於 Supabase（備援 Google 表單）。
           </p>
 
           <form v-if="!success" class="mt-6 space-y-4" @submit.prevent="handleSubmit">
@@ -152,9 +157,10 @@ function handleSubmit() {
 
             <button
               type="submit"
-              class="w-full rounded-full bg-indigo-600 py-3 text-sm font-medium text-white hover:bg-indigo-500"
+              class="w-full rounded-full bg-indigo-600 py-3 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-60"
+              :disabled="submitting"
             >
-              送出並加入名單
+              {{ submitting ? '送出中…' : '送出並加入名單' }}
             </button>
           </form>
 

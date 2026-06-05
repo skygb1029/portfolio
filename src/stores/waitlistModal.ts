@@ -5,8 +5,11 @@ export const useWaitlistModalStore = defineStore('waitlistModal', () => {
   const isOpen = ref(false)
   const preselectedProductId = ref<string>('')
 
-  function open(productId = '') {
+  const sourceHint = ref('')
+
+  function open(productId = '', source = '') {
     preselectedProductId.value = productId
+    sourceHint.value = source
     isOpen.value = true
     document.body.style.overflow = 'hidden'
   }
@@ -14,8 +17,9 @@ export const useWaitlistModalStore = defineStore('waitlistModal', () => {
   function close() {
     isOpen.value = false
     preselectedProductId.value = ''
+    sourceHint.value = ''
     document.body.style.overflow = ''
   }
 
-  return { isOpen, preselectedProductId, open, close }
+  return { isOpen, preselectedProductId, sourceHint, open, close }
 })

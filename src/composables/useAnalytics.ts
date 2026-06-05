@@ -4,6 +4,7 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void
     clarity?: (...args: unknown[]) => void
+    dataLayer?: unknown[]
   }
 }
 
@@ -42,10 +43,22 @@ export function trackEvent(
   if (window.clarity) {
     window.clarity('event', eventName)
   }
-}
 
-declare global {
-  interface Window {
-    dataLayer?: unknown[]
-  }
+  const product =
+    typeof params?.product_id === 'string'
+      ? params.product_id
+      : typeof params?.product_name === 'string'
+        ? params.product_name
+        : undefined
+
+  fetch('/api/analytics', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event: eventName,
+      product,
+      source: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      meta: params ?? {},
+    }),
+  }).catch(() => {})
 }

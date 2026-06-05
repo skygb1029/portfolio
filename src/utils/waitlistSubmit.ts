@@ -1,23 +1,50 @@
 import { siteConfig } from '@/config/site'
 import { trackEvent } from '@/composables/useAnalytics'
+import { postJson } from '@/utils/apiClient'
+import { saveWaitlistLead } from '@/utils/waitlistLocal'
 
 export interface WaitlistPayload {
   name: string
   email: string
   productId: string
   productLabel: string
+  sourcePage?: string
 }
 
-export function submitWaitlist(payload: WaitlistPayload): boolean {
-  const { formAction, entryName, entryEmail, entryProduct } = siteConfig.waitlist
+export async function submitWaitlist(payload: WaitlistPayload): Promise<boolean> {
+  const sourcePage = payload.sourcePage ?? window.location.pathname
 
   trackEvent('waitlist_submit', {
     product_id: payload.productId,
     product_name: payload.productLabel,
+    source_page: sourcePage,
   })
 
+  saveWaitlistLead({
+    name: payload.name,
+    email: payload.email,
+    productId: payload.productId,
+    productLabel: payload.productLabel,
+    sourcePage,
+  })
+
+  try {
+    const res = await postJson<{ ok: boolean; fallback?: boolean }>('/api/waitlist', {
+      name: payload.name,
+      email: payload.email,
+      product: payload.productLabel,
+      source: sourcePage,
+    })
+    return res.ok
+  } catch {
+    return submitGoogleFormFallback(payload)
+  }
+}
+
+function submitGoogleFormFallback(payload: WaitlistPayload): boolean {
+  const { formAction, entryName, entryEmail, entryProduct } = siteConfig.waitlist
   if (!formAction) {
-    console.warn('[Waitlist] 請在 .env 設定 VITE_WAITLIST_FORM_ACTION')
+    console.warn('[Waitlist] Supabase 未設定且無 Google Form')
     return false
   }
 

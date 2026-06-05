@@ -85,11 +85,11 @@ function openWaitlist() {
           >
             加入等待名單
           </button>
+          <AppButton href="/demo" variant="secondary" size="lg">
+            體驗 Demo
+          </AppButton>
           <AppButton href="#ai-products" variant="secondary" size="lg">
             探索 AI 產品
-          </AppButton>
-          <AppButton href="#enterprise" variant="secondary" size="lg">
-            企業專案
           </AppButton>
         </div>
       </ScrollReveal>

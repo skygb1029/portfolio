@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import FloatingActions from '@/components/layout/FloatingActions.vue'
+import JoinWaitlistModal from '@/components/ui/JoinWaitlistModal.vue'
 import { useThemeStore } from '@/stores/theme'
 import { injectStructuredData } from '@/utils/structuredData'
 
@@ -22,5 +23,6 @@ onMounted(() => {
     </main>
     <AppFooter />
     <FloatingActions />
+    <JoinWaitlistModal />
   </div>
 </template>
