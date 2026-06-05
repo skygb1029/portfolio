@@ -1,5 +1,15 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { buildStockUpstreamUrl } from '../../lib/stock/proxy'
+
+function buildUpstreamUrl(subPath: string): string {
+  const host = (
+    process.env.STOCK_API_URL ??
+    process.env.VITE_STOCK_API_URL ??
+    'https://ai-stock-secretary-production.up.railway.app'
+  ).replace(/\/$/, '')
+  const base = host.endsWith('/api/web') ? host : `${host}/api/web`
+  const path = subPath.startsWith('/') ? subPath : `/${subPath}`
+  return `${base}${path}`
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') {
@@ -13,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const raw = req.query.path
   const segments = Array.isArray(raw) ? raw : raw ? [raw] : []
   const subPath = `/${segments.join('/')}`
-  const upstream = buildStockUpstreamUrl(subPath)
+  const upstream = buildUpstreamUrl(subPath)
 
   try {
     const headers: Record<string, string> = {
