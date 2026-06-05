@@ -17,21 +17,23 @@ Product Hub (portfolio)          ai-stock-secretary (後端)
 
 ## 前端環境變數
 
-`.env`（擇一設定）：
+**本機** `.env`：
 
 ```env
-# 建議：完整 Public API base（與 web-widget 相同）
 VITE_API_BASE=http://localhost:3002/api/web
-
-# 正式
-# VITE_API_BASE=https://stock-api.jrjim.ai/api/web
 ```
 
-舊版相容（自動補 `/api/web`）：
+**Vercel 正式站（二擇一）：**
 
 ```env
-VITE_STOCK_API_URL=http://localhost:3002
+# 方式 A：前端直連（需 Stock API 開 CORS）
+VITE_API_BASE=https://stock-api.jrjim.ai/api/web
+
+# 方式 B：建議 — 不設 VITE_API_BASE，走 Hub 同源代理 /api/stock
+STOCK_API_URL=https://stock-api.jrjim.ai
 ```
+
+⚠️ **勿在 Vercel 設定 `localhost`** — 使用者瀏覽器無法連到你的電腦。
 
 ## 驗證 API 連線
 

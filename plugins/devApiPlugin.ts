@@ -131,6 +131,36 @@ export function devApiPlugin(): Plugin {
             return
           }
 
+          if (path.startsWith('/api/stock/') || path === '/api/stock') {
+            const sub = path.replace(/^\/api\/stock\/?/, '') || 'version'
+            const upstream = `http://localhost:3002/api/web/${sub}`
+            try {
+              const body =
+                method === 'POST' || method === 'PUT' ? await readBody(req) : undefined
+              const upstreamRes = await fetch(upstream, {
+                method,
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body:
+                  body && Object.keys(body).length
+                    ? JSON.stringify(body)
+                    : method === 'POST'
+                      ? '{}'
+                      : undefined,
+              })
+              const text = await upstreamRes.text()
+              res.statusCode = upstreamRes.status
+              res.setHeader('Content-Type', 'application/json; charset=utf-8')
+              res.end(text)
+            } catch (e) {
+              sendNodeJson(
+                res,
+                { message: '本機 Stock API 未啟動，請在 ai-stock-secretary 執行 pnpm dev:webhook' },
+                502,
+              )
+            }
+            return
+          }
+
           if (path === '/api/ops' && method === 'GET') {
             const auth = req.headers.authorization?.replace('Bearer ', '')
             const secret = process.env.ADMIN_API_SECRET
