@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 import AppButton from '@/components/ui/AppButton.vue'
+import LineJoinCta from '@/products/stock/components/LineJoinCta.vue'
+import { RouterLink } from 'vue-router'
 import { siteConfig } from '@/config/site'
 import { useWaitlistModalStore } from '@/stores/waitlistModal'
 import { trackEvent } from '@/composables/useAnalytics'
@@ -76,8 +78,21 @@ function openWaitlist() {
         </p>
       </ScrollReveal>
 
+      <ScrollReveal :delay="320">
+        <div class="mt-8 max-w-2xl">
+          <LineJoinCta />
+        </div>
+      </ScrollReveal>
+
       <ScrollReveal :delay="360">
         <div class="mt-10 flex flex-wrap gap-4">
+          <RouterLink
+            to="/app/stock"
+            class="inline-flex min-h-11 items-center justify-center rounded-full bg-emerald-600 px-8 py-3 text-base font-semibold text-white transition-all hover:bg-emerald-500 hover-glow"
+            @click="trackEvent('cta_stock_beta_hero', { product_id: 'stock' })"
+          >
+            AI 股票秘書 Beta · 立即體驗
+          </RouterLink>
           <button
             type="button"
             class="inline-flex items-center justify-center rounded-full bg-zinc-900 px-8 py-3 text-base font-medium text-white transition-all hover:bg-zinc-800 hover-glow dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"

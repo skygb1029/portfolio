@@ -88,6 +88,23 @@ export interface WebChatResponse {
   message: string
   reply: string
   handled: boolean
+  interactionId?: string
+}
+
+export type ChatFeedbackRating = 'helpful' | 'not_helpful'
+
+export interface WebFocusSymbol {
+  symbol: string
+  displayLabel: string
+  direction: string
+  upProbability: number
+  downProbability: number
+  summary: string | null
+}
+
+export interface WebFocusSymbolsResponse {
+  date: string
+  symbols: WebFocusSymbol[]
 }
 
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
@@ -114,20 +131,88 @@ export function fetchMorningReport(): Promise<WebMorningReport> {
   return fetchJson<WebMorningReport>('/morning')
 }
 
-export function fetchFactReadiness(): Promise<WebFactReadiness> {
-  return fetchJson<WebFactReadiness>('/fact-readiness')
+export function fetchFocusSymbols(): Promise<WebFocusSymbolsResponse> {
+  return fetchJson<WebFocusSymbolsResponse>('/focus-symbols')
 }
 
-export function fetchMorningValidation(): Promise<WebMorningValidation> {
-  return fetchJson<WebMorningValidation>('/morning-validation')
-}
-
-export function postChat(message: string): Promise<WebChatResponse> {
+export function postChat(message: string, sessionId?: string): Promise<WebChatResponse> {
   return fetchJson<WebChatResponse>('/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message }),
+    body: JSON.stringify({ message, sessionId }),
   })
+}
+
+export function postChatFeedback(input: {
+  question: string
+  answer: string
+  rating: ChatFeedbackRating
+}): Promise<{ ok: boolean; timestamp: string }> {
+  return fetchJson('/feedback', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ...input,
+      timestamp: new Date().toISOString(),
+    }),
+  })
+}
+
+export interface UsageStats {
+  generatedAt: string
+  totalQuestions: number
+  todayQuestions: number
+  last7DaysQuestions: number
+}
+
+export interface FeedbackSummary {
+  generatedAt: string
+  totalFeedback: number
+  positivePercent: number
+  negativePercent: number
+  recent: Array<{
+    timestamp: string
+    question: string
+    rating: ChatFeedbackRating
+  }>
+}
+
+export interface Phase8ProgressMetric {
+  current: number
+  target: number
+  percent: number
+}
+
+export interface Phase8Progress {
+  generatedAt: string
+  reportDate: string
+  questions: Phase8ProgressMetric
+  users: Phase8ProgressMetric
+  feedback: Phase8ProgressMetric
+  overallPercent: number
+  phase8BReady: boolean
+}
+
+export interface LineJoinInfo {
+  url: string | null
+  available: boolean
+  benefits: string[]
+}
+
+export function fetchUsageStats(): Promise<UsageStats> {
+  return fetchJson<UsageStats>('/analytics/usage')
+}
+
+export function fetchFeedbackSummary(): Promise<FeedbackSummary> {
+  return fetchJson<FeedbackSummary>('/analytics/feedback')
+}
+
+export function fetchPhase8Progress(): Promise<Phase8Progress> {
+  return fetchJson<Phase8Progress>('/analytics/progress')
+}
+
+export function fetchLineJoinInfo(): Promise<LineJoinInfo> {
+  return fetchJson<LineJoinInfo>('/line-join')
 }
 
 export function getStockApiBaseUrl(): string {

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import HeroSection from '@/components/sections/HeroSection.vue'
+import StockBetaSection from '@/components/sections/StockBetaSection.vue'
+import BetaProgressWidget from '@/components/sections/BetaProgressWidget.vue'
 import MetricsSection from '@/components/sections/MetricsSection.vue'
 import AiProductsSection from '@/components/sections/AiProductsSection.vue'
 import ProductQuickLinks from '@/components/sections/ProductQuickLinks.vue'
@@ -17,6 +19,8 @@ import ProjectDetailModal from '@/components/ui/ProjectDetailModal.vue'
 
 <template>
   <HeroSection />
+  <StockBetaSection />
+  <BetaProgressWidget />
   <MetricsSection />
   <AiProductsSection />
   <ProductQuickLinks />

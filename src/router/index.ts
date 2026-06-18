@@ -4,6 +4,7 @@ import { siteConfig } from '@/config/site'
 import { productLandings } from '@/data/productLandings'
 import { trackEvent } from '@/composables/useAnalytics'
 import { stockProductRoutes } from '@/products/stock/routes'
+import { parentingProductRoutes } from '@/products/parenting/routes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,7 @@ const router = createRouter({
       meta: { title: `${p.title} | ${siteConfig.brand}` },
     })),
     ...stockProductRoutes,
+    ...parentingProductRoutes,
     {
       path: '/demo',
       name: 'demo',

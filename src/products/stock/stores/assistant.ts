@@ -1,34 +1,36 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import {
-  fetchFactReadiness,
+  fetchFocusSymbols,
   fetchMorningReport,
-  fetchMorningValidation,
   postChat,
+  postChatFeedback,
+  type ChatFeedbackRating,
   type WebChatResponse,
-  type WebFactReadiness,
+  type WebFocusSymbol,
   type WebMorningReport,
-  type WebMorningValidation,
 } from '../services/stockApi'
+import { getStockSessionId } from '../utils/stockSession'
 
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
   content: string
+  question?: string
+  feedbackSent?: boolean
+  feedbackRating?: ChatFeedbackRating
 }
 
 export const useStockAssistantStore = defineStore('stockAssistant', () => {
   const morning = ref<WebMorningReport | null>(null)
-  const factReadiness = ref<WebFactReadiness | null>(null)
-  const validation = ref<WebMorningValidation | null>(null)
+  const focusSymbols = ref<WebFocusSymbol[]>([])
+  const focusDate = ref<string | null>(null)
 
   const morningLoading = ref(true)
-  const factLoading = ref(true)
-  const validationLoading = ref(true)
+  const focusLoading = ref(true)
 
   const morningError = ref<string | null>(null)
-  const factError = ref<string | null>(null)
-  const validationError = ref<string | null>(null)
+  const focusError = ref<string | null>(null)
 
   const messages = ref<ChatMessage[]>([])
   const chatLoading = ref(false)
@@ -36,16 +38,13 @@ export const useStockAssistantStore = defineStore('stockAssistant', () => {
 
   async function loadDashboard(): Promise<void> {
     morningLoading.value = true
-    factLoading.value = true
-    validationLoading.value = true
+    focusLoading.value = true
     morningError.value = null
-    factError.value = null
-    validationError.value = null
+    focusError.value = null
 
-    const [morningRes, factRes, validationRes] = await Promise.allSettled([
+    const [morningRes, focusRes] = await Promise.allSettled([
       fetchMorningReport(),
-      fetchFactReadiness(),
-      fetchMorningValidation(),
+      fetchFocusSymbols(),
     ])
 
     if (morningRes.status === 'fulfilled') {
@@ -55,24 +54,20 @@ export const useStockAssistantStore = defineStore('stockAssistant', () => {
     }
     morningLoading.value = false
 
-    if (factRes.status === 'fulfilled') {
-      factReadiness.value = factRes.value
+    if (focusRes.status === 'fulfilled') {
+      focusSymbols.value = focusRes.value.symbols
+      focusDate.value = focusRes.value.date
     } else {
-      factError.value = factRes.reason?.message ?? '載入失敗'
+      focusError.value = focusRes.reason?.message ?? '載入失敗'
     }
-    factLoading.value = false
-
-    if (validationRes.status === 'fulfilled') {
-      validation.value = validationRes.value
-    } else {
-      validationError.value = validationRes.reason?.message ?? '載入失敗'
-    }
-    validationLoading.value = false
+    focusLoading.value = false
   }
 
   async function sendMessage(text: string): Promise<WebChatResponse | null> {
     const trimmed = text.trim()
     if (!trimmed || chatLoading.value) return null
+
+    const sessionId = getStockSessionId()
 
     chatLoading.value = true
     chatError.value = null
@@ -83,12 +78,14 @@ export const useStockAssistantStore = defineStore('stockAssistant', () => {
     })
 
     try {
-      const result = await postChat(trimmed)
+      const result = await postChat(trimmed, sessionId)
       messages.value.push({
         id: `a-${Date.now()}`,
         role: 'assistant',
         content: result.reply,
+        question: trimmed,
       })
+
       return result
     } catch (err) {
       const msg = err instanceof Error ? err.message : '發送失敗'
@@ -97,6 +94,7 @@ export const useStockAssistantStore = defineStore('stockAssistant', () => {
         id: `e-${Date.now()}`,
         role: 'assistant',
         content: `抱歉，暫時無法回覆：${msg}`,
+        question: trimmed,
       })
       return null
     } finally {
@@ -104,20 +102,35 @@ export const useStockAssistantStore = defineStore('stockAssistant', () => {
     }
   }
 
+  async function sendFeedback(
+    messageId: string,
+    rating: ChatFeedbackRating,
+  ): Promise<void> {
+    const msg = messages.value.find((m) => m.id === messageId)
+    if (!msg || msg.role !== 'assistant' || !msg.question || msg.feedbackSent) return
+
+    await postChatFeedback({
+      question: msg.question,
+      answer: msg.content,
+      rating,
+    })
+    msg.feedbackSent = true
+    msg.feedbackRating = rating
+  }
+
   return {
     morning,
-    factReadiness,
-    validation,
+    focusSymbols,
+    focusDate,
     morningLoading,
-    factLoading,
-    validationLoading,
+    focusLoading,
     morningError,
-    factError,
-    validationError,
+    focusError,
     messages,
     chatLoading,
     chatError,
     loadDashboard,
     sendMessage,
+    sendFeedback,
   }
 })

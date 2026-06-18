@@ -17,7 +17,7 @@ function directionColor(direction: string): string {
 <template>
   <section class="rounded-2xl border border-slate-700/80 bg-slate-900/80 p-5 shadow-lg">
     <header class="mb-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-white">今日晨報</h2>
+      <h2 class="text-lg font-semibold text-white">今日預測</h2>
       <span v-if="data?.date" class="text-xs text-slate-400">{{ data.date }}</span>
     </header>
 

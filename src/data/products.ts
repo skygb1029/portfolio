@@ -64,6 +64,8 @@ export const productRegistry: ProductRegistryEntry[] = [
     status: 'beta',
     websiteUrl: 'https://parenting.jrjim.ai',
     apiUrl: 'https://parenting-api.jrjim.ai',
+    appBasePath: '/app/parenting',
+    mountMode: 'internal',
     icon: '👶',
     preview: {
       endpoint: '/demo/parenting',

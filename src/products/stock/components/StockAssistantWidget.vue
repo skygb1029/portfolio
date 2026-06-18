@@ -2,9 +2,8 @@
 import { onMounted } from 'vue'
 import { useStockAssistantStore } from '../stores/assistant'
 import ChatWidget from './ChatWidget.vue'
-import FactReadinessCard from './FactReadinessCard.vue'
+import FocusStocksCard from './FocusStocksCard.vue'
 import MorningReportCard from './MorningReportCard.vue'
-import MorningValidationCard from './MorningValidationCard.vue'
 
 const store = useStockAssistantStore()
 
@@ -14,26 +13,20 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-5">
-    <div class="grid gap-5 lg:grid-cols-2">
-      <MorningReportCard
-        :data="store.morning"
-        :loading="store.morningLoading"
-        :error="store.morningError"
-      />
-      <FactReadinessCard
-        :data="store.factReadiness"
-        :loading="store.factLoading"
-        :error="store.factError"
-      />
-    </div>
-
-    <MorningValidationCard
-      :data="store.validation"
-      :loading="store.validationLoading"
-      :error="store.validationError"
+  <div class="flex flex-col gap-5 pb-4">
+    <MorningReportCard
+      :data="store.morning"
+      :loading="store.morningLoading"
+      :error="store.morningError"
     />
 
-    <ChatWidget />
+    <FocusStocksCard
+      :symbols="store.focusSymbols"
+      :date="store.focusDate"
+      :loading="store.focusLoading"
+      :error="store.focusError"
+    />
+
+    <ChatWidget class="lg:sticky lg:bottom-4 lg:z-10" />
   </div>
 </template>

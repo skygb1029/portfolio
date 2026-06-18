@@ -7,6 +7,7 @@ import SocialProofBar from '@/components/product/SocialProofBar.vue'
 import ProductVideo from '@/components/product/ProductVideo.vue'
 import ProductFeedbackSection from '@/components/product/ProductFeedbackSection.vue'
 import ProductLandingCta from '@/components/product/ProductLandingCta.vue'
+import LineJoinCta from '@/products/stock/components/LineJoinCta.vue'
 import ProductPreviewPanel from '@/components/product/ProductPreviewPanel.vue'
 import AiFlowDiagram from '@/components/architecture/AiFlowDiagram.vue'
 import { getProductBySlug, hasApiPreview } from '@/data/products'
@@ -58,12 +59,45 @@ function joinWaitlist() {
         <p class="mt-4 max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
           {{ product.tagline }}
         </p>
+
+        <div
+          v-if="product.beta"
+          class="mt-6 rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-5"
+        >
+          <div class="flex flex-wrap gap-2">
+            <span
+              v-for="badge in product.beta.badges"
+              :key="badge"
+              class="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400"
+            >
+              {{ badge }}
+            </span>
+          </div>
+          <p class="mt-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            支援標的
+          </p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <span
+              v-for="symbol in product.beta.supportedSymbols"
+              :key="symbol"
+              class="rounded-lg bg-white/80 px-3 py-1.5 font-mono text-sm text-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-200"
+            >
+              {{ symbol }}
+            </span>
+          </div>
+        </div>
+
         <ProductLandingCta
           v-if="product"
           :product-id="product.id"
+          :show-waitlist="product.id !== 'stock'"
+          :show-demo="product.id !== 'stock'"
           @join-waitlist="joinWaitlist"
           @open-preview="previewOpen = true"
         />
+        <div v-if="product.id === 'stock'" class="mt-6 max-w-2xl">
+          <LineJoinCta />
+        </div>
         <ProductPreviewPanel
           v-if="product && registry && hasApiPreview(registry)"
           :product-id="product.id"
@@ -84,6 +118,30 @@ function joinWaitlist() {
             :features-total="product.featuresTotal"
             :eta="product.eta"
           />
+        </div>
+      </div>
+    </section>
+
+    <section
+      v-if="product.highlights?.length"
+      class="section-padding border-b border-zinc-200/60 bg-zinc-50/80 dark:border-zinc-800/60 dark:bg-zinc-900/20"
+    >
+      <div class="mx-auto max-w-6xl">
+        <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">產品功能</h2>
+        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <article
+            v-for="item in product.highlights"
+            :key="item.title"
+            class="glow-border rounded-2xl p-6"
+          >
+            <span class="text-2xl" aria-hidden="true">{{ item.icon }}</span>
+            <h3 class="mt-3 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+              {{ item.title }}
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
+              {{ item.description }}
+            </p>
+          </article>
         </div>
       </div>
     </section>
@@ -197,14 +255,15 @@ function joinWaitlist() {
         <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-50">搶先加入等待名單</h2>
         <p class="mt-3 text-zinc-600 dark:text-zinc-400">產品上線時優先通知，並取得早鳥優惠資格。</p>
         <div class="mt-8 flex justify-center">
-          <ProductLandingCta
-            v-if="product"
-            :product-id="product.id"
-            size="footer"
-            :show-demo="false"
-            @join-waitlist="joinWaitlist"
-            @open-preview="previewOpen = true"
-          />
+        <ProductLandingCta
+          v-if="product"
+          :product-id="product.id"
+          :show-waitlist="product.id !== 'stock'"
+          :show-demo="false"
+          size="footer"
+          @join-waitlist="joinWaitlist"
+          @open-preview="previewOpen = true"
+        />
         </div>
       </div>
     </section>

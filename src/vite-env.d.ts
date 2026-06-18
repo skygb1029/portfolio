@@ -10,6 +10,7 @@ interface ImportMetaEnv {
   readonly VITE_ADMIN_API_SECRET: string
   readonly VITE_API_BASE: string
   readonly VITE_STOCK_API_URL: string
+  readonly VITE_STOCK_LINE_URL: string
   readonly VITE_WAITLIST_SHEET_CSV_URL: string
 }
 

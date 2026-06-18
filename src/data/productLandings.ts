@@ -27,6 +27,13 @@ export interface ProductLanding {
   flowVariant?: 'stock' | 'parenting' | 'cs'
   videoSrc?: string
   githubProductId?: string
+  /** 產品特色（產品化介紹區塊） */
+  highlights?: { title: string; description: string; icon: string }[]
+  /** Beta 上線資訊 */
+  beta?: {
+    badges: string[]
+    supportedSymbols: string[]
+  }
 }
 
 export const productLandings: ProductLanding[] = [
@@ -34,10 +41,22 @@ export const productLandings: ProductLanding[] = [
     id: 'stock',
     slug: 'stock-secretary',
     title: 'AI 股票秘書',
-    tagline: '每日晨報 · ETF 追蹤 · 個股分析，透過 LINE 直達',
+    tagline: 'Beta 測試中 · 免費使用 · 無需登入',
     gradient: 'from-amber-500/25 via-orange-500/15 to-rose-500/10',
     emoji: '📈',
     lifecycleStatus: 'beta',
+    beta: {
+      badges: ['Beta 測試中', '免費使用', '無需登入'],
+      supportedSymbols: [
+        '0050',
+        '00919',
+        '00878',
+        '2330',
+        '2454',
+        '金融股',
+        'ETF',
+      ],
+    },
     waitlistCount: 128,
     featuresBuilt: 12,
     featuresTotal: 16,
@@ -48,9 +67,31 @@ export const productLandings: ProductLanding[] = [
       '盤中資訊分散，缺乏結構化晨報',
     ],
     solutions: [
-      'AI 自動整理台股、美股、ETF 新聞與事件',
-      '產生大盤分析、ETF 資金流與關注標的報告',
-      '每日定時推播至 LINE，節省篩選時間',
+      '每日市場預測與主線整理，一眼掌握今日方向',
+      '關注標的即時追蹤 0050、00919、00878、2330 等',
+      'AI 問答支援走勢、配息與大盤分析，無需安裝',
+    ],
+    highlights: [
+      {
+        icon: '✨',
+        title: '產品特色',
+        description: 'Fact-Based 市場情報，整合美股、台股與 ETF 驅動因子，介面簡潔、陌生使用者可直接上手。',
+      },
+      {
+        icon: '🌅',
+        title: '晨報',
+        description: '每日市場方向、上漲機率與主線 Top 3，等同 LINE 晨報核心內容的 Web 版。',
+      },
+      {
+        icon: '💬',
+        title: 'AI 問答',
+        description: '與 LINE Bot 相同引擎，支援個股走勢、配息與大盤分析，一鍵點選熱門問題。',
+      },
+      {
+        icon: '⭐',
+        title: '個人化關注',
+        description: '預設關注 0050、00919、00878、2330 等標的，顯示方向與機率摘要。',
+      },
     ],
     demo: {
       title: '晨報範例（模擬）',
