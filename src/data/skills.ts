@@ -25,6 +25,9 @@ export const skillGroups: SkillGroup[] = [
       'Naive UI',
       'Chart.js',
       'PIXI.js',
+      'Live2D',
+      'Pinia',
+      'Vite',
     ],
   },
   {
@@ -36,6 +39,8 @@ export const skillGroups: SkillGroup[] = [
       'Express',
       'PHP',
       'MySQL',
+      'PostgreSQL',
+      'Prisma',
       'SQLite',
       'REST API',
       'WebSocket',
@@ -45,7 +50,7 @@ export const skillGroups: SkillGroup[] = [
     id: 'devops',
     title: 'DevOps',
     icon: '◎',
-    skills: ['Git', 'GitHub', 'Jenkins', 'Docker', 'GCP', 'Vercel'],
+    skills: ['Git', 'GitHub', 'Jenkins', 'Docker', 'GCP', 'Railway', 'Vercel'],
   },
   {
     id: 'ai',
