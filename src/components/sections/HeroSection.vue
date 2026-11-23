@@ -8,6 +8,7 @@ import { useWaitlistModalStore } from '@/stores/waitlistModal'
 import { trackEvent } from '@/composables/useAnalytics'
 
 const waitlist = useWaitlistModalStore()
+const gitVersion = __GIT_VERSION__
 
 function openWaitlist() {
   trackEvent('cta_hero_waitlist')
@@ -65,6 +66,12 @@ function openWaitlist() {
             class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
           >
             {{ role }}
+          </li>
+          <li
+            v-if="gitVersion"
+            class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+          >
+            Git 版號 <code>{{ gitVersion }}</code>
           </li>
         </ul>
       </ScrollReveal>

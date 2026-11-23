@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+declare const __GIT_VERSION__: string
+
 interface ImportMetaEnv {
   readonly VITE_GA_MEASUREMENT_ID: string
   readonly VITE_CLARITY_PROJECT_ID: string
