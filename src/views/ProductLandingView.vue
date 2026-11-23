@@ -90,7 +90,7 @@ function joinWaitlist() {
         <ProductLandingCta
           v-if="product"
           :product-id="product.id"
-          :show-waitlist="product.id !== 'stock'"
+          :show-waitlist="product.id !== 'stock' && product.id !== 'life'"
           :show-demo="product.id !== 'stock'"
           @join-waitlist="joinWaitlist"
           @open-preview="previewOpen = true"
@@ -258,7 +258,7 @@ function joinWaitlist() {
         <ProductLandingCta
           v-if="product"
           :product-id="product.id"
-          :show-waitlist="product.id !== 'stock'"
+          :show-waitlist="product.id !== 'stock' && product.id !== 'life'"
           :show-demo="false"
           size="footer"
           @join-waitlist="joinWaitlist"

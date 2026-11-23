@@ -36,6 +36,14 @@ export interface ProductRegistryEntry {
 
 export const productRegistry: ProductRegistryEntry[] = [
   {
+    id: 'life',
+    slug: 'life-manager',
+    name: 'AI 生活管家',
+    description: '透過專用 LINE Bot 管理行事曆、任務與提醒。',
+    status: 'mvp',
+    icon: '📅',
+  },
+  {
     id: 'stock',
     slug: 'stock-secretary',
     name: 'AI 股票秘書',

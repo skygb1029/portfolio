@@ -38,6 +38,31 @@ export interface ProductLanding {
 
 export const productLandings: ProductLanding[] = [
   {
+    id: 'life',
+    slug: 'life-manager',
+    title: 'AI 生活管家',
+    tagline: '行事曆、任務與提醒 · LINE 私人使用',
+    gradient: 'from-teal-500/25 via-emerald-500/15 to-cyan-500/10',
+    emoji: '📅',
+    lifecycleStatus: 'mvp',
+    waitlistCount: 0,
+    featuresBuilt: 3,
+    featuresTotal: 3,
+    eta: 'LINE Bot 私人接入',
+    problems: ['行程、待辦與提醒分散在不同工具'],
+    solutions: ['在專用 LINE Bot 用中文建立行程或提醒', '在本機工作台查看行事曆、任務與專注紀錄'],
+    demo: {
+      title: '訊息範例',
+      sections: [{ title: '建立提醒', content: '明天下午三點提醒我開會' }],
+    },
+    screenshots: [],
+    business: {
+      audience: '已獲授權的生活管家 Bot 使用者',
+      pricing: '私人使用',
+      roadmap: ['驗證正式 LINE Webhook 與提醒推播'],
+    },
+  },
+  {
     id: 'stock',
     slug: 'stock-secretary',
     title: 'AI 股票秘書',

@@ -4,7 +4,7 @@ function buildUpstreamUrl(subPath: string): string {
   const host = (
     process.env.PARENTING_API_URL ??
     process.env.VITE_PARENTING_API_URL ??
-    'https://ai-parenting-assistant-production.up.railway.app'
+    'https://parenting-api-production.up.railway.app'
   ).replace(/\/$/, '')
   const base = host.endsWith('/api/web') ? host : `${host}/api/web`
   const path = subPath.startsWith('/') ? subPath : `/${subPath}`

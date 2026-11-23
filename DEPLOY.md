@@ -2,7 +2,7 @@
 
 ## 正式網址
 
-預設 Vercel 網址：`https://portfolio.vercel.app`
+正式 Vercel 網址為 [jrjim-portfolio.vercel.app](https://jrjim-portfolio.vercel.app/)，由 `jr-jim-projects` 管理。
 
 綁定自訂網域後，請同步更新：
 

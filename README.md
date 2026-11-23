@@ -29,7 +29,7 @@ pnpm preview
 
 ## 部署
 
-正式網址：`https://portfolio.vercel.app`（詳見 [DEPLOY.md](./DEPLOY.md)）
+正式入口為 [jrjim-portfolio.vercel.app](https://jrjim-portfolio.vercel.app/)，由 Vercel 的 `jr-jim-projects` 管理。部署方式見 [DEPLOY.md](./DEPLOY.md)。
 
 ```bash
 git push origin main   # 觸發 GitHub Actions + Vercel 自動部署
@@ -47,10 +47,23 @@ git push origin main   # 觸發 GitHub Actions + Vercel 自動部署
 | `/product/stock-secretary` | AI 股票秘書 Landing |
 | `/product/parenting-assistant` | AI 育兒助手 Landing |
 | `/product/sales-assistant` | AI 客服業務小能手 Landing |
+| `/product/life-manager` | AI 生活管家介紹、LINE 使用方式與訊息範例 |
 | `/app/stock` | AI 股票秘書完整 App（見 [docs/STOCK_INTEGRATION.md](./docs/STOCK_INTEGRATION.md)） |
+| `/app/parenting` | AI 育兒助手 App，對接 Railway 育兒 API |
 | `/demo` | Demo Center（接真實 API） |
 | `/admin/waitlist` | 等待名單 + 產品數據 Dashboard |
 | `/admin/ops` | SaaS 營運監控（健康度、版本、Supabase、GitHub） |
+
+### 前端與後端分工
+
+| 模組 | Vercel 入口 | 後端與驗證 |
+| --- | --- | --- |
+| 股票秘書 | `/app/stock` | Railway 股票 API，`GET /api/stock/version` |
+| 育兒助手 | `/app/parenting` | Railway 育兒 API，`GET /api/parenting/version` |
+| 生活管家 | `/product/life-manager` | Railway Gateway 轉發簽名事件給私人 Life API，使用獨立 SQLite Volume |
+| 客服業務 | `/product/sales-assistant` | 產品介紹與 Demo，客服後台由 Commerce 專案部署 |
+
+生活管家的 LINE 收訊設定與本機工作台說明由 [AI Platform](https://github.com/skygb1029/ai-platform) 管理。個人行程、任務及提醒從本機工作台或已授權的 LINE 私訊存取。Vercel 僅提供產品介紹。股票及育兒的代理可用 Vercel 伺服器端的 `STOCK_API_URL`、`PARENTING_API_URL` 指定 Railway 上游。
 
 ## Multi-Product Registry
 
