@@ -17,7 +17,9 @@ const props = withDefaults(
 const info = ref<LineJoinInfo | null>(null)
 const envUrl = import.meta.env.VITE_STOCK_LINE_URL?.trim()
 
-const joinUrl = computed(() => info.value?.url ?? envUrl ?? null)
+const joinUrl = computed(() =>
+  info.value?.url?.trim() || envUrl || 'https://line.me/R/ti/p/@072swhdz',
+)
 const benefits = computed(() => info.value?.benefits ?? [
   '無需登入',
   '免費使用',
@@ -79,7 +81,6 @@ function onJoinClick(): void {
       </div>
 
       <a
-        v-if="joinUrl"
         :href="joinUrl"
         target="_blank"
         rel="noopener noreferrer"
@@ -88,13 +89,6 @@ function onJoinClick(): void {
       >
         加入 LINE
       </a>
-      <p
-        v-else
-        class="text-xs"
-        :class="variant === 'dark' ? 'text-slate-400' : 'text-zinc-500'"
-      >
-        LINE 連結尚未設定（PUBLIC_LINE_JOIN_URL）
-      </p>
     </div>
   </div>
 </template>

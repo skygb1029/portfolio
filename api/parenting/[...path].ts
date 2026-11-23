@@ -21,7 +21,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   const raw = req.query.path
-  const segment = Array.isArray(raw) ? raw.join('/') : String(raw ?? 'version')
+  const pathname = new URL(req.url ?? '/', 'http://localhost').pathname
+  const pathSegment = pathname.startsWith('/api/parenting/') ? pathname.slice('/api/parenting/'.length) : ''
+  const segment = pathSegment || (Array.isArray(raw) ? raw.join('/') : String(raw ?? 'version'))
   const upstream = buildUpstreamUrl(`/${segment}`)
 
   try {

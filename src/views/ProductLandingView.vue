@@ -18,7 +18,8 @@ import { trackEvent } from '@/composables/useAnalytics'
 const route = useRoute()
 const waitlist = useWaitlistModalStore()
 
-const product = computed(() => getLandingBySlug(route.params.slug as string))
+const props = defineProps<{ slug: string }>()
+const product = computed(() => getLandingBySlug(props.slug))
 const registry = computed(() =>
   product.value ? getProductBySlug(product.value.slug) : undefined,
 )

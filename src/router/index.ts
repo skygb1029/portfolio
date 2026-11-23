@@ -19,6 +19,7 @@ const router = createRouter({
       path: `/product/${p.slug}`,
       name: `product-${p.slug}`,
       component: () => import('@/views/ProductLandingView.vue'),
+      props: { slug: p.slug },
       meta: { title: `${p.title} | ${siteConfig.brand}` },
     })),
     ...stockProductRoutes,
