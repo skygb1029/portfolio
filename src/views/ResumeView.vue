@@ -10,7 +10,7 @@ const featuredProject = enterpriseProjects.find((project) => project.id === 'ipo
 </script>
 
 <template>
-  <main class="section-padding mx-auto max-w-6xl pb-24 pt-28">
+  <div class="section-padding mx-auto max-w-6xl pb-24 pt-28">
     <header class="rounded-3xl border border-zinc-200 bg-gradient-to-br from-indigo-50 to-white p-7 sm:p-12 dark:border-zinc-800 dark:from-indigo-950/60 dark:to-zinc-900">
       <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{{ siteConfig.name }}</h1>
       <p class="mt-3 text-lg font-medium text-indigo-700 dark:text-indigo-300">{{ siteConfig.title }}</p>
@@ -61,5 +61,5 @@ const featuredProject = enterpriseProjects.find((project) => project.id === 'ipo
         </div>
       </section>
     </div>
-  </main>
+  </div>
 </template>
