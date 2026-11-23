@@ -15,6 +15,12 @@ const router = createRouter({
       component: HomeView,
       meta: { title: siteConfig.brand },
     },
+    {
+      path: '/resume',
+      name: 'resume',
+      component: () => import('@/views/ResumeView.vue'),
+      meta: { title: `履歷 | ${siteConfig.name}` },
+    },
     ...productLandings.map((p) => ({
       path: `/product/${p.slug}`,
       name: `product-${p.slug}`,
