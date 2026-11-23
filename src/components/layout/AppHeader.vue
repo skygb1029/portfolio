@@ -17,7 +17,7 @@ const navItems = computed(() =>
         { label: 'AI 產品', to: '/#ai-products', external: false },
         { label: 'Demo', to: '/demo', external: true },
         { label: '關於', to: '/#about', external: false },
-        { label: '履歷', to: '/resume', external: true },
+        { label: '職涯旅程', to: '/resume', external: true },
         { label: '聯絡', to: '/#contact', external: false },
       ]
     : [
@@ -25,7 +25,7 @@ const navItems = computed(() =>
         { label: 'AI 產品', to: '/#ai-products', external: true },
         { label: 'Demo', to: '/demo', external: true },
         { label: '企業專案', to: '/#enterprise', external: true },
-        { label: '履歷', to: '/resume', external: true },
+        { label: '職涯旅程', to: '/resume', external: true },
       ],
 )
 
