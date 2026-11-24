@@ -4,5 +4,13 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
+  "headers": [{
+    "source": "/project-demos/(.*)",
+    "headers": [
+      { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; worker-src 'self' blob:; connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'" },
+      { "key": "Referrer-Policy", "value": "no-referrer" },
+      { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+    ]
+  }],
   "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
 }

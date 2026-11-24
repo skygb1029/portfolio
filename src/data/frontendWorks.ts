@@ -61,4 +61,15 @@ export const frontendWorks = [
   },
 ] as const
 export type WorkSlug = (typeof frontendWorks)[number]['slug']
-export const workPaths = (slug: WorkSlug) => ({ case: '/works/' + slug, demo: '/works/' + slug + '/demo' })
+const originalEntry: Record<WorkSlug, string> = {
+  iboxpost: '#/home',
+  'maia-inference': '?demo=1#/home',
+  'gene-rule': '?demo=1#/search',
+  'patient-journey': '?demo=1#/home/index?CHTNO=DEMO-001',
+  hms: '#/home',
+}
+export const workPaths = (slug: WorkSlug) => ({
+  case: '/works/' + slug,
+  demo: '/works/' + slug + '/demo',
+  fullDemo: '/project-demos/' + slug + '/index.html' + originalEntry[slug],
+})

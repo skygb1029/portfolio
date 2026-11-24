@@ -1,0 +1,1 @@
+import{_,c as s,a as e,w as t,r as o,o as r}from"./index-BRj8ncHr.js";const l={},i={class:"login"};function d(p,u){const n=o("router-view"),c=o("n-layout-header"),a=o("n-space");return r(),s("div",i,[e(a,{vertical:""},{default:t(()=>[e(c,null,{default:t(()=>[e(n)]),_:1})]),_:1})])}const m=_(l,[["render",d]]);export{m as default};

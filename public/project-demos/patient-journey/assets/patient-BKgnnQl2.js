@@ -1,0 +1,1 @@
+import{s as e}from"./request-DhxssUZQ.js";const i=()=>e({url:"/api/patient",method:"GET"}),n=t=>e({url:`/api/patient/${t}`,method:"GET"}),p=(t,a)=>e({url:`/api/patient/${t}`,method:"PATCH",data:a});export{n as a,i as g,p};
