@@ -96,7 +96,7 @@ onBeforeUnmount(() => {
 
     <section v-if="!connected" class="ga-panel ga-connect" aria-labelledby="ga-connect">
       <h2 id="ga-connect">連線 Google Analytics</h2>
-      <p v-if="analyticsClientId">使用有此 GA4 資源讀取權限的 Google 帳戶登入。</p>
+      <p v-if="analyticsClientId">使用建立這個報表連線的 Google 帳戶登入。</p>
       <p v-else>站內報表等待 Google OAuth 設定。你可以先從上方開啟 Google Analytics 查看數據。</p>
       <p v-if="analyticsClientId">連線後只會讀取 Portfolio 串流的彙總報表。<RouterLink class="ga-back" to="/privacy">GA4 報表隱私權政策</RouterLink></p>
       <button v-if="analyticsClientId" class="ga-button ga-primary" type="button" :disabled="!client" @click="connect">使用 Google 帳戶連線</button>
