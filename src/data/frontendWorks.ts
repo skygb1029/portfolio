@@ -1,5 +1,17 @@
 export const frontendWorks = [
   {
+    slug: 'demi-studio',
+    title: 'Demi Studio',
+    area: '攝影品牌網站與內容管理',
+    summary: '呈現婚紗婚禮與商業攝影作品，並提供工作室整理圖片、方案與常見問題的後台。',
+    contribution: [
+      '整理品牌首頁、攝影作品案例與預約入口。',
+      '整合婚紗婚禮與商業攝影的常見問題。',
+      '開發圖片、文字、FAQ 與方案的內容編輯、預覽和發布介面。',
+    ],
+    walkthrough: '開啟品牌網站，瀏覽婚紗婚禮、商業攝影案例與常見問題。',
+  },
+  {
     slug: 'iboxpost',
     title: 'IBoxPost',
     area: '物流與會員服務',
@@ -58,18 +70,6 @@ export const frontendWorks = [
       '整理中英文介面、側欄圖示和表單操作狀態。',
     ],
     walkthrough: '開啟排班管理並取消勾選 A 區，確認床位列與合計同步更新，再切換英文介面。',
-  },
-  {
-    slug: 'demi-studio',
-    title: 'Demi Studio',
-    area: '攝影品牌網站與內容管理',
-    summary: '呈現婚紗婚禮與商業攝影作品，並提供工作室整理圖片、方案與常見問題的後台。',
-    contribution: [
-      '整理品牌首頁、攝影作品案例與預約入口。',
-      '整合婚紗婚禮與商業攝影的常見問題。',
-      '開發圖片、文字、FAQ 與方案的內容編輯、預覽和發布介面。',
-    ],
-    walkthrough: '開啟品牌網站，瀏覽婚紗婚禮、商業攝影案例與常見問題。',
   },
 ] as const
 export type WorkSlug = (typeof frontendWorks)[number]['slug']

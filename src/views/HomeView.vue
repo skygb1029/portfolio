@@ -5,9 +5,8 @@ import { siteConfig } from '@/config/site'
 
 const gitVersion = __GIT_VERSION__
 
-const order: WorkSlug[] = ['patient-journey', 'hms', 'iboxpost', 'maia-inference', 'gene-rule', 'demi-studio']
-const works = order.map(slug => frontendWorks.find(work => work.slug === slug)!)
-const spotlight = works[0]!
+const featuredWorks = frontendWorks.slice(0, 2)
+const otherWorks = frontendWorks.slice(2)
 const details: Record<WorkSlug, string> = {
   'patient-journey': '把治療時間軸、檢驗與影像放進同一個病患工作台。四格影像視窗可獨立切換，便於並排查看。',
   hms: '切換病區與班次，床位表與排班合計同步更新。',
@@ -70,29 +69,28 @@ const details: Record<WorkSlug, string> = {
     </header>
 
     <div class="work-grid">
-      <article v-for="work in works.slice(1, 3)" :key="work.slug" class="work-card" :class="'card-' + work.slug">
-        <RouterLink :to="workPaths(work.slug).case" class="card-media">
+      <article v-for="work in featuredWorks" :key="work.slug" class="work-card" :class="'card-' + work.slug">
+        <div class="card-media">
           <img :src="'/case-previews/' + work.slug + '.jpg'" :alt="work.title + '展示畫面'" width="1440" height="810" loading="lazy">
-        </RouterLink>
+        </div>
         <div class="card-body">
           <p class="work-area">{{ work.area }}</p>
-          <h3><RouterLink :to="workPaths(work.slug).case">{{ work.title }}</RouterLink></h3>
+          <h3>{{ work.title }}</h3>
           <p class="work-description">{{ details[work.slug] }}</p>
           <div class="card-links">
-            <RouterLink :to="workPaths(work.slug).case" class="text-link">查看案例 <span aria-hidden="true">↗</span></RouterLink>
-            <a :href="workPaths(work.slug).fullDemo" class="quiet-link">操作 Demo <span aria-hidden="true">→</span></a>
+            <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="text-link">查看專案 <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </article>
     </div>
 
     <ul class="work-index">
-      <li v-for="work in [spotlight, ...works.slice(3)]" :key="work.slug">
-        <RouterLink :to="workPaths(work.slug).case" class="index-row">
+      <li v-for="work in otherWorks" :key="work.slug">
+        <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="index-row">
           <span class="index-title">{{ work.title }}</span>
           <span class="index-description">{{ details[work.slug] }}</span>
           <span class="index-arrow" aria-hidden="true">↗</span>
-        </RouterLink>
+        </a>
       </li>
     </ul>
   </section>
@@ -147,7 +145,7 @@ const details: Record<WorkSlug, string> = {
 .hero-button { display: inline-flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .86rem 1.25rem; border-radius: 99rem; background: #e6c776; color: #1b1710; font-weight: 800; transition: background .2s, transform .2s; }
 .hero-button:hover { background: #f4db9a; transform: translateY(-2px); }
 .hero-contact { color: #fff; font-weight: 650; padding-block: .8rem; }
-.hero-contact:hover, .quiet-link:hover { text-decoration: underline; text-underline-offset: .27em; }
+.hero-contact:hover { text-decoration: underline; text-underline-offset: .27em; }
 .hero-orbit, .profile-monogram {
   background-image: radial-gradient(circle at 15% 27%, #d4af37 0 2px, transparent 3px), radial-gradient(circle at 78% 19%, #d4af37 0 2px, transparent 3px), radial-gradient(circle at 83% 70%, #d4af37 0 2px, transparent 3px), repeating-linear-gradient(26deg, transparent 0 62px, #d4af3726 63px, transparent 64px), repeating-linear-gradient(115deg, transparent 0 77px, #d4af3729 78px, transparent 79px);
 }
@@ -179,14 +177,13 @@ const details: Record<WorkSlug, string> = {
 .work-card { min-width: 0; }
 .card-media { display: block; overflow: hidden; padding: clamp(.8rem, 2.1vw, 1.85rem); background: #e8e6f2; border-radius: 1.35rem; border: 1px solid #4a39682b; }
 .card-iboxpost .card-media { background: #eeeaf6; }
-:global(.dark .card-hms .card-media) { background: #252334; }
+:global(.dark .card-demi-studio .card-media) { background: #252334; }
 :global(.dark .card-iboxpost .card-media) { background: #302741; }
 .card-media img { border-radius: .35rem; box-shadow: 0 10px 23px #1c213335; transition: transform .25s; }
-.card-media:hover img { transform: scale(1.025); }
+.work-card:focus-within .card-media img { transform: scale(1.025); }
 .card-body { padding-block: 1rem 1.5rem; }
 .work-area { color: var(--home-muted); font-size: .82rem; font-weight: 650; }
 .work-card h3 { margin-top: .3rem; font-size: clamp(1.4rem, 2.2vw, 2rem); font-weight: 800; }
-.work-card h3 a:hover { color: var(--home-link); }
 .work-description { color: var(--home-muted); line-height: 1.65; margin-block: .4rem .8rem; }
 .card-links { font-size: .9rem; }
 .work-index { border-top: 1px solid var(--home-line); }
