@@ -5,6 +5,7 @@ export interface BlogPost {
   category: string
   sections: { heading: string; body: string }[]
   related?: { to: string; label: string }
+  relatedNotes?: string[]
   sources?: { label: string; url: string }[]
 }
 
@@ -544,7 +545,59 @@ export const blogPosts: BlogPost[] = [
       to: "/product/sales-assistant",
       label: "查看 AI 客服業務小能手"
     }
-  }
+  },
+  {
+    id: "live2d-websocket",
+    category: "專案心得",
+    title: "Live2D × WebSocket 實作筆記：AI 即時語音、嘴型同步與音訊緩衝",
+    excerpt: "從語音收音截斷的實際問題出發，拆開傳輸、播放與 Live2D 動畫，附事件分工和驗收步驟。",
+    sections: [
+      {
+        heading: "專案實際負責的範圍",
+        body: "在沐恩生醫光電，我負責 AI 即時語音互動介面的前端實作，使用 WebSocket 串接語音與後端情緒分析資料，將結果轉成 Live2D 角色的表情、動作及嘴型。開發中遇到部分收音被截斷的問題，我與後端工程師一起檢查收音起訖與傳輸內容，調整前端音訊緩衝，並以不同語速和停頓重測。同一階段也參與醫療影像推論結果、病患資訊與基因資料視覺化。這幾個介面都需要讓使用者辨識資料來源與目前狀態，語音互動另外需要處理事件順序與播放時間。"
+      },
+      {
+        heading: "WebSocket 事件怎麼分工",
+        body: "以一套可重現的驗收規格為例，可以為每輪對話定義會話識別、輪次識別、事件類型與片段序號。開始收音、收到音訊片段、收到情緒更新、完成語音及錯誤都各自定義處理方式。音訊交給緩衝與播放，情緒資料交給角色控制層。收到下一輪的開始事件時，清理上一輪的播放狀態，並藉由輪次識別忽略已結束輪次的遲到回覆。這是本文的介面設計示意，欄位名稱和資料格式應依實際與後端約定調整。"
+      },
+      {
+        heading: "音訊緩衝要處理收音和播放兩個時序",
+        body: "遇到句尾被吃掉時，先核對停止收音之後是否還有最後一段資料需要送出，再比對後端收到的最後序號及音訊長度。若後端已完整收到，要轉向檢查回傳音訊的片段、解碼與播放。播放端可以先累積一小段可播放的資料，再按照播放器的時間軸接續排程，避免網路到達時間直接變成播放速度。緩衝大小應依實測在初始延遲與播放中斷之間調整。取消、斷線及換輪時要清掉舊佇列與訂閱，確保角色不會在新一輪突然播放舊語音。"
+      },
+      {
+        heading: "嘴型跟著播放，表情跟著情緒",
+        body: "音訊已到達瀏覽器不代表使用者已經聽到。嘴型應與本機實際播放的進度或音量連動，播放暫停、結束或取消時回到閉嘴狀態。若先用音量驅動嘴部開合，可依模型設定找到 lip-sync 參數，將音量映射到模型允許範圍，再對數值做適度平滑，避免無聲時跳動。情緒資料則走另一條控制路徑，分別影響眉毛、眼睛或表情；缺少資料時維持中性。也要測試角色原有的待機或表情動畫是否會蓋掉嘴型參數，以確定同一幀的更新順序正確。"
+      },
+      {
+        heading: "用可重現的步驟找出落差",
+        body: "固定測試句，依序錄製短句、快速長句、停頓後繼續說及尾音很輕的句子。記錄收音開始、最後一段送出、後端接收完成、第一段回覆抵達、播放開始和結束的時間點。接著加入語音先到、情緒晚到、播放器尚未解鎖、重連後立即開始新一輪等情境。驗收標準是句尾完整、嘴型不提早動、暫停後能回穩，且過期回覆不影響當前角色。跨團隊除錯可用輪次和時間點對照事件，避免把原始語音或個人資料放進一般診斷紀錄。"
+      },
+      {
+        heading: "把同樣的資料邊界帶回其他醫療介面",
+        body: "在 MAIA Inference，檔案選取、影像預覽和結果呈現各有自己的生命週期。Patient Journey 的時間軸、檢驗與四格影像需要保留同一病例的瀏覽脈絡，而 Gene Rule 的查詢與規則頁則需要讓條件、對象和規則版號可以對照。這三個案例和語音頁有共同的驗收思路：快速切換輸入或對象，確認畫面不會沿用上一輪狀態，並用可追查的識別資訊定位問題。各案例的專案筆記在下方可分別查看。"
+      }
+    ],
+    related: {
+      to: "/resume#resume-projects",
+      label: "查看履歷中的 AI 醫療語音互動系統"
+    },
+    relatedNotes: [
+      "medical-voice",
+      "maia-inference",
+      "patient-journey",
+      "gene-rule"
+    ],
+    sources: [
+      {
+        label: "Live2D Cubism SDK：嘴型同步參數",
+        url: "https://docs.live2d.com/en/cubism-sdk-manual/lipsync/"
+      },
+      {
+        label: "Live2D Cubism SDK for Web：以音量驅動嘴型",
+        url: "https://docs.live2d.com/en/cubism-sdk-tutorials/native-lipsync-from-wav-web/"
+      }
+    ]
+  },
 ]
 
 export function findRelatedArticle(path: string) {

@@ -21,7 +21,7 @@ const router = createRouter({
       path: '/articles/:id?',
       component: () => import('@/views/ArticlesView.vue'),
       props: true,
-      meta: { title: `技術文章 | ${siteConfig.name}` },
+      meta: { title: `相關筆記 | ${siteConfig.name}` },
     },
     {
       path: '/products',

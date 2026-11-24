@@ -75,7 +75,15 @@ const skillTitles: Record<string, string> = { frontend: '前端開發', backend:
 .timeline > li:nth-child(even)::before { transform: translateX(-100%) rotate(180deg); }
 .timeline > li:last-child::before { display: none; }
 .timeline > li::after { content: ''; position: absolute; z-index: 1; top: 1.65rem; left: 50%; width: .75rem; height: .75rem; transform: translate(-50%, -50%); border: 2px solid var(--track); border-radius: 50%; background: var(--career-card); }
-.timeline > li:first-child::after { background: var(--track); }
+.timeline > li:has(.timeline-card:hover)::after,
+.timeline:not(:has(.timeline-card:hover)) > li:has(.timeline-card :focus-visible)::after,
+.timeline:not(:has(.timeline-card:hover, .timeline-card :focus-visible)) > li:first-child::after { background: var(--track); }
+.timeline-card:hover, .timeline-card:focus-within { border-color: var(--track); box-shadow: 0 10px 30px #997a382e; }
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-card { transition: background-color .2s, border-color .2s, box-shadow .2s, transform .2s; }
+  .timeline > li::after { transition: background-color .18s; }
+  .timeline-card:hover, .timeline-card:focus-within { transform: translateY(-3px); }
+}
 .timeline-period { color: var(--accent); font-size: 1rem; font-weight: 750; font-variant-numeric: tabular-nums; }
 .timeline-card h3 { margin-top: .35rem; }
 .timeline h3, .skill-card h3 { font-size: 1.2rem; font-weight: 800; }

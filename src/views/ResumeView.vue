@@ -75,6 +75,7 @@ const projects = [
                 </ul>
               </div>
               <RouterLink v-if="entry.id === 'moonen'" :to="{ path: '/resume', hash: '#resume-projects' }" class="mt-3 inline-block font-semibold text-indigo-700 underline dark:text-indigo-300">查看 i郵箱與醫療語音專案</RouterLink>
+              <RouterLink v-if="entry.id === 'moonen'" to="/articles/live2d-websocket" class="mt-3 block font-semibold text-indigo-700 underline dark:text-indigo-300">閱讀 Live2D 與 WebSocket 實作筆記</RouterLink>
             </li>
           </ol>
         </section>

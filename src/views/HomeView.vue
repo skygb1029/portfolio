@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { frontendWorks, workPaths, type WorkSlug } from '@/data/frontendWorks'
 import HomeProfileSections from '@/components/sections/HomeProfileSections.vue'
+import ProfileSnow from '@/components/sections/ProfileSnow.vue'
 import { siteConfig } from '@/config/site'
 import { blogPosts } from '@/data/blog'
 
 const gitVersion = __GIT_VERSION__
+const heroHovered = ref(false)
 
 const featuredWorks = frontendWorks.slice(0, 2)
 const otherWorks = frontendWorks.slice(2)
@@ -24,6 +27,7 @@ const details: Record<WorkSlug, string> = {
     <div aria-hidden="true" class="pointer-events-none absolute -top-32 left-1/4 h-[500px] w-[500px] rounded-full bg-indigo-500/20 blur-[120px] animate-float"></div>
     <div aria-hidden="true" class="pointer-events-none absolute right-0 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-500/15 blur-[100px] animate-float-delayed"></div>
     <div aria-hidden="true" class="pointer-events-none absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-500/10 blur-[80px] animate-pulse-glow"></div>
+    <ProfileSnow :paused="heroHovered" />
     <div class="home-frame masthead-grid">
       <div class="masthead-copy">
         <h1>JR JIM <span>許智鈞</span></h1>
@@ -37,7 +41,10 @@ const details: Record<WorkSlug, string> = {
         </div>
       </div>
 
-      <div class="hero-orbit" aria-hidden="true"><span>JR.</span></div>
+      <div class="hero-orbit" aria-hidden="true">
+        <span class="hero-monogram"
+          @pointerenter="heroHovered = true" @pointerleave="heroHovered = false" @pointercancel="heroHovered = false">JR.</span>
+      </div>
     </div>
   </section>
 
@@ -115,8 +122,8 @@ const details: Record<WorkSlug, string> = {
   </section>
   <section id="blog" class="home-frame work-section">
     <header class="section-header">
-      <h2>技術文章</h2>
-      <RouterLink to="/articles" class="text-link">全部文章 <span aria-hidden="true">↗</span></RouterLink>
+      <h2>相關筆記</h2>
+      <RouterLink to="/articles" class="text-link">全部筆記 <span aria-hidden="true">↗</span></RouterLink>
     </header>
     <ul class="work-index">
       <li v-for="post in blogPosts.slice(0, 4)" :key="post.id">
@@ -168,11 +175,25 @@ const details: Record<WorkSlug, string> = {
   background-image: radial-gradient(circle at 15% 27%, #d4af37 0 2px, transparent 3px), radial-gradient(circle at 78% 19%, #d4af37 0 2px, transparent 3px), radial-gradient(circle at 83% 70%, #d4af37 0 2px, transparent 3px), repeating-linear-gradient(26deg, transparent 0 62px, #d4af3726 63px, transparent 64px), repeating-linear-gradient(115deg, transparent 0 77px, #d4af3729 78px, transparent 79px);
 }
 .hero-orbit { position: relative; display: grid; place-items: center; width: min(100%, 29rem); aspect-ratio: 1.5; justify-self: center; mask-image: radial-gradient(ellipse, #000 40%, #0008 65%, transparent 78%); }
-.hero-orbit::after { content: ''; position: absolute; inset: 0 25%; border-right: 1px solid #e3bd63; border-radius: 50%; transform: rotate(22deg); }
-.hero-orbit span, .profile-monogram { color: #e6c776; font-family: Georgia, serif; font-weight: 700; letter-spacing: -.1em; }
-.hero-orbit span { font-size: clamp(5rem, 13vw, 12rem); }
+.hero-orbit::after { content: ''; position: absolute; inset: 0 25%; border-right: 1px solid #e3bd63; border-radius: 50%; transform: rotate(22deg); pointer-events: none; }
+.hero-monogram, .profile-monogram { color: #e6c776; font-family: Georgia, serif; font-weight: 700; letter-spacing: -.1em; }
+.hero-monogram { display: block; font-size: clamp(5rem, 13vw, 12rem); line-height: 1; padding-right: .1em; }
+.profile-monogram { display: grid; place-items: center; border-right: 1px solid #d4af3770; font-size: clamp(2.9rem, 8vw, 6rem); padding-right: .12em; }
+@media (prefers-reduced-motion: no-preference) {
+  .hero-monogram {
+    background: linear-gradient(112deg, #e6c776 36%, #fff9df 48%, #fff 51%, #e6c776 64%);
+    background-size: 300% 100%;
+    background-clip: text;
+    color: transparent;
+    animation: monogram-flash 3s ease-out infinite;
+  }
+  @keyframes monogram-flash {
+    0%, 73.333% { background-position: 100% 0; filter: drop-shadow(0 0 0 transparent); }
+    85% { filter: drop-shadow(0 0 14px #fff0ab80); }
+    to { background-position: 0 0; filter: drop-shadow(0 0 0 transparent); }
+  }
+}
 .profile-board { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); max-width: 39rem; margin: 2rem auto 0; overflow: hidden; border-radius: 1.45rem; background: #0d1117; color: #f7f7f5; border: 1px solid #d4af3759; box-shadow: 0 14px 35px #0d111730; }
-.profile-monogram { display: grid; place-content: center; border-right: 1px solid #d4af3770; font-size: clamp(2.9rem, 8vw, 6rem); padding-right: .12em; }
 .profile-board-copy { padding: clamp(1rem, 2.5vw, 2rem); }
 .profile-board h2 { font-size: clamp(1.35rem, 3vw, 2.5rem); font-weight: 800; }
 .profile-board h2 span { display: block; color: #e6c776; font-size: .82rem; }

@@ -5,7 +5,7 @@ import ThemeToggle from '@/components/layout/ThemeToggle.vue'
 const route = useRoute()
 const open = ref(false)
 const toggle = ref<HTMLButtonElement>()
-const items = [['作品案例','/works'], ['AI 產品','/products'], ['關於與履歷','/resume'], ['聯絡合作','/contact']] as const
+const items = [['作品案例','/works'], ['AI 產品','/products'], ['相關筆記','/articles'], ['關於與履歷','/resume'], ['聯絡合作','/contact']] as const
 function active(path: string) {
   return route.path === path || route.path.startsWith(path + '/') ||
     (path === '/products' && (route.path.startsWith('/product/') || route.path === '/demo'))
