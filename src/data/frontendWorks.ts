@@ -36,6 +36,18 @@ export const frontendWorks = [
     walkthrough: '用手機或桌機瀏覽商品，選擇兩件燕麥條紋靠枕，在優惠活動套用 WELCOME10，完成展示付款後查看訂單。',
   },
   {
+    slug: 'little-days',
+    title: '小小日子・拼貼工作室',
+    area: '照片編輯與成長紀念',
+    summary: '把寶寶第一年的照片放進 12 個月份數字，製作可下載的成長紀念卡。',
+    contribution: [
+      '以 Canvas 實作數字遮罩、照片圖層、拖曳和縮放。',
+      '支援自訂文字、卡片配色、手機觸控和白天／黑夜介面。',
+      '以 IndexedDB 保存月份草稿，並提供 PNG 匯出。',
+    ],
+    walkthrough: '選擇月份並上傳照片，拖曳虛線框調整構圖，加入文字後下載 PNG。',
+  },
+  {
     slug: 'night-parcel',
     title: '夜航郵差 Night Parcel',
     area: '瀏覽器街機與跨裝置互動',
@@ -101,6 +113,7 @@ const externalDemos = {
   'demi-studio': 'https://demi-studio.vercel.app/',
   dayform: 'https://dayform-production.up.railway.app/',
   'night-parcel': 'https://night-parcel-flight.consideratebook2.chatgpt.site/',
+  'little-days': 'https://little-days-monthbook.consideratebook2.chatgpt.site/studio.html',
 } as const
 
 type InlineWorkSlug = Exclude<WorkSlug, keyof typeof externalDemos>

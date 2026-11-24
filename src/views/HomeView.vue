@@ -21,6 +21,7 @@ const details: Record<WorkSlug, string> = {
   'demi-studio': '攝影品牌網站、作品集與內容管理。',
   dayform: '居家選物電商、優惠活動與展示結帳。',
   'night-parcel': '單鍵飛行、星郵收集與逐步加快的夜港航線。',
+  'little-days': '用月份數字拼貼照片，製作寶寶第一年的紀念卡。',
 }
 </script>
 
