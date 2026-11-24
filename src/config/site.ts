@@ -20,7 +20,7 @@ export const siteConfig = {
     entryProduct: import.meta.env.VITE_WAITLIST_ENTRY_PRODUCT ?? '',
   },
   analytics: {
-    gaId: import.meta.env.VITE_GA_MEASUREMENT_ID ?? '',
+    gaId: import.meta.env.VITE_GA_MEASUREMENT_ID ?? 'G-MMJ9YTJN9S',
     clarityId: import.meta.env.VITE_CLARITY_PROJECT_ID ?? '',
   },
 } as const
