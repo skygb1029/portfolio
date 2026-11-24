@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { trackEvent } from '@/composables/useAnalytics'
 import { frontendWorks, workPaths, type WorkSlug } from '@/data/frontendWorks'
 import HomeProfileSections from '@/components/sections/HomeProfileSections.vue'
 import ProfileSnow from '@/components/sections/ProfileSnow.vue'
@@ -85,7 +86,7 @@ const details: Record<WorkSlug, string> = {
           <h3>{{ work.title }}</h3>
           <p class="work-description">{{ details[work.slug] }}</p>
           <div class="card-links">
-            <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="text-link">查看專案 <span aria-hidden="true">↗</span></a>
+            <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="text-link" @click="trackEvent('project_open', { project_slug: work.slug })">查看專案 <span aria-hidden="true">↗</span></a>
           </div>
         </div>
       </article>
@@ -93,7 +94,7 @@ const details: Record<WorkSlug, string> = {
 
     <ul class="work-index">
       <li v-for="work in otherWorks" :key="work.slug">
-        <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="index-row">
+        <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="index-row" @click="trackEvent('project_open', { project_slug: work.slug })">
           <span class="index-title">{{ work.title }}</span>
           <span class="index-description">{{ details[work.slug] }}</span>
           <span class="index-arrow" aria-hidden="true">↗</span>

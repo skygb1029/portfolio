@@ -1,9 +1,11 @@
 import { fileURLToPath, URL } from 'node:url'
 import { execFileSync } from 'node:child_process'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import { devApiPlugin } from './plugins/devApiPlugin'
+import { seoPages } from './plugins/seoPages'
+import { portfolioOrigin, publicPages } from './src/data/seoPages'
 
 function resolveGitVersion(): string {
   const deployedSha = process.env.VERCEL_GIT_COMMIT_SHA?.trim()
@@ -20,12 +22,12 @@ function resolveGitVersion(): string {
   }
 }
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   define: { __GIT_VERSION__: JSON.stringify(resolveGitVersion()) },
-  plugins: [vue(), tailwindcss(), devApiPlugin()],
+  plugins: [vue(), tailwindcss(), devApiPlugin(), seoPages(portfolioOrigin, publicPages, loadEnv(mode, process.cwd()).VITE_GOOGLE_SITE_VERIFICATION)],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-})
+}))

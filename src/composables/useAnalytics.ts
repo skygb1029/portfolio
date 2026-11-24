@@ -1,42 +1,70 @@
 import { siteConfig } from '@/config/site'
+import { publicPages } from '@/data/seoPages'
+
+type VitalEvent = { url: string }
 
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void
     clarity?: (...args: unknown[]) => void
     dataLayer?: unknown[]
+    si?: (name: string, callback: (event: VitalEvent) => VitalEvent | null) => void
+    siq?: unknown[]
   }
 }
 
 export function initAnalytics() {
   const { gaId, clarityId } = siteConfig.analytics
+  if (!import.meta.env.PROD || location.origin !== siteConfig.siteUrl) return
 
-  if (gaId && typeof document !== 'undefined') {
+  if (/^G-[A-Z0-9]+$/.test(gaId) && !window.gtag) {
     const gtagScript = document.createElement('script')
     gtagScript.async = true
     gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`
     document.head.appendChild(gtagScript)
 
-    window.gtag = function gtag(...args: unknown[]) {
+    window.gtag = function gtag(..._args: unknown[]) {
       window.dataLayer = window.dataLayer || []
-      window.dataLayer.push(args)
+      window.dataLayer.push(arguments)
     }
     window.dataLayer = window.dataLayer || []
     window.gtag('js', new Date())
-    window.gtag('config', gaId)
+    window.gtag('config', gaId, { send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false })
   }
 
-  if (clarityId && typeof document !== 'undefined') {
+  if (/^[a-z0-9]+$/i.test(clarityId) && !document.getElementById('portfolio-clarity')) {
     const clarityScript = document.createElement('script')
+    clarityScript.id = 'portfolio-clarity'
     clarityScript.innerHTML = `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${clarityId}");`
     document.head.appendChild(clarityScript)
   }
+
+  if (!document.getElementById('portfolio-speed-insights')) {
+    window.siq ??= []
+    window.si ??= (...args) => window.siq!.push(args)
+    window.si('beforeSend', event => {
+      const url = new URL(event.url, siteConfig.siteUrl)
+      if (!publicPages.some(page => page.path === url.pathname)) return null
+      return { ...event, url: url.origin + url.pathname }
+    })
+    const script = document.createElement('script')
+    script.id = 'portfolio-speed-insights'
+    script.defer = true
+    script.src = '/_vercel/speed-insights/script.js'
+    document.head.appendChild(script)
+  }
+}
+
+export function trackPage(path: string, title: string) {
+  initAnalytics()
+  trackEvent('page_view', { path, page_title: title, page_location: siteConfig.siteUrl + path })
 }
 
 export function trackEvent(
   eventName: string,
   params?: Record<string, string | number | boolean>,
 ) {
+  if (window.location.pathname.startsWith('/admin')) return
   if (window.gtag) {
     window.gtag('event', eventName, params)
   }

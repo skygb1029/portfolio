@@ -11,6 +11,13 @@
       { "key": "Referrer-Policy", "value": "no-referrer" },
       { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
     ]
+  }, {
+    "source": "/(admin/.*|demo|works/[^/]+/demo|_seo/.*)",
+    "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
   }],
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/:page(resume|contact|works|products|articles)", "destination": "/_seo/:page.html" },
+    { "source": "/:section(works|product|articles)/:slug", "destination": "/_seo/:section/:slug.html" },
+    { "source": "/((?!api/|_vercel/|_seo/).*)", "destination": "/index.html" }
+  ]
 }

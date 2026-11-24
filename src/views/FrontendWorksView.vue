@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { frontendWorks, workPaths } from '@/data/frontendWorks'
+import { trackEvent } from '@/composables/useAnalytics'
 </script>
 
 <template>
@@ -15,7 +16,7 @@ import { frontendWorks, workPaths } from '@/data/frontendWorks'
           <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">{{ work.area }}</p>
           <h2 class="mt-3 text-2xl font-semibold">{{ work.title }}</h2>
           <p class="mt-3 leading-7 text-zinc-600 dark:text-zinc-300">{{ work.summary }}</p>
-          <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800">
+          <a :href="workPaths(work.slug).fullDemo" target="_blank" rel="noopener" :aria-label="'查看專案：' + work.title + '（另開分頁）'" class="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800" @click="trackEvent('project_open', { project_slug: work.slug })">
             查看專案 <span aria-hidden="true">↗</span>
           </a>
         </div>

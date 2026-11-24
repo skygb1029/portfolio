@@ -1,4 +1,4 @@
-import type { ProductLifecycleStatus } from '@/data/productStatus'
+import type { ProductLifecycleStatus } from './productStatus'
 
 export interface ProductLanding {
   id: string

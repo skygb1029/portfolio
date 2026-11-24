@@ -2,7 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { siteConfig } from '@/config/site'
 import { productLandings } from '@/data/productLandings'
-import { trackEvent } from '@/composables/useAnalytics'
+import { trackPage } from '@/composables/useAnalytics'
+import { publicPages } from '@/data/seoPages'
+import { applyPortfolioSeo } from '@/utils/portfolioSeo'
 import { stockProductRoutes } from '@/products/stock/routes'
 import { parentingProductRoutes } from '@/products/parenting/routes'
 import { frontendWorks, workPaths } from '@/data/frontendWorks'
@@ -107,11 +109,13 @@ router.beforeEach(to => {
   if (target) return { ...router.resolve(target), query: to.query, replace: true }
 })
 
-router.afterEach((to) => {
+router.afterEach((to, from, failure) => {
+  if (failure) return
   const post = to.path.startsWith('/articles/') ? blogPosts.find(item => item.id === to.params.id) : undefined
   const title = post ? `${post.title} | ${siteConfig.name}` : (to.meta.title as string) ?? siteConfig.brand
-  document.title = title
-  if (!to.path.startsWith('/works')) trackEvent('page_view', { path: to.path })
+  document.title = publicPages.find(page => page.path === to.path)?.title ?? title
+  const page = applyPortfolioSeo(to.path)
+  if (page && (!from.matched.length || to.path !== from.path)) trackPage(to.path, document.title)
 })
 
 export default router
