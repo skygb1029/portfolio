@@ -147,7 +147,6 @@ export const productLandings: ProductLanding[] = [
       roadmap: ['每日晨報', '個股問答', '自訂關注清單', '進階 ETF 追蹤'],
     },
     flowVariant: 'stock',
-    videoSrc: '/videos/stock-demo.mp4',
     githubProductId: 'stock-secretary',
   },
   {
@@ -196,7 +195,6 @@ export const productLandings: ProductLanding[] = [
       roadmap: ['多寶紀錄', '家庭共享', '成長曲線報告', '醫療紀錄匯出'],
     },
     flowVariant: 'parenting',
-    videoSrc: '/videos/parenting-demo.mp4',
     githubProductId: 'parenting-assistant',
   },
   {
@@ -238,7 +236,6 @@ export const productLandings: ProductLanding[] = [
       roadmap: ['多通道串接', 'AI 話術模板', '成交漏斗', '業績報表'],
     },
     flowVariant: 'cs',
-    videoSrc: '/videos/sales-demo.mp4',
     githubProductId: 'sales-assistant',
   },
 ]

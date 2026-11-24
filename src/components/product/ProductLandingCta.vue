@@ -27,8 +27,8 @@ const canPreview = computed(() => registry.value && hasApiPreview(registry.value
 
 const btnClass = computed(() =>
   props.size === 'footer'
-    ? 'rounded-full px-10 py-3.5 text-base font-semibold'
-    : 'rounded-full px-8 py-3 text-sm font-semibold',
+    ? 'motion-action rounded-full px-10 py-3.5 text-base font-semibold'
+    : 'motion-action rounded-full px-8 py-3 text-sm font-semibold',
 )
 
 function trackUse(entry: ProductRegistryEntry, internal: boolean) {

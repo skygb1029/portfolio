@@ -16,7 +16,7 @@ const labels: Record<ProductLifecycleStatus, string> = {
     <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">AI 產品</h1>
     <p class="mt-4 max-w-2xl text-lg text-zinc-600 dark:text-zinc-300">查看各項工具的功能、開發狀態與目前的體驗方式。</p>
     <ul class="mt-8 grid gap-5 sm:grid-cols-2">
-      <li v-for="product in productLandings" :key="product.slug" class="flex flex-col items-start rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+      <li v-for="product in productLandings" :key="product.slug" class="motion-card flex flex-col items-start rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <p class="text-sm font-semibold text-indigo-700 dark:text-indigo-300">{{ product.id === 'life' ? '私人使用' : labels[product.lifecycleStatus] }}</p>
         <h2 class="mt-2 text-2xl font-bold">{{ product.title }}</h2>
         <p class="mb-5 mt-2 leading-7 text-zinc-600 dark:text-zinc-300">{{ product.tagline }}</p>

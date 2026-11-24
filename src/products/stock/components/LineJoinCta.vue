@@ -2,11 +2,13 @@
 import { computed, onMounted, ref } from 'vue'
 import { fetchLineJoinInfo, type LineJoinInfo } from '../services/stockApi'
 import { trackEvent } from '@/composables/useAnalytics'
+import LineBotQr from '@/components/product/LineBotQr.vue'
 
 const props = withDefaults(
   defineProps<{
     variant?: 'light' | 'dark'
     compact?: boolean
+    qr?: boolean
   }>(),
   {
     variant: 'light',
@@ -42,7 +44,9 @@ function onJoinClick(): void {
 </script>
 
 <template>
+  <LineBotQr v-if="qr" :url="joinUrl" title="AI 股票秘書" @join="onJoinClick" />
   <div
+    v-else
     class="rounded-2xl border p-5 sm:p-6"
     :class="
       variant === 'dark'

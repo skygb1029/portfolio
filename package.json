@@ -14,12 +14,14 @@
     "@vercel/node": "^5.1.14",
     "@vueuse/core": "^14.3.0",
     "pinia": "^3.0.4",
+    "qrcode": "^1.5.4",
     "vue": "^3.5.34",
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "@types/node": "^24.12.4",
+    "@types/qrcode": "^1.5.6",
     "@vitejs/plugin-vue": "^6.0.6",
     "@vue/tsconfig": "^0.9.1",
     "tailwindcss": "^4.3.0",

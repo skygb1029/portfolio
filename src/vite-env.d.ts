@@ -13,6 +13,9 @@ interface ImportMetaEnv {
   readonly VITE_API_BASE: string
   readonly VITE_STOCK_API_URL: string
   readonly VITE_STOCK_LINE_URL: string
+  readonly VITE_PARENTING_LINE_URL?: string
+  readonly VITE_SALES_LINE_URL?: string
+  readonly VITE_LIFE_LINE_URL?: string
   readonly VITE_WAITLIST_SHEET_CSV_URL: string
 }
 

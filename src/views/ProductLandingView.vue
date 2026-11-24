@@ -1,34 +1,41 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { getLandingBySlug } from '@/data/productLandings'
+import { productScenarios } from '@/data/productScenarios'
 import { findRelatedArticle } from '@/data/blog'
 import ProductStatusBadge from '@/components/ui/ProductStatusBadge.vue'
-import SocialProofBar from '@/components/product/SocialProofBar.vue'
-import ProductVideo from '@/components/product/ProductVideo.vue'
 import ProductFeedbackSection from '@/components/product/ProductFeedbackSection.vue'
 import ProductLandingCta from '@/components/product/ProductLandingCta.vue'
 import LineJoinCta from '@/products/stock/components/LineJoinCta.vue'
+import LineBotQr from '@/components/product/LineBotQr.vue'
 import ProductPreviewPanel from '@/components/product/ProductPreviewPanel.vue'
 import AiFlowDiagram from '@/components/architecture/AiFlowDiagram.vue'
 import { getProductBySlug, hasApiPreview } from '@/data/products'
 import { useWaitlistModalStore } from '@/stores/waitlistModal'
-import { useProductGithubProgress } from '@/composables/useProductGithubProgress'
 import { trackEvent } from '@/composables/useAnalytics'
 
 const route = useRoute()
 const waitlist = useWaitlistModalStore()
-
 const props = defineProps<{ slug: string }>()
 const product = computed(() => getLandingBySlug(props.slug))
+const guide = computed(() => productScenarios[product.value?.id ?? ''])
 const relatedArticle = computed(() => findRelatedArticle('/product/' + props.slug))
-const registry = computed(() =>
-  product.value ? getProductBySlug(product.value.slug) : undefined,
-)
-const githubId = computed(() => product.value?.githubProductId ?? '')
-const { progress } = useProductGithubProgress(githubId)
+const registry = computed(() => getProductBySlug(props.slug))
 const previewOpen = ref(false)
+const activeIndex = ref(0)
+const previewScenario = computed(() => guide.value?.scenes[activeIndex.value])
+const publicLineUrls: Record<string, string | undefined> = {
+  parenting: import.meta.env.VITE_PARENTING_LINE_URL,
+  cs: import.meta.env.VITE_SALES_LINE_URL,
+  life: import.meta.env.VITE_LIFE_LINE_URL,
+}
+const publicLineUrl = computed(() => publicLineUrls[product.value?.id ?? '']?.trim() ?? '')
 
+watch(() => props.slug, () => {
+  activeIndex.value = 0
+  previewOpen.value = false
+})
 function joinWaitlist() {
   if (!product.value) return
   trackEvent('cta_landing_waitlist', { product_id: product.value.id })
@@ -37,227 +44,102 @@ function joinWaitlist() {
 </script>
 
 <template>
-  <div v-if="product">
-    <section
-      class="section-padding relative overflow-hidden border-b border-zinc-200/60 dark:border-zinc-800/60"
-    >
-      <div
-        class="pointer-events-none absolute inset-0 bg-gradient-to-br opacity-60"
-        :class="product.gradient"
-      />
+  <div v-if="product && guide">
+    <section class="relative overflow-hidden border-b border-zinc-200 px-5 py-10 sm:px-8 sm:py-16 dark:border-zinc-800">
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-br opacity-65" :class="product.gradient" aria-hidden="true"></div>
       <div class="relative mx-auto max-w-6xl">
-        <RouterLink
-          to="/products"
-          class="text-sm text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400"
-        >
-          ← 返回 AI 產品
-        </RouterLink>
-        <div class="mt-6 flex flex-wrap items-center gap-3">
-          <ProductStatusBadge :status="product.lifecycleStatus" />
-          <span class="text-3xl" aria-hidden="true">{{ product.emoji }}</span>
-        </div>
-        <h1 class="mt-4 text-4xl font-bold tracking-tight text-zinc-900 sm:text-5xl dark:text-zinc-50">
-          {{ product.title }}
-        </h1>
-        <p class="mt-4 max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-          {{ product.tagline }}
-        </p>
-        <RouterLink v-if="relatedArticle" :to="'/articles/' + relatedArticle.id" class="mt-4 inline-block font-semibold text-indigo-700 hover:underline dark:text-indigo-300">閱讀產品開發筆記 →</RouterLink>
-
-        <div
-          v-if="product.beta"
-          class="mt-6 rounded-2xl border border-emerald-500/25 bg-emerald-500/5 p-5"
-        >
-          <div class="flex flex-wrap gap-2">
-            <span
-              v-for="badge in product.beta.badges"
-              :key="badge"
-              class="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-700 dark:text-emerald-400"
-            >
-              {{ badge }}
-            </span>
+        <RouterLink to="/products" class="font-semibold text-indigo-700 hover:underline dark:text-indigo-300">← 返回 AI 產品</RouterLink>
+        <div class="mt-7 grid min-w-0 items-start gap-8 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-12">
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-3">
+              <ProductStatusBadge :status="product.lifecycleStatus" />
+              <p class="font-semibold text-zinc-700 dark:text-zinc-200">{{ guide.tag }}</p>
+            </div>
+            <h1 class="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-6xl">{{ product.title }}</h1>
+            <p class="mt-5 max-w-xl text-lg leading-8 text-zinc-700 dark:text-zinc-200">{{ guide.intro }}</p>
+            <ProductLandingCta class="mt-6"
+              :product-id="product.id" :show-waitlist="product.id !== 'stock' && product.id !== 'life'" :show-demo="false"
+              @join-waitlist="joinWaitlist" @open-preview="previewOpen = true" />
+            <div class="mt-5 flex flex-wrap gap-4 font-semibold text-indigo-700 dark:text-indigo-300">
+              <RouterLink :to="{ path: route.path, hash: '#how-it-works' }" class="underline-offset-4 hover:underline">看操作流程 ↓</RouterLink>
+              <RouterLink v-if="relatedArticle" :to="'/articles/' + relatedArticle.id" class="underline-offset-4 hover:underline">開發筆記 ↗</RouterLink>
+            </div>
           </div>
-          <p class="mt-4 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            支援標的
-          </p>
-          <div class="mt-2 flex flex-wrap gap-2">
-            <span
-              v-for="symbol in product.beta.supportedSymbols"
-              :key="symbol"
-              class="rounded-lg bg-white/80 px-3 py-1.5 font-mono text-sm text-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-200"
-            >
-              {{ symbol }}
-            </span>
+          <div class="space-y-4">
+            <LineJoinCta v-if="product.id === 'stock'" qr />
+            <LineBotQr v-else-if="publicLineUrl" :url="publicLineUrl" :title="product.title" />
+            <aside class="rounded-3xl border border-zinc-200 bg-white/80 p-5 dark:border-zinc-700 dark:bg-zinc-950/55">
+              <h2 class="font-bold">如何開始</h2>
+              <p class="mt-2 leading-7 text-zinc-700 dark:text-zinc-200">{{ guide.access }}</p>
+              <template v-if="product.beta">
+                <p class="mt-4 text-sm font-semibold">可查詢標的</p>
+                <ul class="mt-2 flex flex-wrap gap-2">
+                  <li v-for="symbol in product.beta.supportedSymbols" :key="symbol" class="rounded-full border border-zinc-200 px-3 py-1 text-sm dark:border-zinc-700">{{ symbol }}</li>
+                </ul>
+              </template>
+            </aside>
           </div>
-        </div>
-
-        <ProductLandingCta
-          v-if="product"
-          :product-id="product.id"
-          :show-waitlist="product.id !== 'stock' && product.id !== 'life'"
-          :show-demo="product.id !== 'stock'"
-          @join-waitlist="joinWaitlist"
-          @open-preview="previewOpen = true"
-        />
-        <div v-if="product.id === 'stock'" class="mt-6 max-w-2xl">
-          <LineJoinCta />
-        </div>
-        <ProductPreviewPanel
-          v-if="product && registry && hasApiPreview(registry)"
-          :product-id="product.id"
-          :open="previewOpen"
-          @close="previewOpen = false"
-        />
-        <div v-if="product.videoSrc" class="mt-10 max-w-2xl">
-          <ProductVideo :src="product.videoSrc" :title="product.title" />
-        </div>
-        <div v-if="progress" class="mt-6 flex flex-wrap gap-3 text-xs text-zinc-500">
-          <span>版本 {{ progress.currentVersion }}</span>
-          <span v-if="progress.latestRelease">· {{ progress.latestRelease.name }}</span>
-        </div>
-        <div class="mt-12">
-          <SocialProofBar
-            :waitlist-count="product.waitlistCount"
-            :features-built="product.featuresBuilt"
-            :features-total="product.featuresTotal"
-            :eta="product.eta"
-          />
         </div>
       </div>
     </section>
 
-    <section
-      v-if="product.highlights?.length"
-      class="section-padding border-b border-zinc-200/60 bg-zinc-50/80 dark:border-zinc-800/60 dark:bg-zinc-900/20"
-    >
-      <div class="mx-auto max-w-6xl">
-        <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">產品功能</h2>
-        <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <article
-            v-for="item in product.highlights"
-            :key="item.title"
-            class="glow-border rounded-2xl p-6"
-          >
-            <span class="text-2xl" aria-hidden="true">{{ item.icon }}</span>
-            <h3 class="mt-3 text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              {{ item.title }}
-            </h3>
-            <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-              {{ item.description }}
-            </p>
+    <section id="how-it-works" class="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+      <h2 class="text-3xl font-bold tracking-tight">操作流程</h2>
+      <div class="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div class="grid content-start gap-2" role="group" aria-label="選擇操作情境">
+          <button v-for="([label], index) in guide.scenes" :key="label" type="button"
+            :aria-pressed="activeIndex === index"
+            class="motion-action cursor-pointer rounded-xl border border-zinc-300 px-4 py-3 text-left font-semibold hover:border-indigo-500 aria-pressed:border-indigo-500 aria-pressed:bg-indigo-50 aria-pressed:text-indigo-900 dark:border-zinc-700 dark:aria-pressed:border-indigo-400 dark:aria-pressed:bg-indigo-950 dark:aria-pressed:text-indigo-100"
+            @click="activeIndex = index">{{ label }}</button>
+        </div>
+        <div aria-live="polite" class="min-w-0">
+          <article v-if="previewScenario" :key="previewScenario[0]" class="motion-enter rounded-3xl border border-zinc-200 bg-white p-5 sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 class="text-xl font-bold">{{ previewScenario[0] }}</h3>
+            <p class="mt-4 text-sm font-semibold text-indigo-700 dark:text-indigo-300">輸入或操作</p>
+            <p class="mt-2 rounded-2xl bg-indigo-50 px-4 py-3 font-semibold dark:bg-indigo-950">{{ previewScenario[1] }}</p>
+            <p class="mt-5 text-sm font-semibold text-indigo-700 dark:text-indigo-300">下一步</p>
+            <p class="mt-2 leading-7 text-zinc-700 dark:text-zinc-200">{{ previewScenario[2] }}</p>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section-padding">
-      <div class="mx-auto max-w-6xl lg:grid lg:grid-cols-2 lg:gap-16">
-        <div>
-          <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">問題</h2>
-          <ul class="mt-6 space-y-4">
-            <li
-              v-for="p in product.problems"
-              :key="p"
-              class="flex gap-3 text-zinc-600 dark:text-zinc-400"
-            >
-              <span class="text-rose-500">?</span>
-              {{ p }}
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">解決方案</h2>
-          <ul class="mt-6 space-y-4">
-            <li
-              v-for="s in product.solutions"
-              :key="s"
-              class="flex gap-3 text-zinc-600 dark:text-zinc-400"
-            >
-              <svg class="mt-0.5 h-5 w-5 shrink-0 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              {{ s }}
-            </li>
-          </ul>
-        </div>
-      </div>
+    <section v-if="product.highlights?.length" class="mx-auto max-w-6xl px-5 pb-12 sm:px-8 sm:pb-16">
+      <h2 class="text-3xl font-bold">產品功能</h2>
+      <ul class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <li v-for="feature in product.highlights" :key="feature.title" class="motion-card rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+          <h3 class="font-bold">{{ feature.title }}</h3>
+          <p class="mt-2 leading-7 text-zinc-700 dark:text-zinc-200">{{ feature.description }}</p>
+        </li>
+      </ul>
     </section>
 
-    <section class="section-padding bg-zinc-100/50 dark:bg-zinc-900/30">
+    <section class="border-y border-zinc-200 bg-white/50 px-5 py-12 sm:px-8 dark:border-zinc-800 dark:bg-zinc-900/40">
       <div class="mx-auto max-w-6xl">
-        <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">{{ product.demo.title }}</h2>
-        <div class="mt-8 grid gap-6 md:grid-cols-3">
-          <article
-            v-for="section in product.demo.sections"
-            :key="section.title"
-            class="glow-border rounded-2xl p-6"
-          >
-            <h3 class="text-sm font-semibold text-indigo-600 dark:text-indigo-400">{{ section.title }}</h3>
-            <p class="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400 whitespace-pre-line">
-              {{ section.content }}
-            </p>
-          </article>
+        <h2 class="text-3xl font-bold">常見問題</h2>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+          <details v-for="[question, answer] in guide.questions" :key="question" class="rounded-2xl border border-zinc-300 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-950">
+            <summary class="cursor-pointer font-semibold hover:text-indigo-700 dark:hover:text-indigo-300">{{ question }}</summary>
+            <p class="mt-3 leading-7 text-zinc-700 dark:text-zinc-200">{{ answer }}</p>
+          </details>
         </div>
-        <div v-if="product.flowVariant" class="mt-12 max-w-sm mx-auto">
-          <p class="mb-4 text-center text-sm text-zinc-500">系統架構</p>
-          <AiFlowDiagram :variant="product.flowVariant" />
-        </div>
-      </div>
-    </section>
-
-    <section class="section-padding">
-      <div class="mx-auto max-w-6xl">
-        <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">產品畫面</h2>
-        <div class="mt-8 grid gap-6 sm:grid-cols-2">
-          <div
-            v-for="shot in product.screenshots"
-            :key="shot.label"
-            class="glow-border flex aspect-video flex-col items-center justify-center rounded-2xl border-2 border-dashed border-zinc-300 dark:border-zinc-700"
-          >
-            <p class="text-sm font-medium text-zinc-600 dark:text-zinc-400">{{ shot.label }}</p>
-            <p class="mt-2 text-xs text-zinc-400">截圖預留區</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-padding bg-zinc-100/50 dark:bg-zinc-900/30">
-      <div class="mx-auto max-w-6xl">
-        <h2 class="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">商業模式</h2>
-        <div class="mt-8 grid gap-6 md:grid-cols-3">
-          <div class="glow-border rounded-2xl p-6">
-            <p class="text-xs font-semibold uppercase text-zinc-500">適合誰使用</p>
-            <p class="mt-3 text-sm text-zinc-700 dark:text-zinc-300">{{ product.business.audience }}</p>
-          </div>
-          <div class="glow-border rounded-2xl p-6">
-            <p class="text-xs font-semibold uppercase text-zinc-500">預計收費模式</p>
-            <p class="mt-3 text-sm text-zinc-700 dark:text-zinc-300">{{ product.business.pricing }}</p>
-          </div>
-          <div class="glow-border rounded-2xl p-6">
-            <p class="text-xs font-semibold uppercase text-zinc-500">功能規劃</p>
-            <ul class="mt-3 space-y-2">
-              <li
-                v-for="r in product.business.roadmap"
-                :key="r"
-                class="text-sm text-zinc-700 dark:text-zinc-300"
-              >
-                · {{ r }}
-              </li>
+        <details class="mt-4 rounded-2xl border border-zinc-300 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-950">
+          <summary class="cursor-pointer font-semibold hover:text-indigo-700 dark:hover:text-indigo-300">想了解產品規劃與架構</summary>
+          <div class="mt-4 grid items-start gap-6 md:grid-cols-2">
+            <ul class="list-disc space-y-2 pl-5 leading-7 text-zinc-700 dark:text-zinc-200">
+              <li v-for="item in product.business.roadmap" :key="item">{{ item }}</li>
             </ul>
+            <AiFlowDiagram v-if="product.flowVariant" :variant="product.flowVariant" />
           </div>
-        </div>
+        </details>
       </div>
     </section>
 
-    <ProductFeedbackSection
-      v-if="product"
-      :product-key="product.slug"
-    />
-
+    <ProductPreviewPanel v-if="registry && hasApiPreview(registry)" :product-id="product.id" :open="previewOpen" @close="previewOpen = false" />
+    <ProductFeedbackSection :key="product.slug" :product-key="product.slug" />
   </div>
-
-  <div v-else class="flex min-h-[60vh] flex-col items-center justify-center pt-16">
-    <p class="text-zinc-500">找不到此產品</p>
-    <RouterLink to="/" class="mt-4 text-indigo-600">返回首頁</RouterLink>
+  <div v-else class="flex min-h-[60vh] flex-col items-center justify-center">
+    <h1 class="text-2xl font-bold">找不到此產品</h1>
+    <RouterLink to="/products" class="mt-4 text-indigo-700 underline dark:text-indigo-300">返回 AI 產品</RouterLink>
   </div>
 </template>

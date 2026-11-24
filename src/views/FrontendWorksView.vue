@@ -9,7 +9,7 @@ import { frontendWorks, workPaths } from '@/data/frontendWorks'
       從物流寄件到醫療工作流程，這裡記錄我負責的前端介面、資料整合與互動。每個案例都有可操作的展示。
     </p>
     <ul class="mt-10 grid gap-4 sm:grid-cols-2">
-      <li v-for="work in frontendWorks" :key="work.slug" class="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <li v-for="work in frontendWorks" :key="work.slug" class="motion-card overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <img :src="'/case-previews/' + work.slug + '.jpg'" :alt="work.title + '展示畫面'" width="1440" height="810" loading="lazy" class="aspect-video w-full border-b border-zinc-200 object-cover dark:border-zinc-800">
         <div class="p-6">
           <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">{{ work.area }}</p>

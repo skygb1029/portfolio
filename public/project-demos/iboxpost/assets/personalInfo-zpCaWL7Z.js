@@ -1,1 +1,0 @@
-import{_ as t,c as o,a as s,o as n}from"./index-B3irsdFv.js";const c={},a={class:"content"};function r(_,e){return n(),o("div",a,[...e[0]||(e[0]=[s("div",{class:"content-item"}," 會員首頁 ",-1)])])}const f=t(c,[["render",r]]);export{f as default};

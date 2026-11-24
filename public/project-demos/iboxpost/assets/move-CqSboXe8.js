@@ -1,0 +1,1 @@
+import{_ as t,c as o,a as s,o as c}from"./index-C7DOmVGu.js";const n={},a={class:"content"};function r(_,e){return c(),o("div",a,[...e[0]||(e[0]=[s("div",{class:"content-item"}," 會員首頁 ",-1)])])}const i=t(n,[["render",r]]);export{i as default};
