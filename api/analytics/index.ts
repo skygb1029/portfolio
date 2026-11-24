@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { readJsonBody, sendNodeJson } from '../../lib/http'
-import { getSupabaseAdmin } from '../../lib/supabase/server'
+import { readJsonBody, sendNodeJson } from '../../lib/http.js'
+import { getSupabaseAdmin } from '../../lib/supabase/server.js'
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === 'OPTIONS') {
@@ -8,26 +8,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return
   }
 
-  const sb = getSupabaseAdmin()
-
   if (req.method === 'POST') {
-    const body = await readJsonBody<{
+    type AnalyticsEvent = {
       event?: string
       product?: string
       source?: string
       meta?: Record<string, unknown>
-    }>(req)
-    if (!body.event?.trim()) {
+    }
+    const body = (req.body ?? await readJsonBody<AnalyticsEvent>(req).catch(() => null)) as AnalyticsEvent | null
+    if (typeof body?.event !== 'string' || !body.event.trim()) {
       sendNodeJson(res, { error: 'event 為必填' }, 400)
       return
     }
+    const sb = getSupabaseAdmin()
     if (sb) {
-      await sb.from('analytics_events').insert({
+      const { error } = await sb.from('analytics_events').insert({
         event: body.event,
         product: body.product,
         source: body.source,
         meta: body.meta ?? {},
       })
+      if (error) {
+        sendNodeJson(res, { error: 'Analytics storage unavailable' }, 503)
+        return
+      }
     }
     sendNodeJson(res, { ok: true })
     return
@@ -40,6 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       sendNodeJson(res, { error: 'Unauthorized' }, 401)
       return
     }
+    const sb = getSupabaseAdmin()
     if (!sb) {
       sendNodeJson(res, { metrics: null, configured: false })
       return
