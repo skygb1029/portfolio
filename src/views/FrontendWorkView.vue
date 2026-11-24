@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue'
 import { frontendWorks, workPaths, type WorkSlug } from '@/data/frontendWorks'
+import { findRelatedArticle } from '@/data/blog'
 const props = defineProps<{ slug: WorkSlug; demo?: boolean }>()
 const work = computed(() => frontendWorks.find(item => item.slug === props.slug)!)
+const relatedArticle = computed(() => findRelatedArticle(workPaths(props.slug).case))
 const screens = {
   iboxpost: defineAsyncComponent(() => import('@/components/work/IBoxPostDemo.vue')),
   'maia-inference': defineAsyncComponent(() => import('@/components/work/MaiaDemo.vue')),
@@ -26,7 +28,7 @@ const screens = {
     <template v-if="demo">
       <a :href="workPaths(slug).fullDemo" class="mb-4 inline-block text-sm font-semibold text-indigo-700 underline dark:text-indigo-300">開啟原介面的完整 Demo</a>
       <p class="mb-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 dark:border-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-200">
-        作品展示使用虛構資料。操作僅在當前頁面，重新整理即可重置。
+        操作僅在當前頁面，重新整理即可重置。
       </p>
       <component v-if="slug !== 'demi-studio'" :is="screens[slug]" :key="slug" />
     </template>
@@ -43,7 +45,7 @@ const screens = {
       <aside class="rounded-3xl bg-indigo-50 p-6 sm:p-8 dark:bg-indigo-950/60">
         <h2 class="text-xl font-semibold">建議操作流程</h2>
         <p class="mt-3 leading-7 text-zinc-700 dark:text-zinc-300">{{ work.walkthrough }}</p>
-        <p v-if="slug !== 'demi-studio'" class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">完整 Demo 保留原專案介面和多頁操作，使用虛構資料與模擬結果。建議使用桌機體驗。</p>
+        <p v-if="slug !== 'demi-studio'" class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">完整 Demo 保留原專案介面和多頁操作。建議使用桌機體驗。</p>
         <div v-if="slug !== 'demi-studio'" class="mt-5 flex flex-wrap items-center gap-4">
           <a :href="workPaths(slug).demo" class="text-sm underline underline-offset-4">快速體驗</a>
         </div>
@@ -52,6 +54,7 @@ const screens = {
           <a href="/project-demos/iboxpost/index.html#/admin/dashboard" class="mt-2 block underline underline-offset-4">開啟後台展示</a>
         </p>
         <a v-if="slug === 'maia-inference'" href="/project-demos/maia-inference/demo-xrays/chest-pa.png" download class="mt-4 block text-sm underline underline-offset-4">下載合成 X 光範例</a>
+        <RouterLink v-if="relatedArticle" :to="'/articles/' + relatedArticle.id" class="mt-5 block font-semibold text-indigo-700 hover:underline dark:text-indigo-300">閱讀專案心得 →</RouterLink>
         <RouterLink to="/contact" class="mt-6 block text-sm font-semibold text-indigo-700 hover:underline dark:text-indigo-300">有類似需求？聯絡合作 →</RouterLink>
       </aside>
     </div>

@@ -12,7 +12,7 @@ const deposits = [
 const stats = computed(() => [
   { label: '前台公告', total: visibleNews().length, link: '/admin/news' },
   { label: '前台問答', total: content.value.faq.filter(item => item.visible).length, link: '/admin/faq' },
-  { label: '模擬儲值紀錄', total: deposits.length, link: '/admin/deposits' },
+  { label: '儲值紀錄', total: deposits.length, link: '/admin/deposits' },
 ])
 </script>
 
@@ -40,7 +40,7 @@ const stats = computed(() => [
     </template>
     <template v-else>
       <h1>儲值紀錄</h1>
-      <p>以下為虛構交易資料，供展示查閱流程。</p>
+      <p>交易紀錄可依日期與狀態查閱。</p>
       <div class="panel table-panel">
         <table>
           <thead><tr><th>交易編號</th><th>會員</th><th>日期</th><th>金額</th><th>狀態</th></tr></thead>

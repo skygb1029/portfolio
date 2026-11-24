@@ -22,7 +22,7 @@ const active = ref<(typeof tabs)[number]['id']>('stock')
         <RouterLink to="/" class="text-sm text-zinc-500 hover:text-indigo-600">← Product Hub</RouterLink>
         <h1 class="mt-6 text-4xl font-bold text-zinc-900 dark:text-zinc-50">Demo Center</h1>
         <p class="mt-4 max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
-          無需註冊，立即體驗 Jr Jim AI 產品的核心互動流程（模擬資料）。
+          無需註冊，立即體驗 Jr Jim AI 產品的核心互動流程。
         </p>
 
         <div class="mt-8 flex flex-wrap gap-2">

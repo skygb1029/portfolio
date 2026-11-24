@@ -2,6 +2,7 @@
 import { frontendWorks, workPaths, type WorkSlug } from '@/data/frontendWorks'
 import HomeProfileSections from '@/components/sections/HomeProfileSections.vue'
 import { siteConfig } from '@/config/site'
+import { blogPosts } from '@/data/blog'
 
 const gitVersion = __GIT_VERSION__
 
@@ -43,8 +44,7 @@ const details: Record<WorkSlug, string> = {
   <nav class="home-frame profile-nav" aria-label="首頁內容">
     <RouterLink to="/#career">職涯時間軸</RouterLink>
     <RouterLink to="/#skills">技能專區</RouterLink>
-    <RouterLink to="/#testimonials">評價與回饋</RouterLink>
-    <RouterLink to="/#blog">技術文章</RouterLink>
+    <RouterLink to="/#testimonials">合作方式</RouterLink>
   </nav>
   <HomeProfileSections>
     <template #career-card>
@@ -112,6 +112,24 @@ const details: Record<WorkSlug, string> = {
       <h2>有前端專案想討論？</h2>
       <RouterLink to="/contact" class="hero-button">聯絡合作 <span aria-hidden="true">↗</span></RouterLink>
     </div>
+  </section>
+  <section id="blog" class="home-frame work-section">
+    <header class="section-header">
+      <h2>技術文章</h2>
+      <RouterLink to="/articles" class="text-link">全部文章 <span aria-hidden="true">↗</span></RouterLink>
+    </header>
+    <ul class="work-index">
+      <li v-for="post in blogPosts.slice(0, 4)" :key="post.id">
+        <RouterLink :to="'/articles/' + post.id" class="index-row">
+        <div>
+          <p class="work-area">{{ post.category }}</p>
+          <h3 class="index-title">{{ post.title }}</h3>
+        </div>
+        <p class="index-description">{{ post.excerpt }}</p>
+          <span class="index-arrow" aria-hidden="true">↗</span>
+        </RouterLink>
+      </li>
+    </ul>
   </section>
   </div>
 </template>

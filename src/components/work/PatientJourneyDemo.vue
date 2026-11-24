@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const visits = [
-  { date:'2026-08-12', label:'初次評估', summary:'建立虛構個案資料及首次影像紀錄。', value:42 },
+  { date:'2026-08-12', label:'初次評估', summary:'建立個案資料及首次影像紀錄。', value:42 },
   { date:'2026-09-16', label:'回診追蹤', summary:'新增回診說明及第二次示範檢驗。', value:28 },
   { date:'2026-10-14', label:'影像與檢驗複查', summary:'記錄示範檢驗數值與比較影像。', value:18 },
   { date:'2026-11-12', label:'定期追蹤', summary:'檢視完整歷程及本次檢驗趨勢。', value:12 },
@@ -23,7 +23,7 @@ const slots = ref(images.map(image => image.key))
       <button type="button" class="work-button" :aria-pressed="tab === 'images'" @click="tab = 'images'">四格影像</button>
     </div>
     <section v-if="tab === 'timeline'" class="work-panel">
-      <h2 class="text-xl font-semibold">DEMO-001 · 虛構個案</h2>
+      <h2 class="text-xl font-semibold">DEMO-001 · 個案</h2>
       <div class="mt-4 flex flex-wrap gap-2" aria-label="就診時間軸" role="group">
         <button v-for="visit in visits" :key="visit.date" type="button" class="work-button" :aria-pressed="current.date === visit.date" @click="current = visit">
           {{ visit.date }}

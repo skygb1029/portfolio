@@ -33,7 +33,7 @@ function send() {
         <label class="work-label">行政區<select v-model="form.district" required class="work-field"><option value="">選擇行政區</option><option v-for="item in districts[form.city]" :key="item">{{ item }}</option></select></label>
       </div>
       <label class="work-label">包裹尺寸<select v-model="form.size" class="work-field"><option>小型</option><option>中型</option><option>大型</option></select></label>
-      <button class="work-button work-primary justify-self-start">新增模擬寄件單</button>
+      <button class="work-button work-primary justify-self-start">新增寄件單</button>
     </form>
     <div v-else-if="tab === 'track'" class="work-panel grid max-w-xl gap-4">
       <h2 class="text-xl font-semibold">查詢包裹</h2>

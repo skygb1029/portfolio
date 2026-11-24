@@ -6,6 +6,7 @@ import { trackEvent } from '@/composables/useAnalytics'
 import { stockProductRoutes } from '@/products/stock/routes'
 import { parentingProductRoutes } from '@/products/parenting/routes'
 import { frontendWorks, workPaths } from '@/data/frontendWorks'
+import { blogPosts } from '@/data/blog'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,12 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: { title: siteConfig.brand },
+    },
+    {
+      path: '/articles/:id?',
+      component: () => import('@/views/ArticlesView.vue'),
+      props: true,
+      meta: { title: `技術文章 | ${siteConfig.name}` },
     },
     {
       path: '/products',
@@ -101,7 +108,8 @@ router.beforeEach(to => {
 })
 
 router.afterEach((to) => {
-  const title = (to.meta.title as string) ?? siteConfig.brand
+  const post = to.path.startsWith('/articles/') ? blogPosts.find(item => item.id === to.params.id) : undefined
+  const title = post ? `${post.title} | ${siteConfig.name}` : (to.meta.title as string) ?? siteConfig.brand
   document.title = title
   if (!to.path.startsWith('/works')) trackEvent('page_view', { path: to.path })
 })

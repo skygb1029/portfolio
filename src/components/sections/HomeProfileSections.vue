@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { careerTimeline } from '@/data/career'
 import { skillGroups } from '@/data/skills'
-import { blogPosts } from '@/data/blog'
 import { feedbackExamples } from '@/data/feedback'
 
 const career = [...careerTimeline].reverse()
@@ -20,9 +19,10 @@ const skillTitles: Record<string, string> = { frontend: '前端開發', backend:
           <div class="timeline-card">
             <p class="timeline-period">{{ entry.period }}</p>
             <h3>{{ entry.company }} <span>{{ entry.role }}</span></h3>
-            <ul v-if="entry.highlights?.length" class="highlights">
-              <li v-for="highlight in entry.highlights" :key="highlight">{{ highlight }}</li>
-            </ul>
+            <p class="highlights">{{ entry.milestone }}</p>
+            <RouterLink :to="{ path: '/resume', hash: '#career-' + entry.id }" class="profile-link timeline-link">
+              查看{{ entry.company }}經歷 ↗
+            </RouterLink>
           </div>
         </li>
       </ol>
@@ -30,41 +30,32 @@ const skillTitles: Record<string, string> = { frontend: '前端開發', backend:
     </section>
 
     <section id="skills" class="profile-section">
-      <header class="profile-heading"><h2>技能專區</h2></header>
+      <header class="profile-heading">
+        <h2>技能專區</h2>
+        <RouterLink :to="{ path: '/resume', hash: '#resume-skills' }" class="profile-link">完整技能與工具 ↗</RouterLink>
+      </header>
       <div class="skill-grid">
         <article v-for="group in skillGroups" :key="group.id" class="skill-card">
           <h3>{{ skillTitles[group.id] ?? group.title }}</h3>
           <ul>
-            <li v-for="skill in group.skills" :key="skill">{{ skill }}</li>
+            <li v-for="skill in group.skills.slice(0, 5)" :key="skill">{{ skill }}</li>
           </ul>
         </article>
       </div>
     </section>
 
     <section id="testimonials" class="profile-section">
-      <header class="profile-heading"><h2>評價與回饋</h2></header>
-        <p class="feedback-note">以下為版面示例。正式回饋待取得授權後更新。</p>
+      <header class="profile-heading">
+        <h2>合作方式</h2>
+      </header>
         <div class="feedback-grid">
           <figure v-for="item in feedbackExamples" :key="item.role">
             <blockquote>「{{ item.text }}」</blockquote>
-            <figcaption>{{ item.role }}示例</figcaption>
+            <figcaption>{{ item.role }}</figcaption>
           </figure>
         </div>
     </section>
 
-    <section id="blog" class="profile-section">
-      <header class="profile-heading"><h2>技術文章</h2></header>
-      <ul class="article-list">
-        <li v-for="post in blogPosts" :key="post.id">
-          <span class="article-category">{{ post.category }}</span>
-          <div>
-            <h3>{{ post.title }}</h3>
-            <p>{{ post.excerpt }}</p>
-          </div>
-          <span v-if="post.comingSoon" class="article-status">籌備中</span>
-        </li>
-      </ul>
-    </section>
   </div>
 </template>
 
@@ -87,25 +78,21 @@ const skillTitles: Record<string, string> = { frontend: '前端開發', backend:
 .timeline > li:first-child::after { background: var(--track); }
 .timeline-period { color: var(--accent); font-size: 1rem; font-weight: 750; font-variant-numeric: tabular-nums; }
 .timeline-card h3 { margin-top: .35rem; }
-.timeline h3, .skill-card h3, .article-list h3 { font-size: 1.2rem; font-weight: 800; }
+.timeline h3, .skill-card h3 { font-size: 1.2rem; font-weight: 800; }
 .timeline h3 span { margin-left: .5rem; color: var(--muted); font-size: 1rem; font-weight: 550; }
 .highlights { display: grid; gap: .45rem; margin-top: .65rem; color: var(--muted); font-size: 1rem; line-height: 1.75; }
+.timeline-link { display: inline-block; margin-top: .55rem; }
 .skill-grid, .feedback-grid { display: grid; gap: .9rem; margin-top: 1rem; }
 .skill-grid { grid-template-columns: 1.3fr 1fr; }
 .skill-card { padding: clamp(1rem, 2.5vw, 1.6rem); border: 1px solid var(--rule); border-radius: 1.35rem; }
 .skill-card:first-child { background: var(--panel); }
 .skill-card ul { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
-.skill-card li, .article-status { border: 1px solid var(--rule); padding: .32rem .68rem; border-radius: 1rem; font-size: 1rem; }
-.feedback-note { margin-top: 1.25rem; color: var(--muted); line-height: 1.65; }
+.skill-card li { border: 1px solid var(--rule); padding: .32rem .68rem; border-radius: 1rem; font-size: 1rem; }
 .feedback-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.4rem; }
 .feedback-grid figure { display: grid; grid-template-rows: 1fr auto; margin: 0; }
 .feedback-grid blockquote { position: relative; margin: 0; padding: 1.4rem; background: var(--panel); border: 1px solid var(--rule); border-radius: 1.45rem; font-size: 1.12rem; line-height: 1.8; }
 .feedback-grid blockquote::after { content: ''; position: absolute; inset: auto auto -.52rem 1.6rem; width: .98rem; height: .98rem; border: inherit; border-width: 0 1px 1px 0; background: inherit; transform: rotate(45deg); }
 .feedback-grid figcaption { margin: 1rem 0 .15rem 1.05rem; color: var(--muted); font-size: 1rem; }
-.article-list > li { display: grid; grid-template-columns: minmax(6rem, .28fr) 1fr auto; gap: .6rem 1rem; align-items: start; padding: 1rem 0; border-bottom: 1px solid var(--rule); }
-.article-category { color: var(--accent); font-size: 1rem; font-weight: 750; }
-.article-list p { margin-top: .45rem; color: var(--muted); font-size: 1rem; line-height: 1.7; }
-.article-status { color: var(--muted); white-space: nowrap; }
 @media (max-width: 650px) {
   .profile-sections { width: calc(100% - 2rem); }
   .timeline > li { grid-template-columns: 2.35rem minmax(0, 1fr); padding-bottom: .65rem; }
@@ -114,8 +101,5 @@ const skillTitles: Record<string, string> = { frontend: '前端開發', backend:
   .timeline > li::before { width: .8rem; }
   .skill-grid, .feedback-grid { grid-template-columns: 1fr; gap: .5rem; }
   .feedback-grid { gap: 1.35rem; }
-  .article-list > li { grid-template-columns: 1fr auto; }
-  .article-list > li > div { grid-row: 2; grid-column: 1 / -1; }
-  .article-status { grid-column: 2; grid-row: 1; }
 }
 </style>

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { getLandingBySlug } from '@/data/productLandings'
+import { findRelatedArticle } from '@/data/blog'
 import ProductStatusBadge from '@/components/ui/ProductStatusBadge.vue'
 import SocialProofBar from '@/components/product/SocialProofBar.vue'
 import ProductVideo from '@/components/product/ProductVideo.vue'
@@ -20,6 +21,7 @@ const waitlist = useWaitlistModalStore()
 
 const props = defineProps<{ slug: string }>()
 const product = computed(() => getLandingBySlug(props.slug))
+const relatedArticle = computed(() => findRelatedArticle('/product/' + props.slug))
 const registry = computed(() =>
   product.value ? getProductBySlug(product.value.slug) : undefined,
 )
@@ -60,6 +62,7 @@ function joinWaitlist() {
         <p class="mt-4 max-w-2xl text-lg text-zinc-600 dark:text-zinc-400">
           {{ product.tagline }}
         </p>
+        <RouterLink v-if="relatedArticle" :to="'/articles/' + relatedArticle.id" class="mt-4 inline-block font-semibold text-indigo-700 hover:underline dark:text-indigo-300">閱讀產品開發筆記 →</RouterLink>
 
         <div
           v-if="product.beta"

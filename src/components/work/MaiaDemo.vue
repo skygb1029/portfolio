@@ -37,7 +37,7 @@ function run() {
   busy.value = true
   result.value = ''
   timer = setTimeout(() => {
-    result.value = model.value === '影像分類介面' ? '展示分類 A · 模擬信心值 92%' : '展示標記 2 筆 · 模擬信心值 87%'
+    result.value = model.value === '影像分類介面' ? '分類 A · 結果預覽' : '標記 2 筆 · 結果預覽'
     busy.value = false
   }, 550)
 }
@@ -52,7 +52,7 @@ onBeforeUnmount(() => { resetResult(); if (uploadedUrl) URL.revokeObjectURL(uplo
       <button type="button" class="work-button justify-self-start" @click="selectImage('/work/imaging/chest-pa.webp','合成範例影像')">載入範例圖片</button>
       <label class="work-label">或選取圖片（僅在瀏覽器預覽）<input type="file" accept="image/jpeg,image/png,image/webp" class="work-field" @change="upload" /></label>
       <p v-if="problem" role="alert" class="text-red-700 dark:text-red-300">{{ problem }}</p>
-      <button type="button" class="work-button work-primary justify-self-start" :disabled="!image || busy" @click="run">產生模擬結果</button>
+      <button type="button" class="work-button work-primary justify-self-start" :disabled="!image || busy" @click="run">查看結果預覽</button>
       <p role="status" class="work-note">{{ busy ? '正在準備展示結果…' : result }}</p>
     </section>
     <section class="work-panel">

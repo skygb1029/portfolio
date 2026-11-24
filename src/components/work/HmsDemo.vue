@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 const language = ref<'zh'|'en'>('zh')
 const labels = {
-  zh: { title:'床位排班', ward:'病區', shift:'班次', bed:'床位', patient:'虛構個案', total:'顯示排班', empty:'目前沒有符合的排班。', AM:'上午', PM:'下午', Night:'晚上' },
+  zh: { title:'床位排班', ward:'病區', shift:'班次', bed:'床位', patient:'個案', total:'顯示排班', empty:'目前沒有符合的排班。', AM:'上午', PM:'下午', Night:'晚上' },
   en: { title:'Bed Schedule', ward:'Ward', shift:'Shift', bed:'Bed', patient:'Fictional Patient', total:'Shown appointments', empty:'No schedules match these filters.', AM:'Morning', PM:'Afternoon', Night:'Evening' },
 }
 const copy = computed(() => labels[language.value])

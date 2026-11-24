@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 const records = [
-  { id:'CASE-101', label:'示例個案甲', markers:['M-01','M-03'] },
-  { id:'CASE-102', label:'示例個案乙', markers:['M-02'] },
-  { id:'CASE-103', label:'示例個案丙', markers:['M-01','M-02'] },
+  { id:'CASE-101', label:'個案甲', markers:['M-01','M-03'] },
+  { id:'CASE-102', label:'個案乙', markers:['M-02'] },
+  { id:'CASE-103', label:'個案丙', markers:['M-01','M-02'] },
 ]
 const rules = [
   { id:'RULE-01', label:'展示規則 A', version:'1.2', marker:'M-01' },
