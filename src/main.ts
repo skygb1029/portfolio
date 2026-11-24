@@ -5,7 +5,7 @@ import router from './router'
 import { initAnalytics } from './composables/useAnalytics'
 import './style.css'
 
-initAnalytics()
+if (!window.location.pathname.startsWith('/works')) initAnalytics()
 
 const app = createApp(App)
 app.use(createPinia())

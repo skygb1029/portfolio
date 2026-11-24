@@ -10,6 +10,7 @@ const projects = [
     title: 'i郵箱郵件寄送網站',
     period: '2024/08 – 2025/10',
     detail: '開發 GS1 OAuth 登入、包裹寄送與物流查詢。擔任主要技術窗口，與客戶及第三方廠商逐項確認儲值、金流、折扣與回饋的業務流程和介接規格。',
+    path: '/works/iboxpost',
   },
   {
     title: 'AI 醫療語音互動系統',

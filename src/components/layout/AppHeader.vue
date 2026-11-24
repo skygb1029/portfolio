@@ -18,6 +18,7 @@ const navItems = computed(() =>
         { label: 'Demo', to: '/demo', external: true },
         { label: '關於', to: '/#about', external: false },
         { label: '職涯旅程', to: '/resume', external: true },
+        { label: '前端作品', to: '/works', external: true },
         { label: '聯絡', to: '/#contact', external: false },
       ]
     : [
@@ -26,6 +27,7 @@ const navItems = computed(() =>
         { label: 'Demo', to: '/demo', external: true },
         { label: '企業專案', to: '/#enterprise', external: true },
         { label: '職涯旅程', to: '/resume', external: true },
+        { label: '前端作品', to: '/works', external: true },
       ],
 )
 

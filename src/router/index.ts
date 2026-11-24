@@ -5,6 +5,7 @@ import { productLandings } from '@/data/productLandings'
 import { trackEvent } from '@/composables/useAnalytics'
 import { stockProductRoutes } from '@/products/stock/routes'
 import { parentingProductRoutes } from '@/products/parenting/routes'
+import { frontendWorks, workPaths } from '@/data/frontendWorks'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,28 @@ const router = createRouter({
     })),
     ...stockProductRoutes,
     ...parentingProductRoutes,
+    {
+      path: '/works',
+      name: 'frontend-works',
+      component: () => import('@/views/FrontendWorksView.vue'),
+      meta: { title: `前端作品 | ${siteConfig.name}` },
+    },
+    ...frontendWorks.flatMap((work) => [
+      {
+        path: workPaths(work.slug).case,
+        name: `work-${work.slug}`,
+        component: () => import('@/views/FrontendWorkView.vue'),
+        props: { slug: work.slug },
+        meta: { title: `${work.title} | ${siteConfig.name}` },
+      },
+      {
+        path: workPaths(work.slug).demo,
+        name: `work-demo-${work.slug}`,
+        component: () => import('@/views/FrontendWorkView.vue'),
+        props: { slug: work.slug, demo: true },
+        meta: { title: `${work.title} Demo | ${siteConfig.name}` },
+      },
+    ]),
     {
       path: '/demo',
       name: 'demo',
@@ -60,7 +83,7 @@ const router = createRouter({
 router.afterEach((to) => {
   const title = (to.meta.title as string) ?? siteConfig.brand
   document.title = title
-  trackEvent('page_view', { path: to.path })
+  if (!to.path.startsWith('/works')) trackEvent('page_view', { path: to.path })
 })
 
 export default router

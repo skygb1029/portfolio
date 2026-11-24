@@ -1,0 +1,46 @@
+<script setup lang="ts">
+import { computed, defineAsyncComponent } from 'vue'
+import { frontendWorks, workPaths, type WorkSlug } from '@/data/frontendWorks'
+const props = defineProps<{ slug: WorkSlug; demo?: boolean }>()
+const work = computed(() => frontendWorks.find(item => item.slug === props.slug)!)
+const screens = {
+  iboxpost: defineAsyncComponent(() => import('@/components/work/IBoxPostDemo.vue')),
+  'maia-inference': defineAsyncComponent(() => import('@/components/work/MaiaDemo.vue')),
+  'gene-rule': defineAsyncComponent(() => import('@/components/work/GeneRuleDemo.vue')),
+  'patient-journey': defineAsyncComponent(() => import('@/components/work/PatientJourneyDemo.vue')),
+  hms: defineAsyncComponent(() => import('@/components/work/HmsDemo.vue')),
+}
+</script>
+
+<template>
+  <section class="mx-auto max-w-6xl px-5 pb-24 pt-28 sm:px-8">
+    <RouterLink :to="demo ? workPaths(slug).case : '/works'" class="text-sm font-semibold text-indigo-700 hover:underline dark:text-indigo-300">
+      {{ demo ? '← 回到案例介紹' : '← 全部前端作品' }}
+    </RouterLink>
+    <header class="mb-8 mt-5">
+      <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">{{ work.area }}</p>
+      <h1 class="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">{{ work.title }}<span v-if="demo"> Demo</span></h1>
+      <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-300">{{ demo ? work.walkthrough : work.summary }}</p>
+    </header>
+    <template v-if="demo">
+      <p class="mb-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 dark:border-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-200">
+        作品展示使用虛構資料。操作僅在當前頁面，重新整理即可重置。
+      </p>
+      <component :is="screens[slug]" :key="slug" />
+    </template>
+    <div v-else class="grid gap-5 md:grid-cols-[1.35fr_1fr]">
+      <article class="rounded-3xl border border-zinc-200 p-6 sm:p-8 dark:border-zinc-800 dark:bg-zinc-900/65">
+        <h2 class="text-xl font-semibold">我負責的前端功能</h2>
+        <ul class="mt-4 list-disc space-y-3 pl-5 leading-7 text-zinc-700 dark:text-zinc-300">
+          <li v-for="item in work.contribution" :key="item">{{ item }}</li>
+        </ul>
+      </article>
+      <aside class="rounded-3xl bg-indigo-50 p-6 sm:p-8 dark:bg-indigo-950/60">
+        <h2 class="text-xl font-semibold">互動展示</h2>
+        <p class="mt-3 leading-7 text-zinc-700 dark:text-zinc-300">{{ work.walkthrough }}</p>
+        <p class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">公開版重現代表性操作，資料與結果均為虛構。</p>
+        <a :href="workPaths(slug).demo" class="mt-5 inline-flex rounded-full bg-indigo-700 px-5 py-2.5 font-semibold text-white hover:bg-indigo-800">開啟互動 Demo</a>
+      </aside>
+    </div>
+  </section>
+</template>
