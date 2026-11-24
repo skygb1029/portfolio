@@ -20,6 +20,7 @@ const details: Record<WorkSlug, string> = {
   'gene-rule': '病患資料查詢與規則瀏覽。',
   'demi-studio': '攝影品牌網站、作品集與內容管理。',
   dayform: '居家選物電商、優惠活動與展示結帳。',
+  'night-parcel': '單鍵飛行、星郵收集與逐步加快的夜港航線。',
 }
 </script>
 

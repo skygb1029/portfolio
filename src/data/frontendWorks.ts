@@ -36,6 +36,18 @@ export const frontendWorks = [
     walkthrough: '用手機或桌機瀏覽商品，選擇兩件燕麥條紋靠枕，在優惠活動套用 WELCOME10，完成展示付款後查看訂單。',
   },
   {
+    slug: 'night-parcel',
+    title: '夜航郵差 Night Parcel',
+    area: '瀏覽器街機與跨裝置互動',
+    summary: '駕駛紙翼信使穿越夜港訊號門，收集星郵並挑戰最高分。',
+    contribution: [
+      '以 Canvas 實作飛行物理、障礙生成、碰撞和計分。',
+      '支援滑鼠、觸控及鍵盤，並在分頁切到背景時暫停。',
+      '設計夜港場景、星郵收集、漸進難度及本機最高分。',
+    ],
+    walkthrough: '點按畫面或按空白鍵控制高度，穿越訊號門或收集星郵得分。',
+  },
+  {
     slug: 'maia-inference',
     title: 'MAIA Inference',
     area: '影像分析流程',
@@ -88,6 +100,7 @@ export type WorkSlug = (typeof frontendWorks)[number]['slug']
 const externalDemos = {
   'demi-studio': 'https://demi-studio.vercel.app/',
   dayform: 'https://dayform-production.up.railway.app/',
+  'night-parcel': 'https://night-parcel-flight.consideratebook2.chatgpt.site/',
 } as const
 
 type InlineWorkSlug = Exclude<WorkSlug, keyof typeof externalDemos>
