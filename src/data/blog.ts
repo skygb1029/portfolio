@@ -1,6 +1,7 @@
 import { projectNotes } from './projectNotes.ts'
 import { recentProjectNotes } from './recentProjectNotes.ts'
 import { hiddenProductSlugs } from './productLandings.ts'
+import { developmentNotes } from './developmentNotes.ts'
 
 export interface BlogPost {
   id: string
@@ -23,7 +24,7 @@ const allBlogPosts: BlogPost[] = [
     excerpt: "用工作邊界、工具權限和評估案例決定什麼時候需要 Agent。",
     sections: [
       {
-        heading: "先把任務寫成可驗收的輸出",
+        heading: "輸出格式決定了錯誤能不能被辨認",
         body: "如果需求是把客服紀錄整理成摘要，先只收一筆輸入，規定摘要必須包含問題、已做處理與待辦。用幾筆典型紀錄和缺欄位的紀錄測試。能靠一次模型呼叫穩定完成，就可以先保留這條流程。"
       },
       {
@@ -145,7 +146,7 @@ const allBlogPosts: BlogPost[] = [
         body: "準備一組可辨識的查詢，例如輸入有空格的標的代號，以及一組缺少代號的查詢。先把兩則訊息送給指令解析器，確認前者能整理成查詢物件，後者能回傳需要補問的欄位。這一段不需要實際向 LINE 發訊息，測試時可以用固定事件和預期回覆內容。分類或查詢行為出錯時，也比較容易知道問題是出在解析還是平台傳輸。"
       },
       {
-        heading: "把卡片在手機上的限制納入驗收",
+        heading: "手機的可讀性改變了卡片取捨",
         body: "Flex Message 可分開安排標題、資訊區與行動連結。用一筆長名稱、一筆缺摘要和一筆只有來源網址的資料產生卡片，逐一看標題是否截斷、空欄位有沒有留下突兀的間距，連結文字能否讓人知道要去哪裡。卡片之外也可提供簡短文字回覆，讓重要資訊可以在不同顯示情境被讀到。"
       },
       {
@@ -327,7 +328,7 @@ const allBlogPosts: BlogPost[] = [
         body: "同一個規則名稱可能存在多個版本，頁面可並列名稱、版號與適用條件。進入詳細頁時，把使用者從哪筆結果進入的線索放在固定區域。若歷史結果所使用的規則已停用，應保留能辨識其版本的資訊，並說明目前狀態。驗收應包括同名不同版本的規則，確認頁面沒有用名稱取代唯一識別值。"
       },
       {
-        heading: "先把可以公開驗收的互動範圍寫清楚",
+        heading: "公開展示能說明哪些技術決定",
         body: "展示版可走病患資料庫、比對結果與規則清單的瀏覽流程。測試時可以先依識別碼過濾、清除條件、再透過導覽切換頁面。判斷介面是否清楚的重點，是每一頁都能看出資料來源於哪個頁面操作、目前套用哪些條件，以及是否有內容可繼續查看。"
       }
     ],
@@ -606,7 +607,16 @@ const allBlogPosts: BlogPost[] = [
   },
 ]
 
-export const blogPosts = allBlogPosts.filter(post => !hiddenProductSlugs.has(post.id))
+export const blogPosts = allBlogPosts.filter(post => !hiddenProductSlugs.has(post.id)).map(post => {
+  const rewrite = developmentNotes[post.id]
+  if (!rewrite) return post
+  return {
+    ...post,
+    title: rewrite.title,
+    excerpt: rewrite.excerpt,
+    sections: [...rewrite.sections, ...rewrite.keep.map(index => post.sections[index]!)],
+  }
+})
 
 export function findRelatedArticle(path: string) {
   return blogPosts.find(post => post.related?.to === path)

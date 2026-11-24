@@ -1,3 +1,5 @@
+import { developmentNotes } from './developmentNotes.ts'
+
 export interface NoteDetail {
   key: string
   alert: string
@@ -218,9 +220,18 @@ Object.assign(noteDetails, {
   },
   'little-days': {
     key:'照片和文字共用畫布座標，遮罩用來維持數字外形。',
-    alert:'照片草稿儲存在目前瀏覽器，成品匯出時要排除所有編輯框和把手。',
+    alert:'照片只保留在本次編輯，成品匯出時要排除所有編輯框和把手。',
     steps:['選擇月份','畫出數字遮罩與格子','調整照片與文字','儲存各月草稿','重新繪製並匯出 PNG'],
     image:'/article-images/little-days-preview.png',caption:'小小日子工作室的 12 月新版版型。雙位數加高，留下可自行放置文字的空間。',
     practice:['從第九個月放兩張照片，先用滾輪縮小到能看到格子背景，再用角落把手放回原本的構圖附近。加上一段兩行文字、拖到數字外、改顏色，下載後與預覽比對。切到第十二個月時，這些編輯不應出現在另一張卡片上。'],
   },
 } satisfies Record<string, NoteDetail>)
+
+for (const [id, rewrite] of Object.entries(developmentNotes)) {
+  const detail = noteDetails[id]
+  if (detail) {
+    detail.practice = [rewrite.closing]
+    detail.closingHeading = '做完後的反思'
+    detail.steps = rewrite.sections.map(section => section.heading)
+  }
+}
