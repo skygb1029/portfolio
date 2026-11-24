@@ -85,6 +85,12 @@ const router = createRouter({
       meta: { title: `Waitlist Admin | ${siteConfig.brand}` },
     },
     {
+      path: '/admin/analytics',
+      name: 'admin-analytics',
+      component: () => import('@/views/AdminAnalyticsView.vue'),
+      meta: { title: 'Portfolio 流量報表' },
+    },
+    {
       path: '/admin/ops',
       name: 'admin-ops',
       component: () => import('@/views/AdminOpsView.vue'),

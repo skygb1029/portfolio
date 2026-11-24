@@ -29,6 +29,7 @@ function formatDate(iso: string | null) {
           >
             重新整理
           </button>
+          <RouterLink to="/admin/analytics" class="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-700">GA4 流量報表</RouterLink>
           <RouterLink
             to="/admin/waitlist"
             class="rounded-lg border border-zinc-300 px-4 py-2 text-sm dark:border-zinc-700"

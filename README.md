@@ -114,3 +114,12 @@ src/
 ├── config/site.ts  # Email、GitHub 等設定
 └── views/
 ```
+
+## GA4 流量報表
+
+由營運監控開啟 `/admin/analytics`。報表只顯示 Portfolio 串流的 GA4 彙總資料，已授權的 Google 帳戶可查詢最近 7、28 或 90 天，以及最近 30 分鐘的事件。
+
+1. 在 Google Cloud 專案啟用 Google Analytics Data API。
+2. 建立「網頁應用程式」OAuth 用戶端，將 `https://jrjim-portfolio.vercel.app` 加入已授權的 JavaScript 來源。若 OAuth 應用程式處於測試狀態，請把報表使用者加為測試使用者。
+3. 在 Vercel Production 設定 `VITE_GA_REPORTS_CLIENT_ID` 並重新部署。此值為公開的 OAuth 用戶端 ID。報表使用 `analytics.readonly` 權限，Google 帳戶仍須有 Analytics 資源的讀取權限。
+4. 在報表頁以 Google 帳戶授權，核對站內數字與 GA4 中相同的日期範圍及串流。
