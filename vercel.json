@@ -16,7 +16,7 @@
     "headers": [{ "key": "X-Robots-Tag", "value": "noindex, follow" }]
   }],
   "rewrites": [
-    { "source": "/:page(resume|contact|works|products|articles)", "destination": "/_seo/:page.html" },
+    { "source": "/:page(resume|contact|privacy|works|products|articles)", "destination": "/_seo/:page.html" },
     { "source": "/:section(works|product|articles)/:slug", "destination": "/_seo/:section/:slug.html" },
     { "source": "/((?!api/|_vercel/|_seo/).*)", "destination": "/index.html" }
   ]

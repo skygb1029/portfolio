@@ -18,6 +18,7 @@ import { siteConfig } from '@/config/site'
       </div>
       <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-300 sm:justify-end">
         <RouterLink to="/works" class="hover:text-white hover:underline">作品案例</RouterLink>
+        <RouterLink to="/privacy" class="hover:text-white hover:underline">GA4 報表隱私權政策</RouterLink>
         <RouterLink to="/contact" class="hover:text-white hover:underline">聯絡合作</RouterLink>
         <a
           :href="siteConfig.githubUrl"

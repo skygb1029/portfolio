@@ -31,6 +31,11 @@ const router = createRouter({
       meta: { title: `AI 產品 | ${siteConfig.name}` },
     },
     {
+      path: '/privacy',
+      component: () => import('@/views/AnalyticsPrivacyView.vue'),
+      meta: { title: 'GA4 報表隱私權政策｜JR JIM' },
+    },
+    {
       path: '/contact',
       component: () => import('@/views/ContactView.vue'),
       meta: { title: `聯絡合作 | ${siteConfig.name}` },
