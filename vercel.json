@@ -4,6 +4,11 @@
   "installCommand": "pnpm install",
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
+  "redirects": [
+    { "source": "/:section(product|articles)/:slug(parenting-assistant|life-manager|sales-assistant)", "destination": "/product/stock-secretary", "permanent": false },
+    { "source": "/app/parenting", "destination": "/product/stock-secretary", "permanent": false },
+    { "source": "/demo", "destination": "/app/stock", "permanent": false }
+  ],
   "headers": [{
     "source": "/project-demos/(.*)",
     "headers": [

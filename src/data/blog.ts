@@ -1,5 +1,6 @@
 import { projectNotes } from './projectNotes.ts'
 import { recentProjectNotes } from './recentProjectNotes.ts'
+import { hiddenProductSlugs } from './productLandings.ts'
 
 export interface BlogPost {
   id: string
@@ -12,7 +13,7 @@ export interface BlogPost {
   sources?: { label: string; url: string }[]
 }
 
-export const blogPosts: BlogPost[] = [
+const allBlogPosts: BlogPost[] = [
   ...recentProjectNotes,
   ...projectNotes,
   {
@@ -604,6 +605,8 @@ export const blogPosts: BlogPost[] = [
     ]
   },
 ]
+
+export const blogPosts = allBlogPosts.filter(post => !hiddenProductSlugs.has(post.id))
 
 export function findRelatedArticle(path: string) {
   return blogPosts.find(post => post.related?.to === path)

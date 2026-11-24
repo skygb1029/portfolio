@@ -240,6 +240,11 @@ export const productLandings: ProductLanding[] = [
   },
 ]
 
+export const publicProductLandings = productLandings.filter(product => product.id === 'stock')
+export const hiddenProductSlugs = new Set(
+  productLandings.filter(product => !publicProductLandings.includes(product)).map(product => product.slug),
+)
+
 export function getLandingBySlug(slug: string): ProductLanding | undefined {
   return productLandings.find((p) => p.slug === slug)
 }

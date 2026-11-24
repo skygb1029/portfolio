@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { siteConfig } from '@/config/site'
-import { productLandings } from '@/data/productLandings'
+import { hiddenProductSlugs, publicProductLandings } from '@/data/productLandings'
 import { trackPage } from '@/composables/useAnalytics'
 import { publicPages } from '@/data/seoPages'
 import { applyPortfolioSeo } from '@/utils/portfolioSeo'
@@ -46,7 +46,7 @@ const router = createRouter({
       component: () => import('@/views/ResumeView.vue'),
       meta: { title: `關於與履歷 | ${siteConfig.name}` },
     },
-    ...productLandings.map((p) => ({
+    ...publicProductLandings.map((p) => ({
       path: `/product/${p.slug}`,
       name: `product-${p.slug}`,
       component: () => import('@/views/ProductLandingView.vue'),
@@ -80,8 +80,7 @@ const router = createRouter({
     {
       path: '/demo',
       name: 'demo',
-      component: () => import('@/views/DemoCenterView.vue'),
-      meta: { title: `Demo Center | ${siteConfig.brand}` },
+      redirect: '/app/stock',
     },
     {
       path: '/admin/waitlist',
@@ -116,6 +115,10 @@ const legacySections: Record<string, string> = {
   '#metrics': '/products',
 }
 router.beforeEach(to => {
+  const slug = to.path.match(/^\/(?:product|articles)\/([^/]+)\/?$/)?.[1]
+  if (to.name === 'app-parenting' || (slug && hiddenProductSlugs.has(slug))) {
+    return { path: '/product/stock-secretary', replace: true }
+  }
   const target = to.path === '/' ? legacySections[to.hash] : undefined
   if (target) return { ...router.resolve(target), query: to.query, replace: true }
 })
