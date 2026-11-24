@@ -1,6 +1,6 @@
 export const analyticsConsole = 'https://analytics.google.com/analytics/web/#/a52976749p320722386/reports/intelligenthome'
 export const analyticsScope = 'https://www.googleapis.com/auth/analytics.readonly'
-export const analyticsClientId = import.meta.env.VITE_GA_REPORTS_CLIENT_ID?.trim()
+export const analyticsClientId = import.meta.env.VITE_GA_REPORTS_CLIENT_ID?.trim() || '671465409825-ri4e82v3ppbgmrlfdfucmqvhc368vftn.apps.googleusercontent.com'
 
 interface GoogleOAuth {
   initTokenClient(config: {
