@@ -24,7 +24,7 @@ function resolveGitVersion(): string {
 
 export default defineConfig(({ mode }) => ({
   define: { __GIT_VERSION__: JSON.stringify(resolveGitVersion()) },
-  plugins: [vue(), tailwindcss(), devApiPlugin(), seoPages(portfolioOrigin, publicPages, loadEnv(mode, process.cwd()).VITE_GOOGLE_SITE_VERIFICATION)],
+  plugins: [vue(), tailwindcss(), devApiPlugin(), seoPages(portfolioOrigin, publicPages, loadEnv(mode, process.cwd()).VITE_GOOGLE_SITE_VERIFICATION || 'K2fjpzJnnxCoLbSB0GpgUkRDqD3jjzDdZwhc6uZkbcs')],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
