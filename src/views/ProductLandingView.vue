@@ -35,7 +35,7 @@ function joinWaitlist() {
 </script>
 
 <template>
-  <div v-if="product" class="pt-16">
+  <div v-if="product">
     <section
       class="section-padding relative overflow-hidden border-b border-zinc-200/60 dark:border-zinc-800/60"
     >
@@ -45,10 +45,10 @@ function joinWaitlist() {
       />
       <div class="relative mx-auto max-w-6xl">
         <RouterLink
-          to="/"
+          to="/products"
           class="text-sm text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400"
         >
-          ← 返回 Product Hub
+          ← 返回 AI 產品
         </RouterLink>
         <div class="mt-6 flex flex-wrap items-center gap-3">
           <ProductStatusBadge :status="product.lifecycleStatus" />
@@ -251,23 +251,6 @@ function joinWaitlist() {
       :product-key="product.slug"
     />
 
-    <section class="section-padding border-t border-zinc-200 dark:border-zinc-800">
-      <div class="mx-auto max-w-3xl text-center">
-        <h2 class="text-2xl font-bold text-zinc-900 dark:text-zinc-50">搶先加入等待名單</h2>
-        <p class="mt-3 text-zinc-600 dark:text-zinc-400">產品上線時優先通知，並取得早鳥優惠資格。</p>
-        <div class="mt-8 flex justify-center">
-        <ProductLandingCta
-          v-if="product"
-          :product-id="product.id"
-          :show-waitlist="product.id !== 'stock' && product.id !== 'life'"
-          :show-demo="false"
-          size="footer"
-          @join-waitlist="joinWaitlist"
-          @open-preview="previewOpen = true"
-        />
-        </div>
-      </div>
-    </section>
   </div>
 
   <div v-else class="flex min-h-[60vh] flex-col items-center justify-center pt-16">

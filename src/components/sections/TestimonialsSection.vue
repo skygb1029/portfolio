@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import ScrollReveal from '@/components/ui/ScrollReveal.vue'
 import SectionTitle from '@/components/ui/SectionTitle.vue'
-
-const placeholders = [
-  { role: '客戶評價', text: '合作後產品上線效率明顯提升，溝通順暢且技術扎實。' },
-  { role: '合作夥伴', text: 'AI 整合能力強，能快速將構想落地為可運行的 MVP。' },
-  { role: '使用者回饋', text: 'LINE Bot 使用體驗直覺，每日晨報已成為固定習慣。' },
-]
+import { feedbackExamples } from '@/data/feedback'
 </script>
 
 <template>
@@ -23,7 +18,7 @@ const placeholders = [
 
       <div class="mt-12 grid gap-6 md:grid-cols-3">
         <ScrollReveal
-          v-for="(item, i) in placeholders"
+          v-for="(item, i) in feedbackExamples"
           :key="item.role"
           :delay="i * 80"
         >

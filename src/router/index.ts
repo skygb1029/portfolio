@@ -17,10 +17,20 @@ const router = createRouter({
       meta: { title: siteConfig.brand },
     },
     {
+      path: '/products',
+      component: () => import('@/views/ProductsView.vue'),
+      meta: { title: `AI 產品 | ${siteConfig.name}` },
+    },
+    {
+      path: '/contact',
+      component: () => import('@/views/ContactView.vue'),
+      meta: { title: `聯絡合作 | ${siteConfig.name}` },
+    },
+    {
       path: '/resume',
       name: 'resume',
       component: () => import('@/views/ResumeView.vue'),
-      meta: { title: `職涯旅程 | ${siteConfig.name}` },
+      meta: { title: `關於與履歷 | ${siteConfig.name}` },
     },
     ...productLandings.map((p) => ({
       path: `/product/${p.slug}`,
@@ -45,13 +55,13 @@ const router = createRouter({
         props: { slug: work.slug },
         meta: { title: `${work.title} | ${siteConfig.name}` },
       },
-      {
+      ...(work.slug === 'demi-studio' ? [] : [{
         path: workPaths(work.slug).demo,
         name: `work-demo-${work.slug}`,
         component: () => import('@/views/FrontendWorkView.vue'),
         props: { slug: work.slug, demo: true },
         meta: { title: `${work.title} Demo | ${siteConfig.name}` },
-      },
+      }]),
     ]),
     {
       path: '/demo',
@@ -78,6 +88,16 @@ const router = createRouter({
     }
     return { top: 0 }
   },
+})
+
+const legacySections: Record<string, string> = {
+  '#github': '/resume#resume-github',
+  '#product-hub': '/products',
+  '#metrics': '/products',
+}
+router.beforeEach(to => {
+  const target = to.path === '/' ? legacySections[to.hash] : undefined
+  if (target) return { ...router.resolve(target), query: to.query, replace: true }
 })
 
 router.afterEach((to) => {

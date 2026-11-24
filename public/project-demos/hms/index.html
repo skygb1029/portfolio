@@ -7,8 +7,17 @@
     <title>血液透析管理平台</title>
     <script type="module" crossorigin src="/project-demos/hms/assets/index-D_Ug0wI7.js"></script>
     <link rel="stylesheet" crossorigin href="/project-demos/hms/assets/index-DxHoERDu.css">
+    <link rel="stylesheet" href="/project-demos/demo-notice.css">
   </head>
   <body>
-    <p style="position:relative;z-index:1001;margin:0;padding:8px 12px;background:#17213a;color:white;font:14px/1.4 system-ui"><a href="/works/hms" style="color:#d6e2ff">返回作品介紹</a>　完整流程展示 · 使用虛構資料 · 請勿輸入真實資料</p><div id="app"></div>
+    <div id="app"></div>
+    <button class="demo-notice-trigger" type="button" popovertarget="demo-notice">Demo 說明</button>
+    <aside class="demo-notice" id="demo-notice" popover aria-label="完整流程展示">
+      <button type="button" popovertarget="demo-notice" popovertargetaction="hide" aria-label="關閉說明">×</button>
+      <strong>完整流程展示</strong>
+      <p>使用虛構資料，請勿輸入真實資料。</p>
+      <a href="/works/hms">返回作品介紹</a>
+    </aside>
+
   </body>
 </html>

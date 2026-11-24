@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: 'Jr Jim',
   logo: 'JR JIM',
-  brand: 'Jr Jim AI Product Hub',
+  brand: 'JR JIM｜前端工程作品集',
   productHub: 'Jr Jim Product Hub',
   title: 'Frontend Engineer × AI Product Builder',
   jobTitle: 'Frontend Engineer',
@@ -11,7 +11,7 @@ export const siteConfig = {
   email: 'skygb1029@gmail.com',
   github: 'skygb1029',
   githubUrl: 'https://github.com/skygb1029',
-  siteUrl: 'https://portfolio.vercel.app',
+  siteUrl: 'https://jrjim-portfolio.vercel.app',
   calendlyUrl: 'mailto:skygb1029@gmail.com?subject=Jr Jim - 預約討論',
   waitlist: {
     formAction: import.meta.env.VITE_WAITLIST_FORM_ACTION ?? '',

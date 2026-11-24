@@ -27,68 +27,67 @@ const projects = [
 </script>
 
 <template>
-  <div class="section-padding mx-auto max-w-6xl pb-24 pt-28">
+  <div class="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20">
     <header class="rounded-3xl border border-zinc-200 bg-gradient-to-br from-indigo-50 to-white p-7 sm:p-12 dark:border-zinc-800 dark:from-indigo-950/60 dark:to-zinc-900">
       <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">許智鈞 <span class="text-2xl sm:text-3xl">{{ siteConfig.name }}</span></h1>
       <p class="mt-3 text-lg font-medium text-indigo-700 dark:text-indigo-300">{{ siteConfig.title }}</p>
-      <p class="mt-5 max-w-2xl leading-7 text-zinc-700 dark:text-zinc-300">
-        我有約 7 年前端開發經驗，主要使用 Vue、JavaScript 和 TypeScript，曾參與醫療科技、
-        電商、物流、房地產及企業內部系統。除了開發介面，也負責 API 整合、系統重構，
-        以及與客戶、後端工程師和第三方廠商確認需求及介接規格。
-      </p>
+      <div class="mt-6 max-w-3xl space-y-4 text-lg leading-8 text-zinc-700 sm:text-xl sm:leading-9 dark:text-zinc-300">
+        <p>我有約 7 年前端開發經驗，主要使用 Vue、JavaScript 與 TypeScript。曾參與醫療影像、物流會員與排班系統，也做過電商、房地產及企業內部系統。</p>
+        <p>我負責介面開發、API 整合與既有系統重構，並與客戶、後端工程師及第三方廠商一起確認需求和介接規格。</p>
+      </div>
       <div class="mt-7 flex flex-wrap gap-3">
-        <a :href="`mailto:${siteConfig.email}`" class="rounded-full bg-indigo-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800">Email 聯絡</a>
-        <a :href="siteConfig.githubUrl" class="rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-semibold hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800">GitHub</a>
+        <RouterLink to="/contact" class="rounded-full bg-indigo-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-800">聯絡合作</RouterLink>
+        <a id="resume-github" :href="siteConfig.githubUrl" class="rounded-full border border-zinc-300 px-5 py-2.5 text-sm font-semibold hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800">GitHub</a>
       </div>
     </header>
 
-    <div class="mt-9 grid gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+    <div class="mx-auto mt-9 max-w-5xl space-y-8">
       <div class="space-y-8">
-        <section aria-labelledby="resume-experience" class="rounded-2xl border border-zinc-200 p-6 sm:p-8 dark:border-zinc-800">
-          <h2 id="resume-experience" class="text-xl font-bold">工作經歷</h2>
+        <section aria-labelledby="resume-experience" class="rounded-2xl border border-zinc-200 p-5 sm:p-9 dark:border-zinc-800">
+          <h2 id="resume-experience" class="text-2xl font-bold sm:text-3xl">工作經歷</h2>
           <ol class="mt-4 divide-y divide-zinc-200 dark:divide-zinc-800">
-            <li v-for="entry in experience" :key="entry.id" class="py-5 last:pb-0">
+            <li v-for="entry in experience" :key="entry.id" class="py-6 last:pb-0">
               <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 class="font-semibold">{{ entry.role }} · {{ entry.company }}</h3>
-                <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ entry.period }}</span>
+                <h3 class="text-lg font-bold sm:text-xl">{{ entry.company }} · {{ entry.role }}</h3>
+                <span class="text-base text-zinc-600 dark:text-zinc-300">{{ entry.period }}</span>
               </div>
-              <ul v-if="entry.highlights?.length" class="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700 dark:text-zinc-300">
+              <ul v-if="entry.highlights?.length" class="mt-3 max-w-3xl list-disc space-y-2 pl-5 text-base leading-7 text-zinc-700 sm:text-lg sm:leading-8 dark:text-zinc-300">
                 <li v-for="highlight in entry.highlights" :key="highlight">{{ highlight }}</li>
               </ul>
-              <p v-if="entry.tech?.length" class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">{{ entry.tech.join(' · ') }}</p>
+              <p v-if="entry.tech?.length" class="mt-3 text-base leading-7 text-zinc-600 dark:text-zinc-300">{{ entry.tech.join(' · ') }}</p>
             </li>
           </ol>
         </section>
 
         <section aria-labelledby="resume-projects" class="rounded-2xl border border-zinc-200 p-6 sm:p-8 dark:border-zinc-800">
-          <h2 id="resume-projects" class="text-xl font-bold">代表專案</h2>
+          <h2 id="resume-projects" class="text-2xl font-bold sm:text-3xl">代表專案</h2>
           <ul class="mt-4 divide-y divide-zinc-200 dark:divide-zinc-800">
             <li v-for="project in projects" :key="project.title" class="py-4 first:pt-0">
               <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                <h3 class="font-semibold">{{ project.title }}</h3>
-                <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ project.period }}</span>
+                <h3 class="text-lg font-bold sm:text-xl">{{ project.title }}</h3>
+                <span class="text-base text-zinc-600 dark:text-zinc-300">{{ project.period }}</span>
               </div>
-              <p class="mt-2 text-sm leading-6 text-zinc-700 dark:text-zinc-300">{{ project.detail }}</p>
-              <RouterLink v-if="project.path" :to="project.path" class="mt-2 inline-block text-sm text-indigo-700 underline dark:text-indigo-300">查看{{ project.title }}</RouterLink>
+              <p class="mt-3 max-w-3xl text-base leading-7 text-zinc-700 sm:text-lg sm:leading-8 dark:text-zinc-300">{{ project.detail }}</p>
+              <RouterLink v-if="project.path" :to="project.path" class="mt-2 inline-block text-base text-indigo-700 underline dark:text-indigo-300">查看{{ project.title }}</RouterLink>
             </li>
           </ul>
           <RouterLink :to="{ path: '/', hash: '#enterprise' }" class="mt-4 inline-block text-sm font-semibold text-indigo-700 underline dark:text-indigo-300">查看企業專案</RouterLink>
         </section>
       </div>
 
-      <aside class="space-y-8">
+      <aside class="grid items-start gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <section aria-labelledby="resume-skills" class="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
-          <h2 id="resume-skills" class="text-xl font-bold">專業技能</h2>
+          <h2 id="resume-skills" class="text-2xl font-bold">專業技能</h2>
           <div v-for="group in skillGroups" :key="group.id" class="mt-5">
-            <h3 class="mb-2 text-sm font-semibold">{{ group.title }}</h3>
+            <h3 class="mb-3 text-lg font-semibold">{{ group.title }}</h3>
             <ul class="flex flex-wrap gap-2">
-              <li v-for="skill in group.skills" :key="skill" class="rounded-full bg-zinc-100 px-2.5 py-1 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">{{ skill }}</li>
+              <li v-for="skill in group.skills" :key="skill" class="rounded-full bg-zinc-100 px-3 py-1.5 text-base text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">{{ skill }}</li>
             </ul>
           </div>
         </section>
         <section aria-labelledby="resume-education" class="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
-          <h2 id="resume-education" class="text-xl font-bold">學歷與進修</h2>
-          <dl class="mt-4 space-y-4 text-sm">
+          <h2 id="resume-education" class="text-2xl font-bold">學歷與進修</h2>
+          <dl class="mt-4 space-y-5 text-base leading-7">
             <div><dt class="font-semibold">大安高工 · 電機科</dt><dd class="mt-1 text-zinc-600 dark:text-zinc-400">2008/08 – 2011/05 · 畢業</dd></div>
             <div><dt class="font-semibold">卡內基課程 · 溝通管理</dt><dd class="mt-1 text-zinc-600 dark:text-zinc-400">2016/05 – 2018/05</dd></div>
           </dl>

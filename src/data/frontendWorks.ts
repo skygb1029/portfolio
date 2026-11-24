@@ -21,7 +21,7 @@ export const frontendWorks = [
       '處理影像暫存、預覽、分析中狀態與結果畫面。',
       '維護模型與結果元件之間的狀態，讓使用者可開始下一輪分析。',
     ],
-    walkthrough: '載入合成範例圖片，選擇展示模型，再查看模擬結果。',
+    walkthrough: '下載合成 X 光範例，進入完整 Demo 後用 Browse File 選取圖片，查看本機預覽。',
   },
   {
     slug: 'gene-rule',
@@ -33,7 +33,7 @@ export const frontendWorks = [
       '實作規則清單、版本與明細展示。',
       '整理資料查詢與規則比對間的切換流程，呈現後端回傳的結果。',
     ],
-    walkthrough: '用示範編號搜尋資料，選一筆紀錄和一條規則，查看模擬比對。',
+    walkthrough: '從比對結果查看示範紀錄，再開啟病患資料庫和比對規則，對照資料與規則的呈現方式。',
   },
   {
     slug: 'patient-journey',
@@ -45,7 +45,7 @@ export const frontendWorks = [
       '整合檢驗、病理、醫療與影像紀錄的瀏覽入口。',
       '實作四格影像檢視，每個視窗可獨立切換影像。',
     ],
-    walkthrough: '切換時間軸中的就診日期，查看檢驗；再比較四個影像視窗。',
+    walkthrough: '從病患首頁查看治療時間軸與檢驗，接著進入 Imaging Records 比較四格合成 X 光。',
   },
   {
     slug: 'hms',
@@ -57,11 +57,23 @@ export const frontendWorks = [
       '實作患者管理及醫療紀錄前端頁面。',
       '整理中英文介面、側欄圖示和表單操作狀態。',
     ],
-    walkthrough: '取消勾選病區或班次，確認床位與合計變化，再切換英文介面。',
+    walkthrough: '開啟排班管理並取消勾選 A 區，確認床位列與合計同步更新，再切換英文介面。',
+  },
+  {
+    slug: 'demi-studio',
+    title: 'Demi Studio',
+    area: '攝影品牌網站與內容管理',
+    summary: '呈現婚紗婚禮與商業攝影作品，並提供工作室整理圖片、方案與常見問題的後台。',
+    contribution: [
+      '整理品牌首頁、攝影作品案例與預約入口。',
+      '整合婚紗婚禮與商業攝影的常見問題。',
+      '開發圖片、文字、FAQ 與方案的內容編輯、預覽和發布介面。',
+    ],
+    walkthrough: '開啟品牌網站，瀏覽婚紗婚禮、商業攝影案例與常見問題。',
   },
 ] as const
 export type WorkSlug = (typeof frontendWorks)[number]['slug']
-const originalEntry: Record<WorkSlug, string> = {
+const originalEntry: Record<Exclude<WorkSlug, 'demi-studio'>, string> = {
   iboxpost: '#/home',
   'maia-inference': '?demo=1#/home',
   'gene-rule': '?demo=1#/search',
@@ -71,5 +83,5 @@ const originalEntry: Record<WorkSlug, string> = {
 export const workPaths = (slug: WorkSlug) => ({
   case: '/works/' + slug,
   demo: '/works/' + slug + '/demo',
-  fullDemo: '/project-demos/' + slug + '/index.html' + originalEntry[slug],
+  fullDemo: slug === 'demi-studio' ? 'https://demi-studio.vercel.app/' : '/project-demos/' + slug + '/index.html' + originalEntry[slug],
 })

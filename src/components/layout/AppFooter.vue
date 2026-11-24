@@ -4,26 +4,21 @@ import { siteConfig } from '@/config/site'
 </script>
 
 <template>
-  <footer class="border-t border-zinc-200 bg-zinc-50 py-10 dark:border-zinc-800 dark:bg-zinc-950">
+  <footer class="border-t border-zinc-800 bg-[#171827] py-10 text-zinc-100">
     <div
       class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8"
     >
       <div class="text-center sm:text-left">
-        <p class="text-sm text-zinc-600 dark:text-zinc-400">
+        <p class="text-sm text-zinc-200">
           © {{ new Date().getFullYear() }} {{ siteConfig.name }}
         </p>
-        <p class="mt-1 text-xs text-zinc-500">
-          {{ siteConfig.footerTagline }}
+        <p class="mt-1 text-xs text-zinc-400">
+          前端工程作品集
         </p>
       </div>
-      <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-500 sm:justify-end">
-        <RouterLink to="/demo" class="hover:text-indigo-600 dark:hover:text-indigo-400">Demo</RouterLink>
-        <a
-          :href="`mailto:${siteConfig.email}`"
-          class="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
-        >
-          Email
-        </a>
+      <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-zinc-300 sm:justify-end">
+        <RouterLink to="/works" class="hover:text-white hover:underline">作品案例</RouterLink>
+        <RouterLink to="/contact" class="hover:text-white hover:underline">聯絡合作</RouterLink>
         <a
           :href="siteConfig.githubUrl"
           target="_blank"

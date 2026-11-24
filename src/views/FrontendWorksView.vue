@@ -3,19 +3,22 @@ import { frontendWorks, workPaths } from '@/data/frontendWorks'
 </script>
 
 <template>
-  <section class="mx-auto max-w-6xl px-5 pb-24 pt-28 sm:px-8">
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">前端作品</h1>
+  <section class="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">作品案例</h1>
     <p class="mt-5 max-w-2xl text-lg leading-8 text-zinc-600 dark:text-zinc-300">
       從物流寄件到醫療工作流程，這裡記錄我負責的前端介面、資料整合與互動。每個案例都有可操作的展示。
     </p>
     <ul class="mt-10 grid gap-4 sm:grid-cols-2">
-      <li v-for="work in frontendWorks" :key="work.slug" class="rounded-3xl border border-zinc-200 p-6 dark:border-zinc-800 dark:bg-zinc-900/65">
+      <li v-for="work in frontendWorks" :key="work.slug" class="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+        <img :src="'/case-previews/' + work.slug + '.jpg'" :alt="work.title + '展示畫面'" width="1440" height="810" loading="lazy" class="aspect-video w-full border-b border-zinc-200 object-cover dark:border-zinc-800">
+        <div class="p-6">
         <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">{{ work.area }}</p>
         <h2 class="mt-3 text-2xl font-semibold">{{ work.title }}</h2>
         <p class="mt-3 leading-7 text-zinc-600 dark:text-zinc-300">{{ work.summary }}</p>
         <div class="mt-6 flex flex-wrap items-center gap-4">
           <RouterLink :to="workPaths(work.slug).case" class="text-sm font-semibold underline underline-offset-4 hover:text-indigo-600">查看案例</RouterLink>
-          <a :href="workPaths(work.slug).fullDemo" class="rounded-full bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800">操作完整 Demo</a>
+          <a :href="workPaths(work.slug).fullDemo" class="rounded-full bg-indigo-700 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-800">{{ work.slug === 'demi-studio' ? '瀏覽正式網站' : '操作完整 Demo' }}</a>
+        </div>
         </div>
       </li>
     </ul>
