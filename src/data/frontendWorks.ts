@@ -43,7 +43,7 @@ export const frontendWorks = [
     contribution: [
       '以 Canvas 實作數字遮罩、照片圖層、拖曳和縮放。',
       '支援自訂文字、卡片配色、手機觸控和白天／黑夜介面。',
-      '以 IndexedDB 保存月份草稿，並提供 PNG 匯出。',
+      '以 IndexedDB 保存各月的文字與配色，照片僅在本次編輯保留，並提供 PNG 匯出。',
     ],
     walkthrough: '選擇月份並上傳照片，拖曳虛線框調整構圖，加入文字後下載 PNG。',
   },

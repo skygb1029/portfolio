@@ -1,4 +1,5 @@
 import { projectNotes } from './projectNotes.ts'
+import { recentProjectNotes } from './recentProjectNotes.ts'
 
 export interface BlogPost {
   id: string
@@ -12,6 +13,7 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  ...recentProjectNotes,
   ...projectNotes,
   {
     id: "ai-notes",

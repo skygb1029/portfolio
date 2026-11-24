@@ -30,7 +30,7 @@ onMounted(() => {
           AI 育兒助手
         </h1>
         <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          雲端服務狀態 · LINE 紀錄入口
+          記錄餵奶、換尿布與睡眠，回看今天的照護時間軸。
         </p>
       </header>
 

@@ -10,6 +10,7 @@ import ProductLandingCta from '@/components/product/ProductLandingCta.vue'
 import LineJoinCta from '@/products/stock/components/LineJoinCta.vue'
 import LineBotQr from '@/components/product/LineBotQr.vue'
 import ProductPreviewPanel from '@/components/product/ProductPreviewPanel.vue'
+import ProductWorkbench from '@/components/product/ProductWorkbench.vue'
 import AiFlowDiagram from '@/components/architecture/AiFlowDiagram.vue'
 import { getProductBySlug, hasApiPreview } from '@/data/products'
 import { useWaitlistModalStore } from '@/stores/waitlistModal'
@@ -31,6 +32,10 @@ const publicLineUrls: Record<string, string | undefined> = {
   life: import.meta.env.VITE_LIFE_LINE_URL,
 }
 const publicLineUrl = computed(() => publicLineUrls[product.value?.id ?? '']?.trim() ?? '')
+const workbenchKind = computed(() => product.value?.id === 'cs' ? 'sales' : product.value?.id === 'life' ? 'life' : null)
+const workbenchIntro = computed(() => workbenchKind.value === 'sales'
+  ? '給需要處理訂單、配送與退換貨問題的客服團隊。一則顧客訊息進來後，先分類、擬回覆，再由客服確認內容或標記交班。'
+  : '把散落的待辦、行程與提醒整理成一張清單。可先在網頁記下要做的事，完成後勾掉，回來就知道還有哪些事沒處理。')
 
 watch(() => props.slug, () => {
   activeIndex.value = 0
@@ -56,8 +61,9 @@ function joinWaitlist() {
               <p class="font-semibold text-zinc-700 dark:text-zinc-200">{{ guide.tag }}</p>
             </div>
             <h1 class="mt-4 text-balance text-4xl font-bold tracking-tight sm:text-6xl">{{ product.title }}</h1>
-            <p class="mt-5 max-w-xl text-lg leading-8 text-zinc-700 dark:text-zinc-200">{{ guide.intro }}</p>
-            <ProductLandingCta class="mt-6"
+            <p class="mt-5 max-w-xl text-lg leading-8 text-zinc-700 dark:text-zinc-200">{{ workbenchKind ? workbenchIntro : guide.intro }}</p>
+            <a v-if="workbenchKind" href="#workbench" class="mt-6 inline-flex rounded-xl bg-indigo-700 px-5 py-3 font-bold text-white">{{ workbenchKind === 'sales' ? '試著處理一則訊息 ↓' : '新增一筆待辦 ↓' }}</a>
+            <ProductLandingCta v-else class="mt-6"
               :product-id="product.id" :show-waitlist="product.id !== 'stock' && product.id !== 'life'" :show-demo="false"
               @join-waitlist="joinWaitlist" @open-preview="previewOpen = true" />
             <div class="mt-5 flex flex-wrap gap-4 font-semibold text-indigo-700 dark:text-indigo-300">
@@ -70,7 +76,7 @@ function joinWaitlist() {
             <LineBotQr v-else-if="publicLineUrl" :url="publicLineUrl" :title="product.title" />
             <aside class="rounded-3xl border border-zinc-200 bg-white/80 p-5 dark:border-zinc-700 dark:bg-zinc-950/55">
               <h2 class="font-bold">如何開始</h2>
-              <p class="mt-2 leading-7 text-zinc-700 dark:text-zinc-200">{{ guide.access }}</p>
+              <p class="mt-2 leading-7 text-zinc-700 dark:text-zinc-200">{{ workbenchKind === 'sales' ? '貼上顧客訊息 → 檢查分類 → 編輯草稿或標記待人工處理。' : workbenchKind === 'life' ? '選擇類別 → 輸入事項 → 查看清單與完成狀態。' : guide.access }}</p>
               <template v-if="product.beta">
                 <p class="mt-4 text-sm font-semibold">可查詢標的</p>
                 <ul class="mt-2 flex flex-wrap gap-2">
@@ -82,6 +88,10 @@ function joinWaitlist() {
         </div>
       </div>
     </section>
+
+    <div v-if="workbenchKind" class="mx-auto max-w-6xl px-5 pt-10 sm:px-8">
+      <ProductWorkbench :key="workbenchKind" :kind="workbenchKind" class="scroll-mt-24" />
+    </div>
 
     <section id="how-it-works" class="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
       <h2 class="text-3xl font-bold tracking-tight">操作流程</h2>

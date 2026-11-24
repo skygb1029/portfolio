@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useStockAssistantStore } from '../stores/assistant'
+import MarketQuotes from './MarketQuotes.vue'
 import ChatWidget from './ChatWidget.vue'
 import FocusStocksCard from './FocusStocksCard.vue'
 import MorningReportCard from './MorningReportCard.vue'
@@ -14,6 +15,8 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col gap-5 pb-4">
+    <MarketQuotes />
+    <ChatWidget />
     <MorningReportCard
       :data="store.morning"
       :loading="store.morningLoading"
@@ -26,7 +29,5 @@ onMounted(() => {
       :loading="store.focusLoading"
       :error="store.focusError"
     />
-
-    <ChatWidget class="lg:sticky lg:bottom-4 lg:z-10" />
   </div>
 </template>

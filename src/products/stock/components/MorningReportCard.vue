@@ -17,7 +17,7 @@ function directionColor(direction: string): string {
 <template>
   <section class="rounded-2xl border border-slate-700/80 bg-slate-900/80 p-5 shadow-lg">
     <header class="mb-4 flex items-center justify-between">
-      <h2 class="text-lg font-semibold text-white">今日預測</h2>
+      <h2 class="text-lg font-semibold text-white">晨報分析</h2>
       <span v-if="data?.date" class="text-xs text-slate-400">{{ data.date }}</span>
     </header>
 
@@ -29,6 +29,7 @@ function directionColor(direction: string): string {
 
     <p v-else-if="error" class="text-sm text-rose-300">{{ error }}</p>
 
+    <p v-else-if="data && !data.mainLines.length && !data.observations.length" class="text-sm text-amber-200">目前晨報缺少可核對的市場資料。收盤行情請看上方證交所資料。</p>
     <div v-else-if="data" class="space-y-4">
       <div class="flex flex-wrap items-end gap-4">
         <div>

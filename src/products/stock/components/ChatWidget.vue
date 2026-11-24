@@ -41,11 +41,11 @@ watch(
 
 <template>
   <section
-    class="flex min-h-[min(70vh,520px)] flex-col rounded-2xl border border-slate-700/80 bg-slate-900/80 shadow-lg"
+    class="flex min-h-[min(70vh,520px)] flex-col rounded-2xl border border-slate-700/80 bg-slate-900 shadow-lg"
   >
     <header class="border-b border-slate-700/60 px-4 py-4 sm:px-5">
       <h2 class="text-lg font-semibold text-white">AI 問答</h2>
-      <p class="text-xs text-slate-400">輸入代號或名稱，取得即時分析</p>
+      <p class="text-xs text-slate-400">輸入代號或名稱，查詢分析摘要與可用資料</p>
     </header>
 
     <div class="border-b border-slate-700/40 px-3 py-3 sm:px-4">
@@ -91,7 +91,7 @@ watch(
         :class="msg.role === 'user' ? 'items-end' : 'items-start'"
       >
         <div
-          class="max-w-[90%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed sm:max-w-[85%]"
+          class="max-w-[90%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 text-sm leading-relaxed sm:w-fit sm:max-w-[85%] [overflow-wrap:anywhere]"
           :class="
             msg.role === 'user'
               ? 'bg-emerald-600/90 text-white'
@@ -148,14 +148,14 @@ watch(
     </div>
 
     <form
-      class="sticky bottom-0 flex gap-2 border-t border-slate-700/60 bg-slate-900/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur sm:p-4"
+      class="flex gap-2 border-t border-slate-700/60 bg-slate-900/95 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur sm:p-4"
       @submit.prevent="submit()"
     >
       <input
         v-model="input"
         type="text"
         placeholder="0050今天走勢"
-        class="min-h-11 flex-1 rounded-xl border border-slate-600 bg-slate-950 px-4 py-2.5 text-base text-white placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none sm:text-sm"
+        class="min-h-11 min-w-0 flex-1 rounded-xl border border-slate-600 bg-slate-950 px-4 py-2.5 text-base text-white placeholder:text-slate-500 focus:border-emerald-500 focus:outline-none sm:text-sm"
         :disabled="store.chatLoading"
       />
       <button
