@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from 'vue'
-import { frontendWorks, workPaths, type WorkSlug } from '@/data/frontendWorks'
+import { frontendWorks, hasInlineDemo, workPaths, type WorkSlug } from '@/data/frontendWorks'
 import { findRelatedArticle } from '@/data/blog'
 const props = defineProps<{ slug: WorkSlug; demo?: boolean }>()
 const work = computed(() => frontendWorks.find(item => item.slug === props.slug)!)
@@ -23,14 +23,14 @@ const screens = {
       <p class="text-sm font-medium text-indigo-700 dark:text-indigo-300">{{ work.area }}</p>
       <h1 class="mt-2 text-balance text-4xl font-bold tracking-tight sm:text-5xl">{{ work.title }}<span v-if="demo"> Demo</span></h1>
       <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-300">{{ demo ? work.walkthrough : work.summary }}</p>
-      <a v-if="!demo" :href="workPaths(slug).fullDemo" class="mt-5 inline-flex rounded-full bg-indigo-700 px-5 py-2.5 font-semibold text-white hover:bg-indigo-800">{{ slug === 'demi-studio' ? '瀏覽正式網站' : '開啟完整 Demo' }}</a>
+      <a v-if="!demo" :href="workPaths(slug).fullDemo" :target="slug === 'dayform' ? '_blank' : undefined" rel="noopener" class="mt-5 inline-flex rounded-full bg-indigo-700 px-5 py-2.5 font-semibold text-white hover:bg-indigo-800">{{ slug === 'demi-studio' ? '瀏覽正式網站' : slug === 'dayform' ? '查看專案 ↗' : '開啟完整 Demo' }}</a>
     </header>
     <template v-if="demo">
       <a :href="workPaths(slug).fullDemo" class="mb-4 inline-block text-sm font-semibold text-indigo-700 underline dark:text-indigo-300">開啟原介面的完整 Demo</a>
       <p class="mb-4 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-900 dark:border-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-200">
         操作僅在當前頁面，重新整理即可重置。
       </p>
-      <component v-if="slug !== 'demi-studio'" :is="screens[slug]" :key="slug" />
+      <component v-if="hasInlineDemo(slug)" :is="screens[slug]" :key="slug" />
     </template>
     <div v-else class="grid gap-5 md:grid-cols-[1.35fr_1fr]">
       <article class="overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
@@ -45,8 +45,8 @@ const screens = {
       <aside class="rounded-3xl bg-indigo-50 p-6 sm:p-8 dark:bg-indigo-950/60">
         <h2 class="text-xl font-semibold">建議操作流程</h2>
         <p class="mt-3 leading-7 text-zinc-700 dark:text-zinc-300">{{ work.walkthrough }}</p>
-        <p v-if="slug !== 'demi-studio'" class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">完整 Demo 保留原專案介面和多頁操作。建議使用桌機體驗。</p>
-        <div v-if="slug !== 'demi-studio'" class="mt-5 flex flex-wrap items-center gap-4">
+        <p v-if="hasInlineDemo(slug)" class="mt-3 text-sm text-zinc-600 dark:text-zinc-300">完整 Demo 保留原專案介面和多頁操作。建議使用桌機體驗。</p>
+        <div v-if="hasInlineDemo(slug)" class="mt-5 flex flex-wrap items-center gap-4">
           <a :href="workPaths(slug).demo" class="text-sm underline underline-offset-4">快速體驗</a>
         </div>
         <p v-if="slug === 'iboxpost'" class="mt-4 text-sm text-zinc-600 dark:text-zinc-300">

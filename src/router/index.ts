@@ -7,7 +7,7 @@ import { publicPages } from '@/data/seoPages'
 import { applyPortfolioSeo } from '@/utils/portfolioSeo'
 import { stockProductRoutes } from '@/products/stock/routes'
 import { parentingProductRoutes } from '@/products/parenting/routes'
-import { frontendWorks, workPaths } from '@/data/frontendWorks'
+import { frontendWorks, hasInlineDemo, workPaths } from '@/data/frontendWorks'
 import { blogPosts } from '@/data/blog'
 
 const router = createRouter({
@@ -69,13 +69,13 @@ const router = createRouter({
         props: { slug: work.slug },
         meta: { title: `${work.title} | ${siteConfig.name}` },
       },
-      ...(work.slug === 'demi-studio' ? [] : [{
+      ...(hasInlineDemo(work.slug) ? [{
         path: workPaths(work.slug).demo,
         name: `work-demo-${work.slug}`,
         component: () => import('@/views/FrontendWorkView.vue'),
         props: { slug: work.slug, demo: true },
         meta: { title: `${work.title} Demo | ${siteConfig.name}` },
-      }]),
+      }] : []),
     ]),
     {
       path: '/demo',

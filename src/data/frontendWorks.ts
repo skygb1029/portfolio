@@ -24,6 +24,18 @@ export const frontendWorks = [
     walkthrough: '完成寄件表單，查詢剛建立的模擬寄件單，再切換到營運總覽。',
   },
   {
+    slug: 'dayform',
+    title: 'DAYFORM 日常選物',
+    area: '電商網站與結帳流程',
+    summary: '從商品照片、選物分類與折扣活動，一路走到購物車、展示付款及訂單查詢。',
+    contribution: [
+      '設計響應式首頁與商品目錄，加入精選橫列、關鍵字搜尋、分類與價格排序。',
+      '開發商品詳情、完整照片與局部特寫切換、放大檢視及購買數量選擇。',
+      '實作購物車、優惠碼即時金額與運費摘要，串接展示結帳及訂單查詢。',
+    ],
+    walkthrough: '用手機或桌機瀏覽商品，選擇兩件燕麥條紋靠枕，在優惠活動套用 WELCOME10，完成展示付款後查看訂單。',
+  },
+  {
     slug: 'maia-inference',
     title: 'MAIA Inference',
     area: '影像分析流程',
@@ -73,7 +85,15 @@ export const frontendWorks = [
   },
 ] as const
 export type WorkSlug = (typeof frontendWorks)[number]['slug']
-const originalEntry: Record<Exclude<WorkSlug, 'demi-studio'>, string> = {
+const externalDemos = {
+  'demi-studio': 'https://demi-studio.vercel.app/',
+  dayform: 'https://dayform-production.up.railway.app/',
+} as const
+
+type InlineWorkSlug = Exclude<WorkSlug, keyof typeof externalDemos>
+export const hasInlineDemo = (slug: WorkSlug): slug is InlineWorkSlug => !Object.hasOwn(externalDemos, slug)
+
+const originalEntry: Record<InlineWorkSlug, string> = {
   iboxpost: '#/home',
   'maia-inference': '?demo=1#/home',
   'gene-rule': '?demo=1#/search',
@@ -83,5 +103,5 @@ const originalEntry: Record<Exclude<WorkSlug, 'demi-studio'>, string> = {
 export const workPaths = (slug: WorkSlug) => ({
   case: '/works/' + slug,
   demo: '/works/' + slug + '/demo',
-  fullDemo: slug === 'demi-studio' ? 'https://demi-studio.vercel.app/' : '/project-demos/' + slug + '/index.html' + originalEntry[slug],
+  fullDemo: hasInlineDemo(slug) ? '/project-demos/' + slug + '/index.html' + originalEntry[slug] : externalDemos[slug],
 })

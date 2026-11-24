@@ -7,7 +7,7 @@ const commonImage = '/case-previews/iboxpost.jpg'
 
 export const publicPages = [
   { path: '/', title: 'JR JIM｜許智鈞的前端工程作品集', description: '許智鈞的前端工程作品集。瀏覽企業系統、AI 產品、技術筆記與完整履歷。' },
-  { path: '/works', title: '前端作品案例｜JR JIM', description: '瀏覽 Demi Studio、IBoxPost、醫療影像與血液透析排班等六個前端案例及操作入口。' },
+  { path: '/works', title: '前端作品案例｜JR JIM', description: '瀏覽 Demi Studio、IBoxPost、DAYFORM 電商、醫療影像與血液透析排班等前端案例及操作入口。' },
   { path: '/products', title: 'AI 產品｜JR JIM', description: '探索 AI 股票秘書、育兒助手、生活管家與客服工具的操作情境及試用方式。' },
   { path: '/articles', title: '相關筆記｜JR JIM', description: '閱讀 Vue 3、LINE Bot、AI 產品與前端系統整合的實作筆記，包含 Live2D 和 WebSocket。' },
   { path: '/resume', title: '關於與履歷｜許智鈞', description: '許智鈞的工作經歷、前端技術、跨團隊整合經驗及代表專案。' },

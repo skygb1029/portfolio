@@ -19,6 +19,7 @@ const details: Record<WorkSlug, string> = {
   'maia-inference': '模型選擇、檔案上傳與影像預覽。',
   'gene-rule': '病患資料查詢與規則瀏覽。',
   'demi-studio': '攝影品牌網站、作品集與內容管理。',
+  dayform: '居家選物電商、優惠活動與展示結帳。',
 }
 </script>
 
