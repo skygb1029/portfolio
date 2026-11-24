@@ -71,7 +71,7 @@ function listLink(group?: string, page = 1) {
             <li v-for="(section, index) in post.sections" :key="section.heading">
               <RouterLink :to="{ path: route.path, hash: '#note-' + (index + 1) }" class="underline underline-offset-4">{{ section.heading }}</RouterLink>
             </li>
-            <li><RouterLink :to="{ path: route.path, hash: '#note-practice' }" class="underline underline-offset-4">實務操作與驗收</RouterLink></li>
+            <li><RouterLink :to="{ path: route.path, hash: '#note-practice' }" class="underline underline-offset-4">{{ details.closingHeading ?? '實務操作與驗收' }}</RouterLink></li>
           </ol>
         </nav>
         <section v-for="(section, index) in post.sections" :id="'note-' + (index + 1)" :key="section.heading" class="mt-8 max-w-3xl border-l-2 border-indigo-200 pl-4 dark:border-indigo-800">
@@ -89,7 +89,7 @@ function listLink(group?: string, page = 1) {
           <p class="mt-1 text-lg font-semibold leading-relaxed">{{ details.alert }}</p>
         </aside>
         <section id="note-practice" class="mt-9 max-w-3xl border-t border-zinc-200 pt-6 dark:border-zinc-800">
-          <h2 class="text-2xl font-bold sm:text-3xl">實務操作與驗收</h2>
+          <h2 class="text-2xl font-bold sm:text-3xl">{{ details.closingHeading ?? '實務操作與驗收' }}</h2>
           <p v-for="paragraph in details.practice" :key="paragraph" class="mt-4 text-base leading-8 text-zinc-700 sm:text-lg sm:leading-9 dark:text-zinc-300">{{ paragraph }}</p>
         </section>
         <aside v-if="post.related || post.sources?.length || relatedNotes.length" class="mt-10 max-w-3xl rounded-2xl border border-zinc-200 p-5 dark:border-zinc-800">
