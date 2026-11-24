@@ -1,4 +1,5 @@
 import { blogPosts } from './blog'
+import { noteDetails } from './noteDetails'
 import { frontendWorks } from './frontendWorks'
 import { productLandings } from './productLandings'
 
@@ -15,5 +16,5 @@ export const publicPages = [
   { path: '/contact', title: '聯絡合作｜JR JIM', description: '洽詢企業前端系統、管理後台、資料視覺化、前端重構與 API 整合。' },
   ...frontendWorks.map(work => ({ path: '/works/' + work.slug, title: work.title + '｜前端作品｜JR JIM', description: work.summary + ' 查看負責的前端功能、專案心得及操作入口。', image: '/case-previews/' + work.slug + '.jpg' })),
   ...productLandings.map(product => ({ path: '/product/' + product.slug, title: product.title + '｜JR JIM', description: product.tagline + ' 查看產品功能、操作流程、常見問題與使用方式。' })),
-  ...blogPosts.map(post => ({ path: '/articles/' + post.id, title: post.title + '｜JR JIM', description: post.excerpt, article: true })),
+  ...blogPosts.map(post => ({ path: '/articles/' + post.id, title: post.title + '｜JR JIM', description: post.excerpt, article: true, image: noteDetails[post.id]?.image ?? '/article-images/' + post.id + '-flow.jpg' })),
 ].map(page => ({ image: commonImage, article: false, ...page }))

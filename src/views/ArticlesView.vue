@@ -2,12 +2,14 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { blogPosts } from '@/data/blog'
+import { noteDetails } from '@/data/noteDetails'
 
 const props = defineProps<{ id?: string }>()
 const route = useRoute()
 const post = computed(() => blogPosts.find(item => item.id === props.id))
 const groups = [...new Set(blogPosts.map(item => item.category))]
-const notes = [...blogPosts].sort((a, b) => Number(b.id === 'live2d-websocket') - Number(a.id === 'live2d-websocket'))
+const notes = blogPosts
+const details = computed(() => post.value ? noteDetails[post.value.id] : undefined)
 const category = computed(() => groups.find(group => group === route.query.category))
 const filtered = computed(() => category.value ? notes.filter(item => item.category === category.value) : notes)
 const pageSize = 6
@@ -49,23 +51,46 @@ function listLink(group?: string, page = 1) {
     </template>
     <template v-else>
       <RouterLink to="/articles" class="font-semibold text-indigo-700 hover:underline dark:text-indigo-300">← 全部筆記</RouterLink>
-      <article v-if="post" class="mt-8">
+      <article v-if="post && details" class="mt-8">
         <header class="border-b border-zinc-200 pb-7 dark:border-zinc-800">
           <p class="font-semibold text-indigo-700 dark:text-indigo-300">{{ post.category }}</p>
           <h1 class="mt-3 text-balance text-3xl font-bold leading-tight tracking-tight sm:text-5xl">{{ post.title }}</h1>
           <p class="mt-5 max-w-3xl text-lg leading-8 text-zinc-600 dark:text-zinc-300">{{ post.excerpt }}</p>
         </header>
+        <figure v-if="details.image" class="mt-7 max-w-3xl overflow-hidden rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          <img :src="details.image" :alt="post.title + '的實際專案介面'" class="block w-full" width="1440" height="960" style="height: auto">
+          <figcaption class="px-4 py-3 text-sm leading-6 text-zinc-700 dark:text-zinc-300">{{ details.caption }}</figcaption>
+        </figure>
+        <aside aria-label="這篇筆記的重點" class="mt-7 max-w-3xl rounded-xl border-l-4 border-indigo-600 bg-indigo-50 px-5 py-4 dark:border-indigo-300 dark:bg-indigo-950/60">
+          <h2 class="text-base font-bold text-indigo-800 dark:text-indigo-200">核心觀念</h2>
+          <p class="mt-1 text-xl font-bold leading-relaxed text-zinc-900 dark:text-white">{{ details.key }}</p>
+        </aside>
         <nav aria-label="筆記目錄" class="mt-6 max-w-3xl rounded-2xl bg-indigo-50 p-5 dark:bg-indigo-950/60">
           <h2 class="font-bold">筆記目錄</h2>
           <ol class="mt-3 list-decimal space-y-2 pl-5">
             <li v-for="(section, index) in post.sections" :key="section.heading">
               <RouterLink :to="{ path: route.path, hash: '#note-' + (index + 1) }" class="underline underline-offset-4">{{ section.heading }}</RouterLink>
             </li>
+            <li><RouterLink :to="{ path: route.path, hash: '#note-practice' }" class="underline underline-offset-4">實務操作與驗收</RouterLink></li>
           </ol>
         </nav>
         <section v-for="(section, index) in post.sections" :id="'note-' + (index + 1)" :key="section.heading" class="mt-8 max-w-3xl border-l-2 border-indigo-200 pl-4 dark:border-indigo-800">
           <h2 class="text-xl font-bold sm:text-2xl">{{ section.heading }}</h2>
           <p class="mt-3 text-base leading-8 text-zinc-700 sm:text-lg sm:leading-9 dark:text-zinc-300">{{ section.body }}</p>
+        </section>
+        <figure class="mt-9 max-w-3xl overflow-hidden rounded-2xl border border-zinc-200 dark:border-zinc-800">
+          <img :src="'/article-images/' + post.id + '-flow.jpg'" :alt="'流程順序：' + details.steps.join('、')" class="block h-auto w-full" width="1200" height="526" loading="lazy">
+          <figcaption class="bg-zinc-50 px-4 py-3 text-sm leading-6 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+            {{ details.steps.join(' → ') }}
+          </figcaption>
+        </figure>
+        <aside aria-label="注意事項" class="mt-7 max-w-3xl rounded-xl border-l-4 border-amber-600 bg-amber-50 px-5 py-4 text-zinc-900 dark:border-amber-400 dark:bg-amber-950/60 dark:text-zinc-50">
+          <h2 class="text-base font-bold text-amber-900 dark:text-amber-200">實作注意</h2>
+          <p class="mt-1 text-lg font-semibold leading-relaxed">{{ details.alert }}</p>
+        </aside>
+        <section id="note-practice" class="mt-9 max-w-3xl border-t border-zinc-200 pt-6 dark:border-zinc-800">
+          <h2 class="text-2xl font-bold sm:text-3xl">實務操作與驗收</h2>
+          <p v-for="paragraph in details.practice" :key="paragraph" class="mt-4 text-base leading-8 text-zinc-700 sm:text-lg sm:leading-9 dark:text-zinc-300">{{ paragraph }}</p>
         </section>
         <aside v-if="post.related || post.sources?.length || relatedNotes.length" class="mt-10 max-w-3xl rounded-2xl border border-zinc-200 p-5 dark:border-zinc-800">
           <h2 class="font-bold">延伸閱讀</h2>

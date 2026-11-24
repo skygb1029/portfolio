@@ -1,3 +1,5 @@
+import { projectNotes } from './projectNotes.ts'
+
 export interface BlogPost {
   id: string
   title: string
@@ -10,6 +12,7 @@ export interface BlogPost {
 }
 
 export const blogPosts: BlogPost[] = [
+  ...projectNotes,
   {
     id: "ai-notes",
     category: "AI 開發",
