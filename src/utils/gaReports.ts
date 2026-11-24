@@ -1,6 +1,8 @@
 export const analyticsConsole = 'https://analytics.google.com/analytics/web/#/a52976749p320722386/reports/intelligenthome'
 export const analyticsScope = 'https://www.googleapis.com/auth/analytics.readonly'
-export const analyticsClientId = import.meta.env.VITE_GA_REPORTS_CLIENT_ID?.trim() || '671465409825-ri4e82v3ppbgmrlfdfucmqvhc368vftn.apps.googleusercontent.com'
+const reviewClientId = '449551982772-q0rmg1n82i1mvr5t403bsk81v84djc6r.apps.googleusercontent.com'
+const reviewMode = new URLSearchParams(location.search).get('oauth-review') === '1'
+export const analyticsClientId = reviewMode ? reviewClientId : import.meta.env.VITE_GA_REPORTS_CLIENT_ID?.trim() || '671465409825-ri4e82v3ppbgmrlfdfucmqvhc368vftn.apps.googleusercontent.com'
 
 interface GoogleOAuth {
   initTokenClient(config: {
