@@ -48,6 +48,18 @@ export const frontendWorks = [
     walkthrough: '選擇月份並上傳照片，拖曳虛線框調整構圖，加入文字後下載 PNG。',
   },
   {
+    slug: 'postroom',
+    title: '發文間 Postroom',
+    area: 'Threads 內容與背景排程',
+    summary: '整理 Threads 草稿與內容日曆，授權帳戶後可背景發布文字貼文並同步成效。',
+    contribution: [
+      '設計草稿看板、排程日曆、成效面板與備份。',
+      '串接 OpenAI 撰稿與 Meta Threads 官方發布、成效 API。',
+      '實作持久化背景排程、帳戶隔離、取消與避免重複發布的狀態。',
+    ],
+    walkthrough: '可直接試用草稿看板與日曆。AI 撰稿需要 OpenAI API 金鑰，實際發文與成效同步需要已授權的 Threads 帳戶。',
+  },
+  {
     slug: 'night-parcel',
     title: '夜航郵差 Night Parcel',
     area: '瀏覽器街機與跨裝置互動',
@@ -114,6 +126,7 @@ const externalDemos = {
   dayform: 'https://dayform-production.up.railway.app/',
   'night-parcel': 'https://night-parcel-flight.consideratebook2.chatgpt.site/',
   'little-days': 'https://little-days-monthbook.consideratebook2.chatgpt.site/studio.html',
+  postroom: 'https://postroom-production-3e647d51.up.railway.app/',
 } as const
 
 type InlineWorkSlug = Exclude<WorkSlug, keyof typeof externalDemos>

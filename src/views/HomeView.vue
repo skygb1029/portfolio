@@ -22,6 +22,7 @@ const details: Record<WorkSlug, string> = {
   dayform: '居家選物電商、優惠活動與展示結帳。',
   'night-parcel': '單鍵飛行、星郵收集與逐步加快的夜港航線。',
   'little-days': '用月份數字拼貼照片，製作寶寶第一年的紀念卡。',
+  postroom: 'Threads 內容日曆、AI 撰稿、背景排程與成效整理。',
 }
 </script>
 
