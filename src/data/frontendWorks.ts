@@ -27,13 +27,13 @@ export const frontendWorks = [
     slug: 'dayform',
     title: 'DAYFORM 日常選物',
     area: '電商網站與結帳流程',
-    summary: '從商品照片、選物分類與折扣活動，一路走到購物車、展示付款及訂單查詢。',
+    summary: '從商品照片、分類和折扣活動走到購物車、綠界付款頁及訂單查詢。公開站使用綠界測試環境。',
     contribution: [
       '設計響應式首頁與商品目錄，加入精選橫列、關鍵字搜尋、分類與價格排序。',
       '開發商品詳情、完整照片與局部特寫切換、放大檢視及購買數量選擇。',
-      '實作購物車、優惠碼即時金額與運費摘要，串接展示結帳及訂單查詢。',
+      '由後端計算優惠與運費，串接綠界付款頁、簽章通知及付款狀態查詢。',
     ],
-    walkthrough: '用手機或桌機瀏覽商品，選擇兩件燕麥條紋靠枕，在優惠活動套用 WELCOME10，完成展示付款後查看訂單。',
+    walkthrough: '挑選商品，套用 WELCOME10，從購物車前往綠界付款頁。公開站可用官方測試卡體驗，並在訂單頁查看結果。',
   },
   {
     slug: 'little-days',
@@ -70,6 +70,42 @@ export const frontendWorks = [
       '設計夜港場景、星郵收集、漸進難度及本機最高分。',
     ],
     walkthrough: '點按畫面或按空白鍵控制高度，穿越訊號門或收集星郵得分。',
+  },
+  {
+    slug: 'last-train',
+    title: '末班車 The Last Train',
+    area: '橫向敘事與逐格動畫',
+    summary: '深夜列車的六節車廂越走越空。主角固定在畫面中央，隨著滾動走過車門、暗窗與黑色連接罩。',
+    contribution: [
+      '將垂直滾動換算成橫向鏡頭位移，同步角色步伐與車廂進度。',
+      '維持車廂原圖比例，讓背景與車窗特效使用同一套座標，並以風琴式連接罩遮住接縫。',
+      '按位置觸發窗外身影、列車員與音效，加入章節跳轉和減少動態效果模式。',
+    ],
+    walkthrough: '在桌面向下滾動，或在手機向上滑，從第 06 節走到第 01 節。右上角可選擇開啟音效。',
+  },
+  {
+    slug: 'last-ride',
+    title: '末班樂園 Last Ride',
+    area: '滾動式恐怖短篇',
+    summary: '一座原本熱鬧的樂園逐盞熄燈。五幕故事從最後一輪遊客散場，走向售票員現身。',
+    contribution: [
+      '以 GSAP ScrollTrigger 驅動固定舞台和五幕場景的過場。',
+      '運用亮度、色調、雜訊和抓痕，讓同一處樂園從熱鬧轉向空寂。',
+      '以 Web Audio 合成分幕聲景，提供章節選擇、鍵盤操作及音效開關。',
+    ],
+    walkthrough: '向下滾動走進樂園，或用章節列切換場景。最後一幕含突發驚嚇。',
+  },
+  {
+    slug: 'investigator-archive',
+    title: '調查員檔案室',
+    area: 'COC 第七版角色建立與團務',
+    summary: '從職業、屬性和技能點建立調查員，並在同一個工作台整理角色卡和團務。',
+    contribution: [
+      '將職業與技能資料連到角色卡欄位，集中顯示點數分配和驗證結果。',
+      '實作本機存檔、雲端角色管理及送交主持人審核的流程。',
+      '整理規則、場景和角色資訊，讓玩家從建立調查員一路進到團務。',
+    ],
+    walkthrough: '開啟建立調查員頁面，調整屬性和技能點，再查看即時角色卡預覽。',
   },
   {
     slug: 'maia-inference',
@@ -127,6 +163,9 @@ const externalDemos = {
   'night-parcel': 'https://night-parcel-flight.consideratebook2.chatgpt.site/',
   'little-days': 'https://little-days-monthbook.consideratebook2.chatgpt.site/studio.html',
   postroom: 'https://postroom-production-3e647d51.up.railway.app/',
+  'last-train': 'https://last-train-after-midnight.consideratebook2.chatgpt.site/',
+  'last-ride': 'https://last-ride-after-closing.consideratebook2.chatgpt.site/',
+  'investigator-archive': 'https://investigator-archive-mww41j2r.consideratebook2.chatgpt.site/',
 } as const
 
 type InlineWorkSlug = Exclude<WorkSlug, keyof typeof externalDemos>

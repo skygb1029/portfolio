@@ -19,10 +19,13 @@ const details: Record<WorkSlug, string> = {
   'maia-inference': '模型選擇、檔案上傳與影像預覽。',
   'gene-rule': '病患資料查詢與規則瀏覽。',
   'demi-studio': '攝影品牌網站、作品集與內容管理。',
-  dayform: '居家選物電商、優惠活動與展示結帳。',
+  dayform: '居家選物電商、優惠活動與綠界測試結帳。',
   'night-parcel': '單鍵飛行、星郵收集與逐步加快的夜港航線。',
   'little-days': '用月份數字拼貼照片，製作寶寶第一年的紀念卡。',
   postroom: 'Threads 內容日曆、AI 撰稿、背景排程與成效整理。',
+  'last-train': '用滾動走過六節深夜車廂，讓角色步伐與窗外事件同步。',
+  'last-ride': '從熱鬧遊樂園走到閉園後的五幕恐怖故事。',
+  'investigator-archive': 'COC 第七版創卡、技能點分配與團務工作台。',
 }
 </script>
 
