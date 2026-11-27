@@ -2,19 +2,28 @@ import { projectNotes } from './projectNotes.ts'
 import { recentProjectNotes } from './recentProjectNotes.ts'
 import { hiddenProductSlugs } from './productLandings.ts'
 import { developmentNotes } from './developmentNotes.ts'
+import { frontendCareerNote } from './frontendCareerNote.ts'
 
 export interface BlogPost {
   id: string
   title: string
   excerpt: string
   category: string
-  sections: { heading: string; body: string }[]
+  sections: {
+    heading: string
+    body: string
+    paragraphs?: string[]
+    table?: { caption: string; columns: string[]; rows: string[][] }
+    afterTable?: string[]
+  }[]
+  download?: { url: string; label: string }
   related?: { to: string; label: string }
   relatedNotes?: string[]
   sources?: { label: string; url: string }[]
 }
 
 const allBlogPosts: BlogPost[] = [
+  frontendCareerNote,
   ...recentProjectNotes,
   ...projectNotes,
   {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { practiceCounts, practiceTopics } from '@/data/interviewPractice'
+import { difficultyLabels, practiceCounts, practiceTopics, type PracticeDifficulty } from '@/data/interviewPractice'
 
 const activeTopic = ref('all')
+const activeDifficulty = ref<PracticeDifficulty | 'all'>('all')
 const search = ref('')
 const audioModes = [
   { value: 'answers', label: '題目與解答' },
@@ -20,13 +21,20 @@ const shownTopics = computed(() => {
     .filter(topic => activeTopic.value === 'all' || topic.id === activeTopic.value)
     .map(topic => ({
       ...topic,
-      questions: terms
-        ? topic.questions.filter(question => (topic.title + ' ' + question.prompt).toLocaleLowerCase().includes(terms))
-        : topic.questions,
+      totalQuestions: topic.questions.length,
+      questions: topic.questions.filter(question =>
+        (activeDifficulty.value === 'all' || question.level === activeDifficulty.value)
+        && (topic.title + ' ' + question.prompt).toLocaleLowerCase().includes(terms)),
     }))
     .filter(topic => topic.questions.length > 0)
 })
 const visibleCount = computed(() => shownTopics.value.reduce((sum, topic) => sum + topic.questions.length, 0))
+
+function resetFilters() {
+  activeTopic.value = 'all'
+  activeDifficulty.value = 'all'
+  search.value = ''
+}
 
 function setAllAnswers(open: boolean) {
   expandedAnswers.value = new Set(open ? allPrompts : [])
@@ -66,7 +74,7 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
       <div class="practice-frame">
         <RouterLink class="back-link" to="/">← 回作品集</RouterLink>
         <h1>前端面試練習</h1>
-        <p>先試著回答，再展開參考答案。每個主題都可直接播放或下載到手機複習。</p>
+        <p>依主題和難度挑題，先自己作答，再看面試短答、教學和小練習。也可以下載 MP3 到手機複習。</p>
         <ul class="practice-totals" aria-label="題庫規模">
           <li><strong>{{ practiceCounts.technical }}</strong> 技術題</li>
           <li><strong>{{ practiceCounts.conversation }}</strong> 面談題</li>
@@ -91,10 +99,23 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
           <button v-for="topic in practiceTopics" :key="topic.id" type="button"
             :aria-pressed="activeTopic === topic.id" @click="activeTopic = topic.id">{{ topic.title }}</button>
         </div>
-        <fieldset class="practice-audio-modes">
+        <fieldset class="practice-options">
+          <legend>題目難度</legend>
+          <div class="practice-actions">
+            <label class="practice-choice">
+              <input v-model="activeDifficulty" type="radio" name="practice-difficulty" value="all">
+              全部難度
+            </label>
+            <label v-for="(label, level) in difficultyLabels" :key="level" class="practice-choice">
+              <input v-model="activeDifficulty" type="radio" name="practice-difficulty" :value="level">
+              {{ label }}
+            </label>
+          </div>
+        </fieldset>
+        <fieldset class="practice-options">
           <legend>MP3 版本</legend>
           <div class="practice-actions">
-            <label v-for="mode in audioModes" :key="mode.value" class="audio-mode">
+            <label v-for="mode in audioModes" :key="mode.value" class="practice-choice">
               <input v-model="audioMode" type="radio" name="practice-audio-mode" :value="mode.value">
               {{ mode.label }}
             </label>
@@ -110,7 +131,10 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
         </div>
       </div>
 
-      <p v-if="!shownTopics.length" class="practice-empty">沒有符合的題目。換個關鍵字或切回全部主題。</p>
+      <div v-if="!shownTopics.length" class="practice-empty">
+        <p>沒有符合目前條件的題目。</p>
+        <button class="reset-filters" type="button" @click="resetFilters">清除篩選</button>
+      </div>
       <section v-for="topic in shownTopics" :key="topic.id" class="practice-topic" :aria-labelledby="'heading-' + topic.id">
         <div class="topic-heading">
           <h2 :id="'heading-' + topic.id">{{ topic.title }}</h2>
@@ -122,14 +146,32 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
           <a :href="audioUrl(topic.id)" download
             :aria-label="'下載 ' + topic.title + ' ' + audioLabel + ' MP3'">下載 MP3 <span class="audio-version">{{ audioLabel }}</span><span aria-hidden="true">↓</span></a>
         </div>
+        <p v-if="topic.questions.length < topic.totalQuestions" class="practice-count audio-scope">MP3 收錄此主題的完整題目。</p>
         <ol class="question-list">
           <li v-for="question in topic.questions" :key="question.prompt">
             <details :open="expandedAnswers.has(question.prompt)" @toggle="trackAnswer($event, question.prompt)">
-              <summary>{{ question.prompt }}</summary>
+              <summary>
+                <span class="question-prompt">
+                  <span>{{ question.prompt }}</span>
+                  <span class="question-level" :data-level="question.level">{{ difficultyLabels[question.level] }}</span>
+                </span>
+              </summary>
               <div class="answer">
-                <h3>參考答案</h3>
+                <h3>面試短答</h3>
                 <p>{{ question.answer }}</p>
                 <pre v-if="question.example" tabindex="0" aria-label="JavaScript 參考程式"><code>{{ question.example }}</code></pre>
+                <details class="lesson">
+                  <summary>詳細說明與教學</summary>
+                  <div class="lesson-body">
+                    <p>{{ question.lesson.explanation }}</p>
+                    <template v-if="question.followUp">
+                      <h4>{{ question.followUp.title }}</h4>
+                      <p>{{ question.followUp.body }}</p>
+                    </template>
+                    <h4>動手練習</h4>
+                    <p>{{ question.lesson.practice }}</p>
+                  </div>
+                </details>
               </div>
             </details>
           </li>
@@ -175,17 +217,18 @@ h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.
 .practice-tools input::placeholder { color: var(--practice-muted); }
 .practice-topic-select { display: none; }
 .practice-filters { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .25rem; }
-.practice-filters button, .practice-actions :is(button, .audio-mode) { min-height: 44px; border: 1px solid var(--practice-border); padding: .45rem .75rem; border-radius: .55rem; background: var(--practice-card); cursor: pointer; }
-.practice-filters button[aria-pressed=true], .audio-mode:has(:checked) { background: var(--practice-selected); color: var(--practice-accent); border-color: var(--practice-accent); font-weight: 650; }
-.practice-audio-modes { border: 0; padding: 0; margin: .45rem 0 .25rem; }
-.practice-audio-modes legend { font-weight: 700; margin-bottom: .45rem; }
-.practice-audio-modes p { margin-top: .4rem; }
+.practice-filters button, .practice-actions :is(button, .practice-choice), .reset-filters { min-height: 44px; border: 1px solid var(--practice-border); padding: .45rem .75rem; border-radius: .55rem; background: var(--practice-card); cursor: pointer; }
+.practice-filters button[aria-pressed=true], .practice-choice:has(:checked) { background: var(--practice-selected); color: var(--practice-accent); border-color: var(--practice-accent); font-weight: 650; }
+.practice-options { border: 0; padding: 0; margin: .45rem 0 .25rem; min-width: 0; }
+.practice-options legend { font-weight: 700; margin-bottom: .45rem; }
+.practice-options p { margin-top: .4rem; }
 .practice-actions, .practice-answer-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
 .practice-answer-bar { justify-content: space-between; gap: .55rem 1rem; padding-top: .35rem; }
-.practice-actions .audio-mode { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; }
-.audio-mode input { accent-color: var(--practice-accent); }
+.practice-actions .practice-choice { display: inline-flex; align-items: center; gap: .4rem; font-weight: 600; }
+.practice-choice input { accent-color: var(--practice-accent); }
 .practice-actions button:disabled { opacity: .55; cursor: default; }
 .practice-count, .practice-empty { color: var(--practice-muted); font-size: .92rem; }
+.practice-empty .reset-filters { margin-top: .6rem; color: var(--practice-accent); }
 .practice-topic { background: var(--practice-card); border: 1px solid var(--practice-border); border-radius: 1rem; padding: clamp(.85rem, 3vw, 1.7rem); margin-block: 1rem; min-width: 0; }
 .topic-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem 1rem; }
 .topic-heading h2 { font-size: clamp(1.2rem, 4vw, 1.65rem); font-weight: 750; }
@@ -194,12 +237,20 @@ h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.
 .topic-audio audio { width: min(100%, 21rem); }
 .topic-audio a { display: inline-flex; gap: .4rem; align-items: center; min-height: 44px; color: var(--practice-accent); font-weight: 700; text-decoration: underline; text-underline-offset: .2rem; }
 .audio-version { color: var(--practice-muted); font-size: .88rem; font-weight: 500; }
+.audio-scope { margin: -.25rem 0 .65rem; }
 .question-list { list-style: none; padding: 0; margin: 0; }
 .question-list li { border-top: 1px solid var(--practice-border); }
 .question-list summary { cursor: pointer; padding: .8rem .3rem; line-height: 1.6; font-weight: 650; }
 .question-list summary::marker { color: var(--practice-accent); }
+.question-prompt { display: inline-flex; align-items: baseline; justify-content: space-between; gap: .75rem; width: calc(100% - 1.35rem); vertical-align: top; }
+.question-level { flex: none; padding: .05rem .4rem; border: 1px solid var(--practice-border); border-radius: .35rem; color: var(--practice-muted); font-size: .78rem; font-weight: 600; }
+.question-level[data-level=advanced] { color: var(--practice-accent); background: var(--practice-selected); }
 .answer { padding: .1rem .4rem 1rem; }
 .answer h3 { margin-bottom: .35rem; font-size: .88rem; font-weight: 750; color: var(--practice-accent); }
+.lesson { margin-top: .85rem; border: 1px solid var(--practice-border); border-radius: .55rem; }
+.lesson summary { padding: .65rem .75rem; color: var(--practice-accent); font-size: .92rem; }
+.lesson-body { border-top: 1px solid var(--practice-border); padding: .75rem; }
+.lesson-body h4 { margin: .8rem 0 .25rem; font-size: .88rem; font-weight: 750; color: var(--practice-accent); }
 .answer p { line-height: 1.8; }
 .answer pre { max-width: 100%; overflow: auto; background: #171625; color: #f8f5ff; border-radius: .5rem; margin-top: .75rem; padding: .8rem; font-size: .87rem; }
 .practice :is(a, button, input, select, summary, pre):focus-visible { outline: 2px solid var(--practice-accent); outline-offset: 3px; }
