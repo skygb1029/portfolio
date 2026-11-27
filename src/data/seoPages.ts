@@ -11,6 +11,7 @@ export const publicPages = [
   { path: '/works', title: '前端作品案例｜JR JIM', description: '瀏覽 Demi Studio、IBoxPost、DAYFORM 電商、醫療影像與血液透析排班等前端案例及操作入口。' },
   { path: '/products', title: 'AI 產品｜JR JIM', description: '探索 AI 股票秘書的證交所收盤行情、晨報分析與問答功能。' },
   { path: '/articles', title: '相關筆記｜JR JIM', description: '閱讀 Vue 3、LINE Bot、AI 產品與前端系統整合的實作筆記，包含 Live2D 和 WebSocket。' },
+  { path: '/interview-practice', title: '前端面試練習｜JR JIM', description: '練習 Vue、Nuxt、JavaScript、TypeScript、CSS、網站效能與專案面談。提供可展開的解答、程式實作與 MP3 複習音檔。' },
   { path: '/resume', title: '關於與履歷｜許智鈞', description: '許智鈞的工作經歷、前端技術、跨團隊整合經驗及代表專案。' },
   { path: '/privacy', title: 'GA4 報表隱私權政策｜JR JIM', description: '了解 Portfolio 流量報表如何存取與處理 Google Analytics 資料，以及如何撤銷授權。' },
   { path: '/contact', title: '聯絡合作｜JR JIM', description: '洽詢企業前端系統、管理後台、資料視覺化、前端重構與 API 整合。' },

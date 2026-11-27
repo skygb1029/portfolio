@@ -121,6 +121,11 @@ const details: Record<WorkSlug, string> = {
       <p>查看我獨立開發的 AI 工具，以及各產品目前的功能與體驗方式。</p>
       <RouterLink to="/products" class="text-link">瀏覽 AI 產品 <span aria-hidden="true">↗</span></RouterLink>
     </section>
+    <section id="interview-practice">
+      <h2>前端面試練習</h2>
+      <p>複習前端技術、專案面談和 JavaScript 實作。先答再看解析，也能下載 MP3 收聽。</p>
+      <RouterLink to="/interview-practice" class="text-link">開啟面試題庫 <span aria-hidden="true">↗</span></RouterLink>
+    </section>
   </div>
   <section id="contact" class="home-frame contact-section">
     <div class="contact-band">
@@ -239,7 +244,7 @@ const details: Record<WorkSlug, string> = {
 .index-title { font-size: 1.05rem; font-weight: 800; }
 .index-description { color: var(--home-muted); font-size: .88rem; line-height: 1.65; }
 .index-arrow { color: var(--home-link); font-size: 1.3rem; }
-.profile-grid { display: grid; grid-template-columns: 1fr 1fr; border-block: 1px solid var(--home-line); }
+.profile-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--home-line); }
 .profile-grid section { padding: 1.75rem clamp(0rem, 2.5vw, 2.1rem) 1.75rem 0; }
 .profile-grid section + section { padding-left: clamp(1rem, 2.5vw, 2.1rem); border-left: 1px solid var(--home-line); }
 .profile-grid h2 { font-size: 1.4rem; font-weight: 800; }

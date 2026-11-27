@@ -20,6 +20,11 @@ const router = createRouter({
       meta: { title: siteConfig.brand },
     },
     {
+      path: '/interview-practice',
+      component: () => import('@/views/InterviewPracticeView.vue'),
+      meta: { title: `前端面試練習 | ${siteConfig.name}` },
+    },
+    {
       path: '/articles/:id?',
       component: () => import('@/views/ArticlesView.vue'),
       props: true,
