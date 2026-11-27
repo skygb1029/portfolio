@@ -11,6 +11,11 @@ const audioModes = [
 ] as const
 const audioMode = ref<(typeof audioModes)[number]['value']>('answers')
 const audioLabel = computed(() => audioModes.find(mode => mode.value === audioMode.value)!.label)
+const audioScopeLabel = computed(() => activeDifficulty.value === 'all'
+  ? '完整主題'
+  : difficultyLabels[activeDifficulty.value])
+const audioTrackCount = practiceTopics.reduce((total, topic) =>
+  total + 1 + new Set(topic.questions.map(question => question.level)).size, 0) * audioModes.length
 const allPrompts = practiceTopics.flatMap(topic => topic.questions.map(question => question.prompt))
 const expandedAnswers = ref(new Set<string>())
 let playing: HTMLAudioElement | null = null
@@ -19,13 +24,18 @@ const shownTopics = computed(() => {
   const terms = search.value.trim().toLocaleLowerCase()
   return practiceTopics
     .filter(topic => activeTopic.value === 'all' || topic.id === activeTopic.value)
-    .map(topic => ({
-      ...topic,
-      totalQuestions: topic.questions.length,
-      questions: topic.questions.filter(question =>
-        (activeDifficulty.value === 'all' || question.level === activeDifficulty.value)
-        && (topic.title + ' ' + question.prompt).toLocaleLowerCase().includes(terms)),
-    }))
+    .map(topic => {
+      const trackQuestions = topic.questions.filter(question =>
+        activeDifficulty.value === 'all' || question.level === activeDifficulty.value)
+      const track = activeDifficulty.value === 'all' ? topic.id : topic.id + '-' + activeDifficulty.value
+      const version = audioMode.value === 'questions' ? '-questions' : ''
+      return {
+        ...topic,
+        audioUrl: '/interview-audio/' + track + version + '.mp3',
+        audioQuestionCount: trackQuestions.length,
+        questions: trackQuestions.filter(question => (topic.title + ' ' + question.prompt).toLocaleLowerCase().includes(terms)),
+      }
+    })
     .filter(topic => topic.questions.length > 0)
 })
 const visibleCount = computed(() => shownTopics.value.reduce((sum, topic) => sum + topic.questions.length, 0))
@@ -62,10 +72,8 @@ function stopAudio() {
 watch(shownTopics, topics => {
   if (playing && !topics.some(topic => topic.id === playing?.dataset.topic)) stopAudio()
 })
-watch(audioMode, stopAudio, { flush: 'sync' })
+watch([activeDifficulty, audioMode], stopAudio, { flush: 'sync' })
 onBeforeUnmount(stopAudio)
-
-const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value === 'questions' ? '-questions' : '') + '.mp3'
 </script>
 
 <template>
@@ -79,7 +87,7 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
           <li><strong>{{ practiceCounts.technical }}</strong> 技術題</li>
           <li><strong>{{ practiceCounts.conversation }}</strong> 面談題</li>
           <li><strong>{{ practiceCounts.exercise }}</strong> 實作題</li>
-          <li><strong>{{ practiceTopics.length * audioModes.length }}</strong> 支 MP3</li>
+          <li><strong>{{ audioTrackCount }}</strong> 支 MP3</li>
         </ul>
       </div>
     </header>
@@ -111,6 +119,7 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
               {{ label }}
             </label>
           </div>
+          <p class="practice-count">選擇難度會切換 MP3。選「全部難度」可聽完整主題。</p>
         </fieldset>
         <fieldset class="practice-options">
           <legend>MP3 版本</legend>
@@ -141,12 +150,13 @@ const audioUrl = (id: string) => '/interview-audio/' + id + (audioMode.value ===
           <span>{{ topic.questions.length }} 題</span>
         </div>
         <div class="topic-audio">
-          <audio :key="audioMode" controls preload="none" :src="audioUrl(topic.id)" :data-topic="topic.id"
-            :aria-label="topic.title + ' ' + audioLabel" @play="audioStarted"></audio>
-          <a :href="audioUrl(topic.id)" download
-            :aria-label="'下載 ' + topic.title + ' ' + audioLabel + ' MP3'">下載 MP3 <span class="audio-version">{{ audioLabel }}</span><span aria-hidden="true">↓</span></a>
+          <p class="audio-scope">MP3 {{ audioScopeLabel }} · {{ topic.audioQuestionCount }} 題</p>
+          <audio :key="topic.audioUrl" controls preload="none" :src="topic.audioUrl" :data-topic="topic.id"
+            :aria-label="topic.title + ' ' + audioScopeLabel + ' ' + audioLabel" @play="audioStarted"></audio>
+          <a :href="topic.audioUrl" download
+            :aria-label="'下載 ' + topic.title + ' ' + audioScopeLabel + ' ' + audioLabel + ' MP3'">下載 MP3 <span class="audio-version">{{ audioLabel }}</span><span aria-hidden="true">↓</span></a>
         </div>
-        <p v-if="topic.questions.length < topic.totalQuestions" class="practice-count audio-scope">MP3 收錄此主題的完整題目。</p>
+        <p v-if="topic.questions.length < topic.audioQuestionCount" class="practice-count audio-search-note">關鍵字搜尋只篩選下方文字題目。</p>
         <ol class="question-list">
           <li v-for="question in topic.questions" :key="question.prompt">
             <details :open="expandedAnswers.has(question.prompt)" @toggle="trackAnswer($event, question.prompt)">
@@ -237,7 +247,8 @@ h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.
 .topic-audio audio { width: min(100%, 21rem); }
 .topic-audio a { display: inline-flex; gap: .4rem; align-items: center; min-height: 44px; color: var(--practice-accent); font-weight: 700; text-decoration: underline; text-underline-offset: .2rem; }
 .audio-version { color: var(--practice-muted); font-size: .88rem; font-weight: 500; }
-.audio-scope { margin: -.25rem 0 .65rem; }
+.audio-scope { flex-basis: 100%; color: var(--practice-muted); font-size: .9rem; font-weight: 650; }
+.audio-search-note { margin: -.25rem 0 .65rem; }
 .question-list { list-style: none; padding: 0; margin: 0; }
 .question-list li { border-top: 1px solid var(--practice-border); }
 .question-list summary { cursor: pointer; padding: .8rem .3rem; line-height: 1.6; font-weight: 650; }
