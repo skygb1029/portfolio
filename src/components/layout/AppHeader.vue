@@ -5,7 +5,14 @@ import ThemeToggle from '@/components/layout/ThemeToggle.vue'
 const route = useRoute()
 const open = ref(false)
 const toggle = ref<HTMLButtonElement>()
-const items = [['作品案例','/works'], ['AI 產品','/products'], ['相關筆記','/articles'], ['關於與履歷','/resume'], ['聯絡合作','/contact']] as const
+const items = [
+  ['作品案例', '/works'],
+  ['AI 產品', '/products'],
+  ['相關筆記', '/articles'],
+  ['前端面試練習', '/interview-practice'],
+  ['關於與履歷', '/resume'],
+  ['聯絡合作', '/contact'],
+] as const
 function active(path: string) {
   return route.path === path || route.path.startsWith(path + '/') ||
     (path === '/products' && (route.path.startsWith('/product/') || route.path === '/demo'))
@@ -28,7 +35,7 @@ function closeOnEscape() {
       <nav id="primary-nav" aria-label="主要導覽" class="order-last w-full flex-col gap-1 pb-3 md:order-none md:w-auto md:flex-row md:pb-0"
         :class="open ? 'flex' : 'hidden md:flex'">
         <RouterLink v-for="[title, path] in items" :key="path" :to="path"
-          class="rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-indigo-100 dark:hover:bg-indigo-950"
+          class="rounded-lg px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-indigo-100 md:px-2.5 lg:px-4 dark:hover:bg-indigo-950"
           :class="active(path) ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200' : ''"
           :aria-current="active(path) ? (route.path === path ? 'page' : 'location') : undefined" @click="open = false">{{ title }}</RouterLink>
       </nav>
