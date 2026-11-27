@@ -9,10 +9,13 @@ export type PracticeDifficulty = keyof typeof difficultyLabels
 export interface PracticeQuestion {
   level: PracticeDifficulty
   prompt: string
+  writtenExam?: number
   answer: string
   lesson: { explanation: string; practice: string }
   followUp?: { title: string; body: string }
   example?: string
+  exampleLanguage?: 'HTML / CSS' | 'Vue'
+  reference?: { label: string; url: string }
 }
 
 interface PracticeTopic {
@@ -28,13 +31,18 @@ export const practiceTopics: PracticeTopic[] = [
     questions: [
       {
         level: 'beginner',
-        prompt: "ref 和 reactive 有什麼差別？",
-        answer: "ref 可包純值或物件，在 JavaScript 中用 .value 讀寫。reactive 把物件或陣列轉成 Proxy，可直接操作屬性。",
+        writtenExam: 10,
+        prompt: "Vue 3 的 ref() 和 reactive() 有什麼差別？什麼時候用哪一個？",
+        answer: "ref 可存原始型別或物件，在 JavaScript 中通常用 .value 讀寫，適合計數器或可能整份替換的資料。reactive 接受物件、陣列等物件型別並回傳 Proxy，適合逐欄修改的表單狀態。",
         lesson: {
-          explanation: "可以把 ref 想成可追蹤的容器。改 count.value 是替換容器內容。reactive 則代理物件，改 form.name 時 Vue 會追蹤讀過 name 的畫面。直接把 form.name 解構成普通變數，只會取得當時的值。",
-          practice: "用一個計數器和一個姓名欄位做實驗。分別更新 count.value、form.name 及解構出的 name，觀察哪些變更會重新渲染。",
+          explanation: "用 ref 放查詢結果時，可以用 results.value 直接換成新陣列。表單使用 reactive 時，更新 form.name 可觸發依賴。直接將字串欄位解構成普通變數，只會取得當時的值。",
+          practice: "建立計數器和姓名表單。分別替換 ref 的內容、更新 form.name 與改動解構得來的變數，看看畫面何時更新。",
         },
-        followUp: { title: "實務補充", body: "如果解構 reactive 後仍要追蹤屬性，可用 toRefs。團隊也可以統一用 ref 宣告，減少混用規則。" },
+        followUp: { title: "解構表單物件", body: "如果需要解構 reactive 後繼續追蹤各欄位，可用 toRefs。用 ref 保存物件時，預設也會讓可代理的巢狀值具備響應性。" },
+        reference: {
+          label: "Vue 響應式基礎",
+          url: "https://vuejs.org/guide/essentials/reactivity-fundamentals.html",
+        },
       },
       {
         level: 'intermediate',
@@ -104,6 +112,56 @@ export const practiceTopics: PracticeTopic[] = [
           practice: "把兩個頁面重複的搜尋邏輯畫成輸入和輸出。指定查詢函式、loading、error 和取消請求各由哪裡管理。",
         },
         followUp: { title: "元件的 props、事件與清理", body: "相同的狀態與副作用出現在多個畫面時，可以抽出可組合函式。例如把分頁、搜尋與取消請求放入同一個 composable，用參數傳入各頁的資料來源。只重複畫面結構時，通常先抽元件。 父層持有主要狀態，子層可用 emit 回報意圖。需要雙向輸入時可用 v-model。掛載後才能安全讀取 DOM，卸載時取消計時器、事件監聽及不再使用的請求。" },
+      },
+      {
+        level: 'intermediate',
+        writtenExam: 11,
+        prompt: "Vue 3 的 setup() 在何時執行？請依階段說出至少四個生命週期鉤子。",
+        answer: "setup 在每個元件實例初始化時執行，早於 Options API 的 beforeCreate。一般掛載流程依序是 onBeforeMount、onMounted。資料更新時是 onBeforeUpdate、onUpdated。移除元件時是 onBeforeUnmount、onUnmounted。",
+        lesson: {
+          explanation: "在 setup 的同步執行階段註冊鉤子。需要存取元件 DOM 時，可等到 onMounted。在 onUnmounted 清除計時器或訂閱。更新鉤子要有實際渲染更新才會觸發，onMounted 等 DOM 相關鉤子不在 SSR 時執行。",
+          practice: "做一個父元件控制顯示的計數器。印出 setup、onMounted、onUpdated 和 onUnmounted，依序顯示、點擊更新、移除，記下出現的順序。",
+        },
+        reference: {
+          label: "Vue 生命週期鉤子",
+          url: "https://vuejs.org/api/composition-api-lifecycle.html",
+        },
+      },
+      {
+        level: 'intermediate',
+        writtenExam: 12,
+        prompt: "Vue 3 父元件如何呼叫子元件的方法？請用 template ref 示範。",
+        answer: "子元件用 defineExpose 公開需要的操作。父元件以 template ref 取得已掛載的子元件實例，再呼叫該方法。資料流通常留給 props 與 emit，需要主動聚焦或重設時可用這種方式。",
+        lesson: {
+          explanation: "script setup 宣告的函式預設不會公開。子元件只暴露 focus，父元件透過 ref 呼叫。初始化或子元件被 v-if 移除時，實例可能是 null，因此先檢查。",
+          practice: "做一個子元件輸入框。按父元件的按鈕時讓它取得焦點，再用 v-if 移除子元件，確認 optional chaining 能處理 ref 為空的情況。",
+        },
+        exampleLanguage: 'Vue',
+        example: [
+          "<!-- SearchInput.vue -->",
+          "<script setup>",
+          "import { ref } from 'vue'",
+          "const field = ref(null)",
+          "function focus() { field.value?.focus() }",
+          "defineExpose({ focus })",
+          "</script>",
+          "<template><input ref=\"field\" aria-label=\"搜尋關鍵字\"></template>",
+          "",
+          "<!-- Parent.vue -->",
+          "<script setup>",
+          "import { ref } from 'vue'",
+          "import SearchInput from './SearchInput.vue'",
+          "const search = ref(null)",
+          "</script>",
+          "<template>",
+          "  <SearchInput ref=\"search\" />",
+          "  <button type=\"button\" @click=\"search?.focus()\">聚焦搜尋欄</button>",
+          "</template>",
+        ].join('\n'),
+        reference: {
+          label: "Vue 元件 Template Ref",
+          url: "https://vuejs.org/guide/essentials/template-refs.html",
+        },
       },
       {
         level: 'advanced',
@@ -200,6 +258,49 @@ export const practiceTopics: PracticeTopic[] = [
       },
       {
         level: 'advanced',
+        writtenExam: 13,
+        prompt: "Nuxt 3 的 useAsyncData() 與 useFetch() 怎麼選？SSR 如何預取並重用資料？",
+        answer: "useAsyncData 可執行自訂非同步 handler。useFetch 封裝 useAsyncData 與 $fetch，可用 URL 和選項取得資料。預設 SSR 時先在伺服器取得資料，結果放進 Nuxt payload，瀏覽器 hydration 依 key 重用結果。",
+        lesson: {
+          explanation: "單一 HTTP API 可直接 await useFetch。需同時載入多項資料或呼叫額外的資料介面時，可用 useAsyncData 自訂 handler。給資料穩定且有意義的 key，回傳可序列化的有效值。server: false 時請求留到前端，因此首份伺服器 HTML 不會有這筆資料。",
+          practice: "在 Nuxt 3 建立商品頁和簡單 API，用 useFetch 直接載入商品，再用 useAsyncData 同時載入商品和分類。重新整理並檢查伺服器紀錄和瀏覽器 Network，確認 hydration 是否重用結果。",
+        },
+        reference: {
+          label: "Nuxt 3 Data Fetching",
+          url: "https://nuxt.com/docs/3.x/getting-started/data-fetching",
+        },
+      },
+      {
+        level: 'intermediate',
+        writtenExam: 14,
+        prompt: "Nuxt 3／4 的 composables 和 utils 如何分工？請各舉一例。",
+        answer: "composables 放可共用的 Vue／Nuxt 邏輯，例如 useCart() 回傳響應式購物車與方法。utils 放一般工具函式，例如 formatPrice() 把數字格式化為金額。兩者依 Nuxt 的目錄設定都可自動匯入。",
+        lesson: {
+          explanation: "Nuxt 3 標準目錄通常是 composables/、utils/。Nuxt 4 標準應用結構通常是 app/composables/、app/utils/。目錄名稱本身不會讓函式變成響應式。需要 Vue 或 Nuxt context 的 composable 要在支援的環境與時機呼叫。",
+          practice: "讓 formatPrice 接收金額與幣別並可獨立測試。再寫 useCart，讓購物車總價依商品數量更新，並在畫面呼叫 formatPrice 顯示結果。",
+        },
+        reference: {
+          label: "Nuxt 4 utils 與 composables",
+          url: "https://nuxt.com/docs/4.x/directory-structure/app/utils",
+        },
+      },
+      {
+        level: 'intermediate',
+        writtenExam: 15,
+        prompt: "Vue／Nuxt 的狀態預設存在哪裡？重新整理後如何保留資料？",
+        answer: "Pinia、Vue 響應式狀態和 Nuxt useState 預設在執行環境記憶體中。Nuxt SSR 可將初始值傳給瀏覽器進行 hydration。重新整理會重建應用，要持久保留可依資料用途選用瀏覽器儲存、Cookie 或後端資料庫。",
+        lesson: {
+          explanation: "偏好設定可用 localStorage。只需在同一個分頁保留的草稿可用 sessionStorage。跨裝置資料可存後端並在登入後載入。Nuxt SSR 需要提前知道的簡短偏好可以用 Cookie。登入憑證應由後端管理，例如適當設定的 HttpOnly Cookie。",
+          practice: "用記憶體保存主題色與草稿後重新整理。接著讓主題色從 localStorage、草稿從 sessionStorage 讀取，比較在重新整理和關閉分頁之後是否保留。",
+        },
+        followUp: { title: "SSR 讀取時機", body: "localStorage 和 sessionStorage 只存在瀏覽器，請在客戶端適當時機讀取。SSR 先從 Cookie 決定需要一致的初值，避免兩端首次渲染不同。" },
+        reference: {
+          label: "Nuxt 狀態管理",
+          url: "https://nuxt.com/docs/4.x/getting-started/state-management",
+        },
+      },
+      {
+        level: 'advanced',
         prompt: "Nuxt 怎麼設定 SEO？",
         answer: "用 useSeoMeta 或 useHead 設標題、描述、Open Graph 等資訊，再依內容加入 canonical、sitemap 或 JSON-LD。",
         lesson: {
@@ -225,22 +326,57 @@ export const practiceTopics: PracticeTopic[] = [
     questions: [
       {
         level: 'beginner',
-        prompt: "var、let、const 有什麼差別？",
-        answer: "函式內的 var 依函式作用域，let 和 const 依區塊。const 的變數不能重新賦值。如果它指向物件，物件本身的屬性仍可修改。",
+        writtenExam: 1,
+        prompt: "比較 var、let、const 的作用域、提升和可能造成的 bug。",
+        answer: "var 是函式作用域，也能重新宣告。執行到賦值前，已建立的 var 綁定是 undefined。let 和 const 是區塊作用域，宣告前的暫時性死區會在讀取時拋出 ReferenceError。let 可重新賦值，const 宣告時要初始化，綁定之後不能重新賦值。",
         lesson: {
-          explanation: "函式裡的 var 即使宣告在 if 區塊內，區塊外仍在同一個函式作用域。let 和 const 只在所在區塊可用。const 固定變數的綁定，因此 cart = [] 會出錯，cart.push(item) 仍可修改陣列。",
-          practice: "把 var x 和 let y 分別宣告在同一個 if 區塊內，預測區塊外的讀取結果。再用 const 建立陣列，試著加元素和重新賦值。",
+          explanation: "迴圈用 var 宣告索引時，非同步回呼共用同一個索引。等回呼執行時，值可能已變成最後一次迴圈之後的數字。for 用 let 宣告索引時，每次迭代會有自己的綁定。const 物件的欄位仍可修改。",
+          practice: "讓 for 迴圈排三個 setTimeout，各印一次索引。先用 var 再用 let，確認兩者會印出 3、3、3 與 0、1、2。",
+        },
+        followUp: { title: "宣告與初始化", body: "let 和 const 的綁定在進入作用域時就已存在，待執行到宣告處才初始化。用 TDZ 解釋宣告前不能存取，比只說「沒有提升」精確。" },
+        reference: {
+          label: "MDN JavaScript 語言概覽",
+          url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Language_overview",
         },
       },
       {
         level: 'beginner',
-        prompt: "什麼是 Closure？",
-        answer: "函式保留對宣告當時外部作用域的存取，即使外層函式已執行結束，內層函式仍可讀取那些變數。",
+        writtenExam: 2,
+        prompt: "什麼是閉包（Closure）？請舉出用途與常見情境。",
+        answer: "函式可以保留對宣告時外層詞法環境的存取，因此外層函式執行完，內層函式仍能讀寫那些變數。常見用途包括封裝私有狀態、產生有設定的函式，以及讓 debounce 記住計時器。",
         lesson: {
-          explanation: "外層建立初始 count 並回傳增加 count 的函式。外層執行結束後，回傳的函式仍保有該次呼叫的變數環境。建立兩個計數器時，各自擁有一份 count，因此可以用閉包封裝每個實例的狀態。",
-          practice: "實作 makeCounter，回傳可以加一的函式。建立 a 和 b，再依序呼叫 a、a、b，預期得到 1、2、1。",
+          explanation: "makeCounter 內宣告 count 後回傳一個遞增函式。每次呼叫 makeCounter 都會建立新的環境，因此兩個計數器可以各自累加。同一個計數器內的函式則會持續操作自己的 count。",
+          practice: "實作 makeCounter，建立 a 和 b，再依序呼叫 a、a、b，預期得到 1、2、1。試著加入 reset，讓同一計數器的兩個方法共用 count。",
         },
-        followUp: { title: "實務補充", body: "用外層函式建立計數器時，每次呼叫會得到各自獨立的 count。內層函式可以繼續讀寫它。" },
+        reference: {
+          label: "MDN 閉包",
+          url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures",
+        },
+      },
+      {
+        level: 'intermediate',
+        writtenExam: 3,
+        prompt: "一般函式、物件方法和箭頭函式的 this 分別如何決定？",
+        answer: "一般函式的 this 取決於呼叫方式。嚴格模式的獨立呼叫是 undefined，非嚴格模式通常替換為 globalThis。以 obj.method() 呼叫一般方法時，this 是 obj。箭頭函式沿用外層的 this。",
+        lesson: {
+          explanation: "把 obj.method 存入變數再呼叫，呼叫時已沒有 obj 作為接收者。一般函式可用 call、apply 或 bind 指定這個值。箭頭函式以詞法方式取得外層 this，這些方法無法改寫它的 this。",
+          practice: "比較 obj.getName()、把 getName 拆出後直接呼叫，以及用 call(obj) 呼叫。再把物件方法改成箭頭函式，觀察 call(obj) 能否改變結果。",
+        },
+        example: [
+          "'use strict'",
+          "const user = {",
+          "  name: 'Mia',",
+          "  read() { return this?.name },",
+          "  makeReader() { return () => this.name },",
+          "}",
+          "const detached = user.read",
+          "console.log(user.read(), detached(), detached.call(user)) // Mia undefined Mia",
+          "console.log(user.makeReader().call({ name: 'Kai' })) // Mia",
+        ].join('\n'),
+        reference: {
+          label: "MDN this",
+          url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this",
+        },
       },
       {
         level: 'advanced',
@@ -274,11 +410,16 @@ export const practiceTopics: PracticeTopic[] = [
       },
       {
         level: 'beginner',
-        prompt: "淺拷貝和深拷貝有什麼差別？",
-        answer: "淺拷貝只複製外層，巢狀物件仍共享參照。深拷貝會複製巢狀資料，能用 structuredClone 複製支援的型別，例如 Map 和 Date。函式不在支援類型內。",
+        writtenExam: 4,
+        prompt: "淺拷貝與深拷貝有什麼差別？請比較兩種深拷貝做法。",
+        answer: "淺拷貝只複製最外層，巢狀物件仍共用參考。深拷貝會複製可支援的巢狀資料。structuredClone 可處理 Date、Map 與循環參考。JSON 序列化再解析適合原本就只有 JSON 可表示值的普通資料。",
         lesson: {
-          explanation: "對含 address 物件的 user 使用展開運算子後，頂層欄位可各自替換，兩份資料仍會指向同一個 address。structuredClone 會遞迴複製支援的資料，例如 Date、Map 和陣列。函式等值不受支援。",
-          practice: "建立 user 和含 city 的 address。用展開複製後改 city，確認原始值跟著變，再用 structuredClone 測一次。",
+          explanation: "展開物件後，改 copy.address.city 會影響原本的 address。structuredClone 可讓兩份 address 獨立，遇到函式會拋出錯誤。JSON 的方法遇到 Date 會得到字串，遇到循環參考會失敗，也無法原樣保留 undefined。",
+          practice: "建立有 address、Date 和 undefined 的物件，分別用展開、structuredClone 和 JSON 轉換。比較巢狀欄位是否共用，以及型別有沒有改變。",
+        },
+        reference: {
+          label: "MDN structuredClone",
+          url: "https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone",
         },
       },
       {
@@ -308,13 +449,13 @@ export const practiceTopics: PracticeTopic[] = [
     questions: [
       {
         level: 'beginner',
-        prompt: "Flex 和 Grid 有什麼差別？",
-        answer: "Flexbox 適合一個主要方向的排列。Grid 可以同時控制列與欄，適合二維版面。",
+        writtenExam: 6,
+        prompt: "Flexbox 和 Grid 各有什麼優勢？什麼版面適合用哪一種？",
+        answer: "Flexbox 適合沿單一主軸排列與對齊，例如導覽列、按鈕群組。Grid 能同時規劃列與欄的軌道，適合需要跨列對齊的商品清單或整頁版面。兩種可以在外層和內層搭配使用。",
         lesson: {
-          explanation: "導覽列中的左側標誌、連結和右側頭像，主要沿同一軸排列，Flex 可處理對齊和剩餘空間。商品清單需要跨列保持欄位一致，Grid 較容易定義欄軌與間隙。",
-          practice: "做一個三欄商品 Grid，每張卡內用 Flex 排價格和按鈕。縮小到窄螢幕，觀察哪一層負責變欄和對齊。",
+          explanation: "具備換行的 Flex 容器仍以每一行分別計算剩餘空間。三欄商品清單如果要求每列的欄線一致，Grid 可以共享欄軌。每張卡片裡的價格與按鈕則可交給 Flex 沿單軸排版。",
+          practice: "做三欄商品 Grid，每張卡內用 Flex 排價格和按鈕。改變一張卡的文字長度，再比較窄畫面時格線及按鈕的行為。",
         },
-        followUp: { title: "實務補充", body: "卡片組可以用 Grid 決定欄數，卡片內的按鈕群組則用 Flexbox 對齊。兩種排版可以互相搭配。" },
       },
       {
         level: 'advanced',
@@ -327,6 +468,20 @@ export const practiceTopics: PracticeTopic[] = [
         followUp: { title: "實務補充", body: "用 DevTools 查 Computed 或 Styles，定位實際生效規則。元件的樣式互相影響時，可先縮小作用範圍。" },
       },
       {
+        level: 'advanced',
+        writtenExam: 8,
+        prompt: "CSS 選擇器 #main div.content span 和 .content-span，哪一個通常比較費工？",
+        answer: "在相同目標和可比的頁面中，#main div.content span 通常需要更多比對。引擎比對右端的 span 候選，再確認是否有符合條件的祖先。單一 class 的比對條件較簡單。實際開銷需要在真實 DOM 上量測。",
+        lesson: {
+          explanation: "選擇器效能是符合條件所需的工作。Specificity 是級聯中用來比較規則優先順序的資訊。大量 span、較深的祖先鏈或頻繁改變 class 可能增加重算樣式的代價。現代引擎有快取與篩選最佳化，實際差距取決於頁面。",
+          practice: "用兩組作用範圍一致的樣式做成測試頁。固定 DOM 和互動動作，以 Chrome DevTools 的 Selector Stats 比較樣式重算時間及匹配次數。",
+        },
+        reference: {
+          label: "Chrome DevTools Selector Stats",
+          url: "https://developer.chrome.com/docs/devtools/performance/selector-stats",
+        },
+      },
+      {
         level: 'intermediate',
         prompt: "relative、absolute、fixed、sticky 有什麼差別？",
         answer: "relative 保留原來版面空間，可相對原位置偏移。absolute 脫離正常流，依定位包含區塊定位。fixed 通常依視窗定位。sticky 在捲動到指定門檻後，會在容器範圍內黏附。",
@@ -337,13 +492,63 @@ export const practiceTopics: PracticeTopic[] = [
       },
       {
         level: 'intermediate',
-        prompt: "如何實作 RWD？",
-        answer: "用彈性尺寸、Flex 或 Grid 建立基本版面，再用 Media Query 為版面開始擁擠的寬度設斷點。也要檢查橫向、放大文字和長內容。",
+        writtenExam: 7,
+        prompt: "如何實作 RWD？Viewport meta 和 Media Query 分別負責什麼？",
+        answer: "RWD 讓同一頁依可用空間調整佈局。viewport meta 的 width=device-width 讓行動瀏覽器採用裝置寬度作為版面視窗的基準。Media Query 依條件套用樣式，例如視窗夠寬時改成兩欄。",
         lesson: {
-          explanation: "先讓內容在窄版自然換行，使用可伸縮的寬度、圖片和格線。當內容太擠或一行過長時設斷點，調整欄位和控制項。除了寬度，也要驗證長文字、瀏覽器縮放和操作焦點。",
-          practice: "做一張含圖片、長標題和按鈕的產品卡。用 320、768 和 1280 像素測試，再放大瀏覽器文字，檢查是否需要橫向捲動。",
+          explanation: "用流動寬度、可縮放圖片與 Flexbox 或 Grid 先完成窄版。viewport meta 讓行動瀏覽器以合理的 CSS 寬度呈現。畫面需要更多欄位時，透過 @media 選擇新的佈局。也要保留瀏覽器縮放能力。",
+          practice: "做一張商品卡。在 DevTools 的 360 px 裝置模式切換 viewport meta，比較版面寬度。再加入以 48rem 為條件的兩欄樣式，觀察何時切換。",
         },
-        followUp: { title: "手機版跑版與鍵盤", body: "測窄螢幕、橫向、放大文字和鍵盤焦點。遇到橫向捲軸，可找出 scrollWidth 超出可視寬度的元素，再決定要換行、縮圖或在區塊內捲動。" },
+        followUp: { title: "跑版檢查", body: "手機測試時同時檢查橫向捲動、長文字、放大文字與鍵盤焦點。優先從撐寬容器的實際元素定位問題。" },
+        reference: {
+          label: "MDN Viewport meta",
+          url: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/meta/name/viewport",
+        },
+      },
+      {
+        level: 'intermediate',
+        writtenExam: 9,
+        prompt: "用語意化 HTML 和 CSS 寫出 Holy Grail 三欄版面，中間隨視窗寬度調整。",
+        answer: "以 header、nav、main、aside、footer 分配頁面區塊。中段用 Grid 設定左右欄及 minmax(0, 1fr) 的中央欄。窄畫面時以 Media Query 改為單欄。",
+        lesson: {
+          explanation: "外層 Grid 讓頁首和頁尾用 auto，中段用 1fr。內層 Grid 把扣掉左右欄與間距後的空間給主要內容。中央欄用 minmax(0, 1fr)，搭配長文字換行，可降低內容的最小尺寸撐寬版面的機會。",
+          practice: "將範例存為 HTML 檔，在寬與窄視窗測試。加入一條很長的網址，驗證中央欄會換行，並用鍵盤查看 HTML 順序是否合理。",
+        },
+        exampleLanguage: 'HTML / CSS',
+        example: [
+          "<!doctype html>",
+          "<html lang=\"zh-Hant\">",
+          "<head>",
+          "  <meta charset=\"utf-8\">",
+          "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">",
+          "  <title>三欄佈局</title>",
+          "  <style>",
+          "    body { margin: 0; min-height: 100vh; display: grid;",
+          "      grid-template-rows: auto 1fr auto; }",
+          "    header, nav, main, aside, footer { padding: 1rem; }",
+          "    .layout { display: grid;",
+          "      grid-template-columns: 11rem minmax(0, 1fr) 11rem; }",
+          "    main { overflow-wrap: anywhere; }",
+          "    @media (max-width: 48rem) {",
+          "      .layout { grid-template-columns: minmax(0, 1fr); }",
+          "    }",
+          "  </style>",
+          "</head>",
+          "<body>",
+          "  <header>頁首</header>",
+          "  <div class=\"layout\">",
+          "    <nav aria-label=\"主要導覽\"><a href=\"#content\">閱讀內容</a></nav>",
+          "    <main id=\"content\"><h1>主要內容</h1></main>",
+          "    <aside>相關資訊</aside>",
+          "  </div>",
+          "  <footer>頁尾</footer>",
+          "</body>",
+          "</html>",
+        ].join('\n'),
+        reference: {
+          label: "MDN Grid 欄軌設定",
+          url: "https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/grid-template-columns",
+        },
       },
       {
         level: 'beginner',
@@ -647,6 +852,37 @@ export const practiceTopics: PracticeTopic[] = [
       },
       {
         level: 'intermediate',
+        writtenExam: 5,
+        prompt: "用 Array.prototype.reduce 將員工清單整理成各部門的薪資總和。",
+        answer: "以空物件為初始累加器，對每一筆員工以 department 當鍵。尚未有總額時從零開始，再加上當筆 salary。走完後回傳累加器，原陣列維持原值。",
+        lesson: {
+          explanation: "分組累加只需要走訪陣列一次。使用 Object.create(null) 建立累加器，可以避免部門名稱碰到從原型繼承的名稱。準備空的初始值，也能讓空陣列回傳空物件。此題假設薪資已驗證為有限數字。",
+          practice: "執行範例，預期 Support 為 70000、Product 為 96000、Ops 為 36000。再測空陣列與相同部門的兩筆資料。",
+        },
+        example: [
+          "function sumSalaryByDepartment(employees) {",
+          "  return employees.reduce((totals, { department, salary }) => {",
+          "    totals[department] = (totals[department] ?? 0) + salary;",
+          "    return totals;",
+          "  }, Object.create(null));",
+          "}",
+          "",
+          "const employees = [",
+          "  { department: 'Support', salary: 32000 },",
+          "  { department: 'Product', salary: 42000 },",
+          "  { department: 'Support', salary: 38000 },",
+          "  { department: 'Product', salary: 54000 },",
+          "  { department: 'Ops', salary: 36000 },",
+          "];",
+          "console.log(sumSalaryByDepartment(employees));",
+        ].join('\n'),
+        reference: {
+          label: "MDN Array.prototype.reduce",
+          url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce",
+        },
+      },
+      {
+        level: 'intermediate',
         prompt: "依 ID 去除重複項目，只保留第一次出現。",
         answer: "Set 用來記錄看過的 ID。累積輸出時保留第一次出現的項目，維持輸入順序。若 ID 可缺省，先定義缺省項目該如何辨識。",
         lesson: {
@@ -718,6 +954,7 @@ export const practiceTopics: PracticeTopic[] = [
 ]
 
 export const practiceCounts = {
+  written: practiceTopics.reduce((sum, topic) => sum + topic.questions.filter(question => question.writtenExam).length, 0),
   technical: practiceTopics.filter(topic => topic.kind === 'technical').reduce((sum, topic) => sum + topic.questions.length, 0),
   conversation: practiceTopics.find(topic => topic.kind === 'conversation')!.questions.length,
   exercise: practiceTopics.find(topic => topic.kind === 'exercise')!.questions.length,

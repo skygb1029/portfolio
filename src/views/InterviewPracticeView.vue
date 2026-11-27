@@ -1,39 +1,58 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { difficultyLabels, practiceCounts, practiceTopics, type PracticeDifficulty } from '@/data/interviewPractice'
 
+const route = useRoute()
+const router = useRouter()
 const activeTopic = ref('all')
 const activeDifficulty = ref<PracticeDifficulty | 'all'>('all')
 const search = ref('')
+const writtenOnly = computed({
+  get: () => route.query.scope === 'written',
+  set: enabled => {
+    void router.replace({ query: { ...route.query, scope: enabled ? 'written' : undefined }, hash: route.hash })
+  },
+})
 const audioModes = [
   { value: 'answers', label: '題目與解答' },
   { value: 'questions', label: '只有題目' },
 ] as const
 const audioMode = ref<(typeof audioModes)[number]['value']>('answers')
 const audioLabel = computed(() => audioModes.find(mode => mode.value === audioMode.value)!.label)
-const audioScopeLabel = computed(() => activeDifficulty.value === 'all'
-  ? '完整主題'
-  : difficultyLabels[activeDifficulty.value])
-const audioTrackCount = practiceTopics.reduce((total, topic) =>
-  total + 1 + new Set(topic.questions.map(question => question.level)).size, 0) * audioModes.length
+const audioScopeLabel = computed(() => {
+  if (activeDifficulty.value === 'all') return writtenOnly.value ? '筆試回顧' : '完整主題'
+  const level = difficultyLabels[activeDifficulty.value]
+  return writtenOnly.value ? '筆試回顧 · ' + level : level
+})
+const audioTrackCount = practiceTopics.reduce((total, topic) => {
+  const levels = new Set(topic.questions.map(question => question.level))
+  const writtenLevels = new Set(topic.questions.filter(question => question.writtenExam).map(question => question.level))
+  return total + 1 + levels.size + (writtenLevels.size ? 1 + writtenLevels.size : 0)
+}, 0) * audioModes.length
 const allPrompts = practiceTopics.flatMap(topic => topic.questions.map(question => question.prompt))
 const expandedAnswers = ref(new Set<string>())
 let playing: HTMLAudioElement | null = null
 
 const shownTopics = computed(() => {
   const terms = search.value.trim().toLocaleLowerCase()
+  const examNumber = /^q(\d+)$/.exec(terms)?.[1]
   return practiceTopics
     .filter(topic => activeTopic.value === 'all' || topic.id === activeTopic.value)
     .map(topic => {
       const trackQuestions = topic.questions.filter(question =>
-        activeDifficulty.value === 'all' || question.level === activeDifficulty.value)
+        (!writtenOnly.value || question.writtenExam)
+        && (activeDifficulty.value === 'all' || question.level === activeDifficulty.value))
       const track = activeDifficulty.value === 'all' ? topic.id : topic.id + '-' + activeDifficulty.value
+      const scope = writtenOnly.value ? '-written' : ''
       const version = audioMode.value === 'questions' ? '-questions' : ''
       return {
         ...topic,
-        audioUrl: '/interview-audio/' + track + version + '.mp3',
+        audioUrl: '/interview-audio/' + track + scope + version + '.mp3',
         audioQuestionCount: trackQuestions.length,
-        questions: trackQuestions.filter(question => (topic.title + ' ' + question.prompt).toLocaleLowerCase().includes(terms)),
+        questions: trackQuestions.filter(question => examNumber
+          ? question.writtenExam === Number(examNumber)
+          : (topic.title + ' ' + question.prompt).toLocaleLowerCase().includes(terms)),
       }
     })
     .filter(topic => topic.questions.length > 0)
@@ -44,6 +63,7 @@ function resetFilters() {
   activeTopic.value = 'all'
   activeDifficulty.value = 'all'
   search.value = ''
+  if (writtenOnly.value) writtenOnly.value = false
 }
 
 function setAllAnswers(open: boolean) {
@@ -72,7 +92,7 @@ function stopAudio() {
 watch(shownTopics, topics => {
   if (playing && !topics.some(topic => topic.id === playing?.dataset.topic)) stopAudio()
 })
-watch([activeDifficulty, audioMode], stopAudio, { flush: 'sync' })
+watch([activeDifficulty, audioMode, writtenOnly], stopAudio, { flush: 'sync' })
 onBeforeUnmount(stopAudio)
 </script>
 
@@ -95,7 +115,13 @@ onBeforeUnmount(stopAudio)
     <div class="practice-frame practice-content">
       <div class="practice-tools">
         <label for="practice-search">搜尋題目<span class="sr-only">或主題</span></label>
-        <input id="practice-search" v-model="search" type="search" placeholder="例如 Hydration、Pinia、薪資">
+        <input id="practice-search" v-model="search" type="search" placeholder="例如 Hydration、Pinia、Q12">
+        <div class="practice-actions written-filter">
+          <label class="practice-choice">
+            <input v-model="writtenOnly" type="checkbox">
+            筆試回顧（{{ practiceCounts.written }} 題）
+          </label>
+        </div>
         <label class="practice-topic-select" for="practice-topic">複習主題
           <select id="practice-topic" v-model="activeTopic" aria-label="複習主題">
             <option value="all">全部主題</option>
@@ -119,7 +145,7 @@ onBeforeUnmount(stopAudio)
               {{ label }}
             </label>
           </div>
-          <p class="practice-count">選擇難度會切換 MP3。選「全部難度」可聽完整主題。</p>
+          <p class="practice-count">主題、難度和筆試回顧會同步切換 MP3。</p>
         </fieldset>
         <fieldset class="practice-options">
           <legend>MP3 版本</legend>
@@ -163,13 +189,16 @@ onBeforeUnmount(stopAudio)
               <summary>
                 <span class="question-prompt">
                   <span>{{ question.prompt }}</span>
-                  <span class="question-level" :data-level="question.level">{{ difficultyLabels[question.level] }}</span>
+                  <span class="question-labels">
+                    <span v-if="question.writtenExam" class="question-level exam-label">筆試 Q{{ question.writtenExam }}</span>
+                    <span class="question-level" :data-level="question.level">{{ difficultyLabels[question.level] }}</span>
+                  </span>
                 </span>
               </summary>
               <div class="answer">
                 <h3>面試短答</h3>
                 <p>{{ question.answer }}</p>
-                <pre v-if="question.example" tabindex="0" aria-label="JavaScript 參考程式"><code>{{ question.example }}</code></pre>
+                <pre v-if="question.example" tabindex="0" :aria-label="(question.exampleLanguage ?? 'JavaScript') + ' 參考程式'"><code>{{ question.example }}</code></pre>
                 <details class="lesson">
                   <summary>詳細說明與教學</summary>
                   <div class="lesson-body">
@@ -180,6 +209,7 @@ onBeforeUnmount(stopAudio)
                     </template>
                     <h4>動手練習</h4>
                     <p>{{ question.lesson.practice }}</p>
+                    <a v-if="question.reference" class="lesson-reference" :href="question.reference.url" target="_blank" rel="noopener noreferrer">{{ question.reference.label }}</a>
                   </div>
                 </details>
               </div>
@@ -230,6 +260,7 @@ h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.
 .practice-filters button, .practice-actions :is(button, .practice-choice), .reset-filters { min-height: 44px; border: 1px solid var(--practice-border); padding: .45rem .75rem; border-radius: .55rem; background: var(--practice-card); cursor: pointer; }
 .practice-filters button[aria-pressed=true], .practice-choice:has(:checked) { background: var(--practice-selected); color: var(--practice-accent); border-color: var(--practice-accent); font-weight: 650; }
 .practice-options { border: 0; padding: 0; margin: .45rem 0 .25rem; min-width: 0; }
+.written-filter { margin-block: .2rem; }
 .practice-options legend { font-weight: 700; margin-bottom: .45rem; }
 .practice-options p { margin-top: .4rem; }
 .practice-actions, .practice-answer-bar { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
@@ -254,14 +285,18 @@ h1 { font-size: clamp(2.2rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -.
 .question-list summary { cursor: pointer; padding: .8rem .3rem; line-height: 1.6; font-weight: 650; }
 .question-list summary::marker { color: var(--practice-accent); }
 .question-prompt { display: inline-flex; align-items: baseline; justify-content: space-between; gap: .75rem; width: calc(100% - 1.35rem); vertical-align: top; }
+.question-prompt > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.question-labels { display: inline-flex; flex: none; gap: .3rem; }
 .question-level { flex: none; padding: .05rem .4rem; border: 1px solid var(--practice-border); border-radius: .35rem; color: var(--practice-muted); font-size: .78rem; font-weight: 600; }
 .question-level[data-level=advanced] { color: var(--practice-accent); background: var(--practice-selected); }
+.exam-label { color: var(--practice-accent); }
 .answer { padding: .1rem .4rem 1rem; }
 .answer h3 { margin-bottom: .35rem; font-size: .88rem; font-weight: 750; color: var(--practice-accent); }
 .lesson { margin-top: .85rem; border: 1px solid var(--practice-border); border-radius: .55rem; }
 .lesson summary { padding: .65rem .75rem; color: var(--practice-accent); font-size: .92rem; }
 .lesson-body { border-top: 1px solid var(--practice-border); padding: .75rem; }
 .lesson-body h4 { margin: .8rem 0 .25rem; font-size: .88rem; font-weight: 750; color: var(--practice-accent); }
+.lesson-reference { display: inline-block; margin-top: .65rem; color: var(--practice-accent); text-decoration: underline; text-underline-offset: .2em; }
 .answer p { line-height: 1.8; }
 .answer pre { max-width: 100%; overflow: auto; background: #171625; color: #f8f5ff; border-radius: .5rem; margin-top: .75rem; padding: .8rem; font-size: .87rem; }
 .practice :is(a, button, input, select, summary, pre):focus-visible { outline: 2px solid var(--practice-accent); outline-offset: 3px; }
